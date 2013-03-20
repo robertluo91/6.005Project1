@@ -34,7 +34,7 @@ as well as reviewing teammates' work.
 In this way, we will have less chance of someone dropping the project in the middle or missing a specific
 deadline or task. 
 
-Ifmissing deadline and tasks happen, we will get in touch with each teammate ASAP and try 
+If missing deadline and tasks happen, we will get in touch with each teammate ASAP and try 
 to understand if there is a problem with work distribution or time management and try to resolve the problem,
 adjust work distribution and deadlines accordingly.
 In the case of 1 or 2 teammates stop working the project, again help each other out to resolve issues and adjust
