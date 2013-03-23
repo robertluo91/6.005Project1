@@ -2,6 +2,7 @@ package player;
 
 import sound.Pitch; 
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Parser {
@@ -14,14 +15,15 @@ public class Parser {
         int tempo = 100; 
         String key = "C"; 
 
+        List<Integer> denominators = new ArrayList<Integer>(); 
         
         defaultKeySignature = new KeySignature(key); 
         this.tempo = tempo; 
     }
+   
     private static int lcm(int a, int b) { 
         long A = a; 
-        long B = b; 
-  
+        long B = b;   
         return (int) (A * (B / gcd(A, B))); 
     } 
     

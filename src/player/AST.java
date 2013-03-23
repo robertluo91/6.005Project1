@@ -12,6 +12,7 @@ public interface AST<E> {
     public AST<E> getChild(int index); 
       
     public List<AST<E>> getAllChildren(); 
-      
-    public List<Note> accept(Visitor<E> visitor, int startTick); 
+    
+    //recover after finishing visitor
+    //public List<Note> accept(Visitor<E> visitor, int startTick); 
 }

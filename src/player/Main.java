@@ -24,15 +24,33 @@ public class Main {
         //try {
             //Lexer lexer = new Lexer(file);
             //Parser parser = new Parser(lexer);
-            //abcTree<Note> tree = parser.getAST();
+            //Tree<Note> tree = parser.getAST();
             //List<Note> notes = tree.accept(new Visitor(), 0);
             //SequencePlayer player = new SequencePlayer(parser.tempo,parser.ticks_per_beat);
-            
+            //           for (Note note : notes) {
+            //int startTick = note.getStartTick();
+            //int numTicks = note.getNumTicks();
+            //List<Pitch> pitches = note.getPitch();
+            //for (Pitch pitch : pitches) {
+                //if (pitch != null) {
+                    //player.addNote(pitch.toMidiNote(), startTick, numTicks);
+                //}
+            //}
+        /*
+         * may catch more things if needed
+         */
+        //catch (MidiUnavailableException e) {
+            //e.printStackTrace();
         //}
+        //catch (InvalidMidiDataException e) {
+            //e.printStackTrace();
+        //} 
     }
 
     public static void main(String[] args) {
-        // CALL play() HERE
+        for (String i:args){
+            play(i);
+        }
     }
 
 }
