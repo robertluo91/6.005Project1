@@ -34,7 +34,7 @@ public class Token {
 	 */
 
 	public static enum Type {
-		C, K, L, M, Q, T, X, V, Rest, Pitch, Tuplets, ChordsBegin, ChordsEnd, Barline, RepeatBegin, RepeatEnd, Nrepeat
+		M, C, K, L,Q, T, X, V, Rest, Pitch, Tuplets, ChordsBegin, ChordsEnd, Barline, RepeatBegin, RepeatEnd, Nrepeat
 	}
 
 	public final Type type;
@@ -94,6 +94,7 @@ public class Token {
 		case RepeatBegin:
 			this.pattern = Pattern.compile("\\|:");
 			break;
+
 		case RepeatEnd:
 			this.pattern = Pattern.compile(":\\|");
 			break;
