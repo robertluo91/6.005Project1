@@ -45,8 +45,7 @@ public class Token {
     	case NoteLength:
     		this.pattern = Pattern.compile("[d+] [/[d+]]");
     		break;
-    	case Octave:
-    		
+    	case Octave:    		
     		this.pattern = Pattern.compile("'+ |,+");
     		break;
     	case Accidental:
