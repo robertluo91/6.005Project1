@@ -88,10 +88,12 @@ public class Token {
 			break;
 		case RepeatBegin: 
 			this.pattern = Pattern.compile("\\|:");
+			break;
 		case RepeatEnd: 
 			this.pattern = Pattern.compile(":\\|");
+			break;
 		case Nrepeat:
-			this.pattern = Pattern.compile("\\[d+");
+			this.pattern = Pattern.compile("\\[[12]");
 			break;
 		default:
 			throw new RuntimeException("The input type is invalid");
