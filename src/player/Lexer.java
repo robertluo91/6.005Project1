@@ -15,7 +15,8 @@ public class Lexer {
    
 		ArrayList<ArrayList<Token>> MusicBody;
     	ArrayList<Token> MusicHeader;  //you can call Header  from outside to access the arraylist of all the header tokens
-    	
+    	String Key;
+    	int Tempo;
 
     	public Lexer(String string) {
 
@@ -72,11 +73,36 @@ public class Lexer {
     		//make sure V1, V2, etc is only added to header once if they exist 
     		ArrayList<Token> voicecounter = new ArrayList<Token>();
     		for (int i =0; i< Headers.size(); i++){
-    			String str = output.get(i).string;
+    			int keychecker = 0;
+    			int Tempochecker = 0;
+    			String str = Headers.get(i).string;
     			if (str.startsWith("V:")){
     				voicecounter.add(Headers.get(i));
     			}
+    			if (str.startsWith("K:")){
+    				keychecker = 1;
+    				str = str.substring(2);
+    				if (str.startsWith(" ")) { 
+    		            str = str.substring(1);}
+    				this.Key = str;
+    			}
+    			if (str.startsWith("Q:")){
+    				Tempochecker = 1;
+    				str = str.substring(2);
+    				if (str.startsWith(" ")) { 
+    		            str = str.substring(1);}
+    				this.Tempo = Integer.parseInt(str);
+    			}
+    			if (keychecker == 0){
+    				this.Key = "C";
+    			}
+    			if (Tempochecker == 0){
+    				this.Tempo = 100; 
+    			}
+    			
     		}
+    		
+    		
     		
     		ArrayList<ArrayList<Token>> Body = new ArrayList<ArrayList<Token>>();
     		//the following checks if there is only 1 voice and voicearray doesn't have anything like V1,etc
