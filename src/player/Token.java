@@ -43,7 +43,6 @@ public class Token {
 			this.pattern = Pattern.compile("d* /? d*");
 			break;
 		case Octave:
-
 			this.pattern = Pattern.compile("'+ \\,+");
 			break;
 		case Accidental:
@@ -56,8 +55,7 @@ public class Token {
 			this.pattern = Pattern.compile("z NoteLength?");
 			break;
 		case Pitch:
-			this.pattern = Pattern
-					.compile("Accidental? Basenote Octave? NoteLength?");
+			this.pattern = Pattern.compile("Accidental? Basenote Octave? NoteLength?");
 			break;
 		case Dupspec:
 			this.pattern = Pattern.compile("(2");
