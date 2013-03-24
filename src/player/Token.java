@@ -23,7 +23,7 @@ public class Token {
 	 * barline ::= "|" | "||" | "[|" | "|]" | ":|" | "|:" nth-repeat ::= "["d+
 	 */
 	public static enum Type {
-		C, K, L, M, Q, T, X, V, Rest, Pitch, Tuplets, ChordsBegin, ChordsEnd, Barline, RepeatBegin, RepeatEnd, Nrepeat
+		M, C, K, L,Q, T, X, V, Rest, Pitch, Tuplets, ChordsBegin, ChordsEnd, Barline, RepeatBegin, RepeatEnd, Nrepeat
 	}
 
 	public final Type type;
@@ -88,10 +88,12 @@ public class Token {
 			break;
 		case RepeatBegin: 
 			this.pattern = Pattern.compile("\\|:");
+			break;
 		case RepeatEnd: 
 			this.pattern = Pattern.compile(":\\|");
+			break;
 		case Nrepeat:
-			this.pattern = Pattern.compile("\\[d+");
+		    this.pattern = Pattern.compile("\\[1 | \\[2");
 			break;
 		default:
 			throw new RuntimeException("The input type is invalid");
