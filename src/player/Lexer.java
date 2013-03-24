@@ -4,7 +4,7 @@ import player.Token.Type;
 
 /**
  * A lexer takes a string and splits it into tokens that are meaningful to a
- * parser. 12 token types: Rest, Pitch, Dupspec, Trispec, Quadspec, Barline, Nrepeat
+ * parser. 17 token types: Rest, Pitch, Dupspec, Trispec, Quadspec, Barline, Nrepeat
  * For detailed description of token types, see Token.java
  */
 public class Lexer {
@@ -13,8 +13,8 @@ public class Lexer {
      * @param string: The string to tokenize.
      */        
    
-    	ArrayList<Token> tokens;
-    	ArrayList<Token> Header;  //you can call Header  from outside to access the arraylist of all the header tokens
+		ArrayList<ArrayList<Token>> MusicBody;
+    	ArrayList<Token> MusicHeader;  //you can call Header  from outside to access the arraylist of all the header tokens
     	
 
     	public Lexer(String string) {
@@ -50,6 +50,7 @@ public class Lexer {
     				currentlen++;
     			}
     		}
+    		
     		ArrayList<Token> Headers = new ArrayList<Token>();
     		for (int i =0; i< output.size(); i++){
     			String str = output.get(i).string;
@@ -69,32 +70,54 @@ public class Lexer {
     		}
     		//above method adds all the header info into Headers which is an arraylist of tokens, and remove them from output
     		//make sure V1, V2, etc is only added to header once if they exist 
-    		int voicecounter = 0;
+    		ArrayList<Token> voicecounter = new ArrayList<Token>();
     		for (int i =0; i< Headers.size(); i++){
     			String str = output.get(i).string;
     			if (str.startsWith("V:")){
-    				voicecounter = voicecounter + 1;
+    				voicecounter.add(Headers.get(i));
     			}
     		}
     		
-    		ArrayList<String> Voicechecker = new ArrayList<String>();
-    		for (int i =0; i< voicecounter; i++){
-    			ArrayList<Token> i = new ArrayList<Token>();
+    		ArrayList<ArrayList<Token>> Body = new ArrayList<ArrayList<Token>>();
+    		//the following checks if there is only 1 voice and voicearray doesn't have anything like V1,etc
+    		if (voicecounter.size()==0){
+    			ArrayList<Token> VoiceArray = new ArrayList<Token>();
+    			for (int i =0; i< output.size(); i++){
+    				VoiceArray.add(output.get(i));	
+    			}
+    			Body.add(VoiceArray);
     		}
-    		for (int i =0; i< output.size(); i++){
-    			String str = output.get(i).string;
-    			if (str.startsWith("V:")) {
-    				if (Headers.contains(output.get(i))==false) {
-    				Voicechecker.add(str);
-    				VoiceString[Headers.indexOf(str)].add(output.get(i));
+    		else{   //when it actually has multiple voice
+    		
+    			for (int a=0; a <voicecounter.size(); a++){
+    				ArrayList<Token> VoiceArray = new ArrayList<Token>();  
+    		 		
+    				int counter = -1; 
+    				for (int i =0; i< output.size(); i++){
+    					String str = output.get(i).string;
+    					if (str.startsWith("V:")){
+    						if (voicecounter.contains(output.get(i))){
+    							counter = voicecounter.indexOf(output.get(i));
+    							continue;
+    						}
+    						else {
+    							throw new RuntimeException("Voice in the music didn't appear in the header");  //1st error check if the voice in the body of music has appeared in the header 
+    						}
+    					}
+    			
+    					if ( counter== a) {
+    						VoiceArray.add(output.get(i));	
+    					}	 
     				}
+    				String str = VoiceArray.get(-1).string; 
+    				if (str.matches("\\| | \\|\\] | \\|\\| | :\\|")==false){
+    					throw new RuntimeException("The ending of the voice isn't marked with |, |], :|, or ||"); //2nd error check if any of the arraylist of a single voice ends with one of the 3 simbols
+    				}
+    				Body.add(VoiceArray);
     			}
     		}
-    		
-    		
-    		
-    		
-    		this.Header = Headers;
-    		this.tokens = output;  
+
+    		this.MusicHeader = Headers;
+    		this.MusicBody = Body;  
     	}
     }

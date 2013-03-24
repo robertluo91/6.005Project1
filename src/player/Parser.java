@@ -9,15 +9,16 @@ public class Parser {
     final KeySignature defaultKeySignature; 
     final int tempo;     
     
-    public Parser(Lexer lexer) { 
-        this.tokenList = lexer.getList(); 
+    
+    public Parser(Lexer lexer) {
+        ArrayList<Token> Headers = lexer.MusicHeader; 
         //default setting
         int tempo = 100; 
         String key = "C"; 
 
         List<Integer> denominators = new ArrayList<Integer>(); 
         
-        defaultKeySignature = new KeySignature(key); 
+        currentKeySignature = new KeySignature(key); 
         this.tempo = tempo; 
     }
    
