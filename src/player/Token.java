@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
  * A token is a lexical item that the parser uses.
  */
 public class Token {
+	
 	/**
 	 * All the types of tokens that can be made. Group symbols into token types
 	 * as follows: (all in regular expression format)
@@ -22,14 +23,13 @@ public class Token {
 	 * barline ::= "|" | "||" | "[|" | "|]" | ":|" | "|:" nth-repeat ::= "["d+
 	 */
 	public static enum Type {
-		 Rest, Pitch, Dupspec, Trispec, Quadspec, Barline, Nrepeat
+		C, K, L, M, Q, T, X, V, Rest, Pitch, Tuplets, ChordsBegin, ChordsEnd, Barline, RepeatBegin, RepeatEnd, Nrepeat
 	}
-
-	// create 3 variables (memory spaces?)
 
 	public final Type type;
 	public final Pattern pattern;
 	public final String string;
+
 
 	/**
 	 * Method Token converts regular expressions which are used as grammars to
@@ -43,41 +43,55 @@ public class Token {
 	public Token(Type type, String string) {
 		this.type = type;
 		switch (type) {
-		/**
-		case NoteLength:
-			this.pattern = Pattern.compile("[d* /? d+] \\ /");
+		
+		case M:
+			this.pattern = Pattern.compile("M:.*");
 			break;
-		case Octave:
-
-			this.pattern = Pattern.compile("'+ \\,+");
+		case K:
+			this.pattern = Pattern.compile("K:.*");
 			break;
-		case Accidental:
-			this.pattern = Pattern.compile("^ \\ ^^ \\ _ \\ __ \\ =");
+		case T:
+			this.pattern = Pattern.compile("T:.*");
 			break;
-		case Basenote:
-			this.pattern = Pattern.compile("[A-Ga-g]");
+		case L:
+			this.pattern = Pattern.compile("L:.*");
 			break;
-			*/
+		case Q:
+			this.pattern = Pattern.compile("Q:.*");
+			break;
+		case C:
+			this.pattern = Pattern.compile("C:.*");
+			break;
+		case X:
+			this.pattern = Pattern.compile("X:.*");
+			break;
+		case V:
+			this.pattern = Pattern.compile("V:d+");
+			break;
 		case Rest:
-			this.pattern = Pattern.compile("z [[d* /? d+] \\ /]?");
+			this.pattern = Pattern.compile("z [[d* /? d+] | /]?");
 			break;
 		case Pitch:
-			this.pattern = Pattern.compile("[^ \\ ^^ \\ _ \\ __ \\ =]? [A-Ga-g] ['+ \\,+]? [[d* /? d+] \\ /]?");
+			this.pattern = Pattern.compile("[\\^ | \\^\\^ | _ | __ | =]? [A-Ga-g] ['+ ,+]? [[d* /? d+] | /]?");
 			break;
-		case Dupspec:
-			this.pattern = Pattern.compile("(2");
+		case Tuplets:
+			this.pattern = Pattern.compile("\\([234]");
 			break;
-		case Trispec:
-			this.pattern = Pattern.compile("(3");
+		case ChordsBegin:
+			this.pattern = Pattern.compile("\\[");
 			break;
-		case Quadspec:
-			this.pattern = Pattern.compile("(4");
+		case ChordsEnd:
+			this.pattern = Pattern.compile("\\]");
 			break;
 		case Barline:
-			this.pattern = Pattern.compile("| \\ || \\ [| \\ |] \\ :| \\ |:");
+			this.pattern = Pattern.compile("\\| |  \\|\\| | \\[\\| | \\|\\]");
 			break;
+		case RepeatBegin: 
+			this.pattern = Pattern.compile("\\|:");
+		case RepeatEnd: 
+			this.pattern = Pattern.compile(":\\|");
 		case Nrepeat:
-			this.pattern = Pattern.compile("[d+");
+			this.pattern = Pattern.compile("\\[d+");
 			break;
 		default:
 			throw new RuntimeException("The input type is invalid");
