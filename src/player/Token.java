@@ -12,11 +12,12 @@ public class Token {
      * (all in regular expression format)
      * 
      * octave ::= ("'"+) | (","+)
-	 * note-length ::= [d+] ["/" [d+]]
-     * note-length-strict ::= d+ "/" d+
+	 * note-length ::=  d* /? d*
+     * 
      * accidental ::= "^" | "^^" | "_" | "__" | "="
      * basenote ::= [A-Ga-g]
-     * rest ::= "z"
+     * pitch ::= accidental? basenote octave? note-length?
+     * rest ::= "z"note-length?
      * dup-spec ::= "(2"
      * tri-spec ::= "(3"
      * quad-spec ::= "(4"
@@ -24,7 +25,7 @@ public class Token {
      * nth-repeat ::= "["d+
      */
     public static enum Type {
-        NoteLength, Octave, Accidental, Basenote, Rest, Dupspec, Trispec, Quadspec, Barline, Nrepeat
+        NoteLength, Octave, Accidental, Basenote, Rest, Pitch, Dupspec, Trispec, Quadspec, Barline, Nrepeat
     }
     
     //create 3 variables (memory spaces?)
@@ -43,11 +44,11 @@ public class Token {
     	this.type = type;
     	switch (type) {
     	case NoteLength:
-    		this.pattern = Pattern.compile("[d+] [/[d+]]");
+    		this.pattern = Pattern.compile("d* /? d*");
     		break;
     	case Octave:
     		
-    		this.pattern = Pattern.compile("'+ |,+");
+    		this.pattern = Pattern.compile("'+ \\,+");
     		break;
     	case Accidental:
     		this.pattern = Pattern.compile("^ \\ ^^ \\ _ \\ __ \\ =");
@@ -56,7 +57,10 @@ public class Token {
     		this.pattern = Pattern.compile("[A-Ga-g]");
     		break;
     	case Rest:
-    		this.pattern = Pattern.compile("z");
+    		this.pattern = Pattern.compile("z NoteLength?");
+    		break;
+    	case Pitch:
+    		this.pattern = Pattern.compile("Accidental? Basenote Octave? NoteLength?");
     		break;
     	case Dupspec:
     		this.pattern = Pattern.compile("(2");
