@@ -3,13 +3,13 @@ package player;
 import java.util.regex.Pattern;
 
 /**
+ * 
  * A token is a lexical item that the parser uses.
  */
+
 public class Token {
-	
 	/**
-	 * All the types of tokens that can be made. Group symbols into token types
-	 * as follows: (all in regular expression format)
+	 * All the types of tokens that can be made. Group symbols into token types as follows: (all in regular expression format)
 	 * C ::= .*
 	 * K ::= .*
 	 * L ::= .*
@@ -18,21 +18,21 @@ public class Token {
 	 * T ::= .*
 	 * X ::= .*
 	 * V ::= .*
-	 * Octave ::= ("'"+) | (","+) 
+	 * Octave ::= ("'"+) | (","+)
 	 * NoteLength ::= [d* /? d+] | /
-	 * Accidental ::= "^" | "^^" | "_" | "__" | "=" 
-	 * Basenote ::= [A-Ga-g] 
-	 * Pitch ::= Accidental? Basenote Octave? NoteLength? 
+	 * Accidental ::= "^" | "^^" | "_" | "__" | "="
+	 * Basenote ::= [A-Ga-g]
+	 * Pitch ::= Accidental? Basenote Octave? NoteLength?
 	 * Rest ::= "z"note-length?
-	 * Tuplets ::= "([234]" 
-	 * Barline ::= "|" | "||" | "[|" | "|]" 
+	 * Tuplets ::= "([234]"
+	 * Barline ::= "|" | "||" | "[|" | "|]"
 	 * Nrepeat ::= "["[12]
 	 * ChordsBegin::= "["
 	 * ChordsEnd::= "]"
 	 * RepeatBegin ::="|:"
 	 * RepeatEnd ::=":|"
-	
 	 */
+
 	public static enum Type {
 		C, K, L, M, Q, T, X, V, Rest, Pitch, Tuplets, ChordsBegin, ChordsEnd, Barline, RepeatBegin, RepeatEnd, Nrepeat
 	}
@@ -40,21 +40,15 @@ public class Token {
 	public final Type type;
 	public final Pattern pattern;
 	public final String string;
-
-
 	/**
-	 * Method Token converts regular expressions which are used as grammars to
-	 * strings
-	 * 
-	 * @param type
-	 *            : a regex which belongs to the types of regex defined in enum.
-	 *            string: the string expression of the regex
+	 * Method Token converts regular expressions which are used as grammars tostrings
+	 * @param type: a regex which belongs to the types of regex defined in enum.
+	 * string: the string expression of the regex
 	 */
 
 	public Token(Type type, String string) {
 		this.type = type;
 		switch (type) {
-		
 		case M:
 			this.pattern = Pattern.compile("M:.*");
 			break;
@@ -97,10 +91,10 @@ public class Token {
 		case Barline:
 			this.pattern = Pattern.compile("\\| |  \\|\\| | \\[\\| | \\|\\]");
 			break;
-		case RepeatBegin: 
+		case RepeatBegin:
 			this.pattern = Pattern.compile("\\|:");
 			break;
-		case RepeatEnd: 
+		case RepeatEnd:
 			this.pattern = Pattern.compile(":\\|");
 			break;
 		case Nrepeat:
@@ -110,6 +104,5 @@ public class Token {
 			throw new RuntimeException("The input type is invalid");
 		}
 		this.string = string;
-
 	}
 }
