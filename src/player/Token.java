@@ -10,15 +10,19 @@ public class Token {
 	 * All the types of tokens that can be made. Group symbols into token types
 	 * as follows: (all in regular expression format)
 	 * 
-	 * octave ::= ("'"+) | (","+) note-length ::= d* /? d*
+	 * octave ::= ("'"+) | (","+) note-length ::= [d* /? d+] \\ /
 	 * 
-	 * accidental ::= "^" | "^^" | "_" | "__" | "=" basenote ::= [A-Ga-g] pitch
-	 * ::= accidental? basenote octave? note-length? rest ::= "z"note-length?
-	 * dup-spec ::= "(2" tri-spec ::= "(3" quad-spec ::= "(4" barline ::= "|" |
-	 * "||" | "[|" | "|]" | ":|" | "|:" nth-repeat ::= "["d+
+	 * accidental ::= "^" | "^^" | "_" | "__" | "=" 
+	 * basenote ::= [A-Ga-g] 
+	 * pitch ::= accidental? basenote octave? note-length? 
+	 * rest ::= "z"note-length?
+	 * dup-spec ::= "(2" 
+	 * tri-spec ::= "(3" 
+	 * quad-spec ::= "(4" 
+	 * barline ::= "|" | "||" | "[|" | "|]" | ":|" | "|:" nth-repeat ::= "["d+
 	 */
 	public static enum Type {
-		NoteLength, Octave, Accidental, Basenote, Rest, Pitch, Dupspec, Trispec, Quadspec, Barline, Nrepeat
+		 Rest, Pitch, Dupspec, Trispec, Quadspec, Barline, Nrepeat
 	}
 
 	// create 3 variables (memory spaces?)
@@ -39,8 +43,9 @@ public class Token {
 	public Token(Type type, String string) {
 		this.type = type;
 		switch (type) {
+		/**
 		case NoteLength:
-			this.pattern = Pattern.compile("d* /? d*");
+			this.pattern = Pattern.compile("[d* /? d+] \\ /");
 			break;
 		case Octave:
 
@@ -52,12 +57,12 @@ public class Token {
 		case Basenote:
 			this.pattern = Pattern.compile("[A-Ga-g]");
 			break;
+			*/
 		case Rest:
-			this.pattern = Pattern.compile("z NoteLength?");
+			this.pattern = Pattern.compile("z [[d* /? d+] \\ /]?");
 			break;
 		case Pitch:
-			this.pattern = Pattern
-					.compile("Accidental? Basenote Octave? NoteLength?");
+			this.pattern = Pattern.compile("[^ \\ ^^ \\ _ \\ __ \\ =]? [A-Ga-g] ['+ \\,+]? [[d* /? d+] \\ /]?");
 			break;
 		case Dupspec:
 			this.pattern = Pattern.compile("(2");
