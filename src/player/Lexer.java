@@ -4,7 +4,7 @@ import player.Token.Type;
 
 /**
  * A lexer takes a string and splits it into tokens that are meaningful to a
- * parser. 12 token types: Rest, Pitch, Dupspec, Trispec, Quadspec, Barline, Nrepeat
+ * parser. 17 token types: Rest, Pitch, Dupspec, Trispec, Quadspec, Barline, Nrepeat
  * For detailed description of token types, see Token.java
  */
 public class Lexer {
@@ -50,6 +50,7 @@ public class Lexer {
     				currentlen++;
     			}
     		}
+    		
     		ArrayList<Token> Headers = new ArrayList<Token>();
     		for (int i =0; i< output.size(); i++){
     			String str = output.get(i).string;

@@ -10,17 +10,28 @@ public class Token {
 	/**
 	 * All the types of tokens that can be made. Group symbols into token types
 	 * as follows: (all in regular expression format)
-	 * 
-	 * octave ::= ("'"+) | (","+) note-length ::= [d* /? d+] \\ /
-	 * 
-	 * accidental ::= "^" | "^^" | "_" | "__" | "=" 
-	 * basenote ::= [A-Ga-g] 
-	 * pitch ::= accidental? basenote octave? note-length? 
-	 * rest ::= "z"note-length?
-	 * dup-spec ::= "(2" 
-	 * tri-spec ::= "(3" 
-	 * quad-spec ::= "(4" 
-	 * barline ::= "|" | "||" | "[|" | "|]" | ":|" | "|:" nth-repeat ::= "["d+
+	 * C ::= .*
+	 * K ::= .*
+	 * L ::= .*
+	 * M ::= .*
+	 * Q ::= .*
+	 * T ::= .*
+	 * X ::= .*
+	 * V ::= .*
+	 * Octave ::= ("'"+) | (","+) 
+	 * NoteLength ::= [d* /? d+] | /
+	 * Accidental ::= "^" | "^^" | "_" | "__" | "=" 
+	 * Basenote ::= [A-Ga-g] 
+	 * Pitch ::= Accidental? Basenote Octave? NoteLength? 
+	 * Rest ::= "z"note-length?
+	 * Tuplets ::= "([234]" 
+	 * Barline ::= "|" | "||" | "[|" | "|]" 
+	 * Nrepeat ::= "["[12]
+	 * ChordsBegin::= "["
+	 * ChordsEnd::= "]"
+	 * RepeatBegin ::="|:"
+	 * RepeatEnd ::=":|"
+	
 	 */
 	public static enum Type {
 		C, K, L, M, Q, T, X, V, Rest, Pitch, Tuplets, ChordsBegin, ChordsEnd, Barline, RepeatBegin, RepeatEnd, Nrepeat
