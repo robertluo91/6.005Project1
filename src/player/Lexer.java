@@ -147,8 +147,7 @@ public class Lexer {
 			} else if (str.matches("z /d+")) {
 
 				str.replaceAll("/", "1/");
-				int denom = Integer
-						.parseInt(str.substring(str.indexOf("/") + 1));
+				int denom = Integer.parseInt(str.substring(str.indexOf("/") + 1));
 				output.get(i).basenote = "z";
 				output.get(i).noteLength = 1.0 / denom;
 				Denom.add(denom);
@@ -156,15 +155,12 @@ public class Lexer {
 				for (int begin = 0; begin < str.length(); begin++) {
 					String substring = str.substring(begin);
 					if (substring.matches("d+/d+")) {
-						int num = Integer.parseInt(substring.substring(0,
-								substring.indexOf("/")));
-						int denom = Integer.parseInt(substring
-								.substring(substring.indexOf("/")) + 1);
+						int num = Integer.parseInt(substring.substring(0,substring.indexOf("/")));
+						int denom = Integer.parseInt(substring.substring(substring.indexOf("/")) + 1);
 						long gcd = gcd((long) num, (long) denom);
 						num = num / (int) gcd;
 						denom = denom / (int) gcd;
-						str.replaceAll("d+/d+", Integer.toString(num) + "/"
-								+ Integer.toString(denom));
+						str.replaceAll("d+/d+", Integer.toString(num) + "/"+ Integer.toString(denom));
 						output.get(i).basenote = "z";
 						output.get(i).noteLength = num * 1.0 / denom;
 						Denom.add(denom);
@@ -174,12 +170,10 @@ public class Lexer {
 				for (int begin = 0; begin < str.length(); begin++) {
 
 					if (str.substring(begin, begin + 1).matches("[A-G]")) {
-						output.get(i).basenote = str
-								.substring(begin, begin + 1);
+						output.get(i).basenote = str.substring(begin, begin + 1);
 					}
 					if (str.substring(begin, begin + 1).matches("[a-g]")) {
-						output.get(i).basenote = str
-								.substring(begin, begin + 1).toUpperCase();
+						output.get(i).basenote = str.substring(begin, begin + 1).toUpperCase();
 						output.get(i).octave = output.get(i).octave + 1;
 					}
 					if (str.substring(begin, begin + 1) == "^") {
@@ -214,10 +208,8 @@ public class Lexer {
 
 						String substring = str.substring(begin);
 						if (substring.matches("d+/d+")) {
-							int num = Integer.parseInt(substring.substring(0,
-									substring.indexOf("/")));
-							int denom = Integer.parseInt(substring
-									.substring(substring.indexOf("/")) + 1);
+							int num = Integer.parseInt(substring.substring(0,substring.indexOf("/")));
+							int denom = Integer.parseInt(substring.substring(substring.indexOf("/")) + 1);
 							long gcd = gcd((long) num, (long) denom);
 							num = num / (int) gcd;
 							denom = denom / (int) gcd;
