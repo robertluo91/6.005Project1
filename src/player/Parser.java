@@ -1,47 +1,46 @@
 package player;
 
 import sound.Pitch; 
+import player.Token.Type;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
 
 public class Parser {
     final KeySignature defaultKeySignature; 
     final int tempo;     
+    final int tpb;
+    final String key;
     
-    
-    public Parser(Lexer lexer) {
-        ArrayList<Token> Headers = lexer.MusicHeader; 
-        //default setting
-        int tempo = 100; 
-        String key = "C"; 
-
-        List<Integer> denominators = new ArrayList<Integer>(); 
+    public Parser(Lexer lexer) {                
+        ArrayList<Token> Headers = lexer.MusicHeader;
+        ArrayList<ArrayList<Token>> Body = lexer.MusicBody;
+        this.key = Headers.key;
+        this.tempo = Headers.tempo;
+        this.tpb = Headers.tick; 
+        defaultKeySignature = new KeySignature(key);
         
-        currentKeySignature = new KeySignature(key); 
-        this.tempo = tempo; 
+        for (int i = 0;i<Body.size();i++){
+            Body.get(i).
+        }
+        
+        final AST<ArrayList<Token>> tree;
+        for (ArrayList<Token> a:Body){
+            List<AST<ArrayList<Token>>> VoiceTrees = new ArrayList<AST<ArrayList<Token>>>;
+            int repeat_start_index = 0;
+            int repeat_end_index = a.size();
+            for(int i=0;i<a.size(); i++){
+                if (a.get(i).equals(":|") && a.get(i+1).type == Type.Nrepeat){
+                    //generate a new tree
+                    for (int j=0; int j < i; i++){
+                        
+                    }
+                    VoiceTrees.add(currenttree)
+                }
+            }
+        }
     }
    
-    private static int lcm(int a, int b) { 
-        long A = a; 
-        long B = b;   
-        return (int) (A * (B / gcd(A, B))); 
-    } 
-    
-    private static int lcm(List<Integer> input) { 
-        int current = input.get(0); 
-        for (int i = 1; i < input.size(); i++) 
-            current = lcm(current, input.get(i)); 
-        return (int) current; 
-    }
-    
-    //since we are dealing with positive integers (the denominators of the a notelength is positive)
-    private static long gcd(long a, long b) { 
-        while (b > 0) { 
-            long exchange = b; 
-            b = a % b; 
-            a = exchange; 
-        } 
-        return a; 
-    } 
+
 }
