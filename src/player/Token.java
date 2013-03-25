@@ -83,7 +83,6 @@ public class Token {
 			this.pattern = Pattern.compile("z [[d* /? d+] | /]?");
 			this.basenote = "z";
 			this.noteLength = 0.0;
-			//other choice?
 			this.octave = 0;
 			this.accid = 0;
 			this.chord = 0;
