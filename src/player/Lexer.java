@@ -18,6 +18,7 @@ public class Lexer {
 		ArrayList<ArrayList<Token>> MusicBody;
     	ArrayList<Token> MusicHeader;  //you can call Header  from outside to access the arraylist of all the header tokens
     	String Key;
+    	ArrayList<Token> voicecounter;
     	int Tempo;
     	ArrayList<Token> token;
     	int currentlen;
@@ -33,7 +34,7 @@ public class Lexer {
     		//create an arraylist "output" to put all the tokens generated inside
     		int length = Expression.length();
     		currentlen = 0;
-    		parsePeekIndex = 0;
+    		parserPeekIndex = 0;
     		
     		while (currentlen < length) {
     			boolean anyMatchSoFar = false;
@@ -56,6 +57,7 @@ public class Lexer {
     		}
     		Header(output);
     		
+    		
     	}
     	public void Header(ArrayList<Token> output){
     	
@@ -77,8 +79,9 @@ public class Lexer {
     			}
     		}
     		this.MusicHeader = Headers;
-    		this.token = output;
+    		
     		KeyTempo(Headers);
+    		Ticker(output);
     		//above method adds all the header info into Headers which is an arraylist of tokens, and remove them from output
     		//make sure V1, V2, etc is only added to header once if they exist 
     	}
@@ -113,18 +116,110 @@ public class Lexer {
     			}
     			
     		}
-    		MusicBody(token, voicecounter);
+    		this.voicecounter = voicecounter;
     	}
     	
+    	//Ticker method changes all the note-length into the actual tick time. 
     	public void Ticker(ArrayList<Token> output){
-    		ArrayList<Integer> Ticker = new ArrayList<Integer>();
+    		
+    		ArrayList<Integer> Denom = new ArrayList<Integer>();
     		for (int i=0; i<output.size(); i++){
     			String str = output.get(i).string;
-    			if str.matches("[\\^ | \\^\\^ | _ | __ | =]? [A-Ga-g] ['+ ,+]? /" ){
+    			if (str.matches("z")){
+    				str.concat("1/1");
+    			}
+    			else if (str.matches("z /")){
+    				str.replaceAll("/","1/2");
+    				Denom.add(2);
+    			}
+    			else if (str.matches("z /d+")){
+    				str.concat("1/2");
+    				str.replaceAll("/", "1/");
+    				int denom = Integer.parseInt( str.substring(str.indexOf("/")+1));
+    				Denom.add(denom);
+    			}
+    			else if (str.matches("z d+/d+")){
+    				for (int begin =0; begin<str.length(); begin++){
+						String substring = str.substring(begin);
+						if (substring.matches("d+/d+")) {
+							int num = Integer.parseInt( substring.substring(0,substring.indexOf("/")) );
+							int denom = Integer.parseInt( substring.substring(substring.indexOf("/"))+1);
+							long gcd = gcd((long) num, (long) denom);
+							num = num/(int) gcd;
+							denom = denom/(int) gcd;
+							str.replaceAll("d+/d+", Integer.toString(num)+ "/" + Integer.toString(denom));
+							Denom.add(denom);
+						}
+    				}
+    			}
+    			else if (str.matches("[\\^ | \\^\\^ | _ | __ | =]? [A-Ga-g] ['+ ,+]? /" )){
     				str.replaceAll("/", "1/2" );
+    				Denom.add(2);
+    			}
+    			else if (str.matches("[\\^ | \\^\\^ | _ | __ | =]? [A-Ga-g] ['+ ,+]? /d+" )){
+    				str.replaceAll("/", "1/");
+    				int denom = Integer.parseInt( str.substring(str.indexOf("/")+1));
+    				Denom.add(denom);
+    			}
+    			else if (str.matches("[\\^ | \\^\\^ | _ | __ | =]? [A-Ga-g] ['+ ,+]?" )) {
+    				str.concat("1/1");
+    				Denom.add(1);
+    			}
+    			else if (str.matches("[\\^ | \\^\\^ | _ | __ | =]? [A-Ga-g] ['+ ,+]? d+/d+" )) {
+    				for (int begin =0; begin<str.length(); begin++){
+    					
+    						String substring = str.substring(begin);
+    						if (substring.matches("d+/d+")) {
+    							int num = Integer.parseInt( substring.substring(0,substring.indexOf("/")) );
+    							int denom = Integer.parseInt( substring.substring(substring.indexOf("/"))+1);
+    							long gcd = gcd((long) num, (long) denom);
+    							num = num/(int) gcd;
+    							denom = denom/(int) gcd;
+    							str.replaceAll("d+/d+", Integer.toString(num)+ "/" + Integer.toString(denom));
+    							Denom.add(denom);
+    						}
+    				     }
+    				
     			}
     		}
-    	}
+    		int Tick = lcmlist(Denom);
+    		for (int i2= 0; i2<output.size(); i2++ ){
+    			String str = output.get(i2).string;
+    			if (str.matches("[\\^ | \\^\\^ | _ | __ | =]? [A-Ga-g] ['+ ,+]? d+/d+" )){
+    				for (int begin =0; begin<str.length(); begin++){
+    					
+    						String substring = str.substring(begin);
+    						if (substring.matches("d+/d+")) {
+    							int num = Integer.parseInt( substring.substring(0,substring.indexOf("/")) );
+    							int denom = Integer.parseInt( substring.substring(substring.indexOf("/"))+1);
+    							int number = num*Tick/denom;
+    							str.replaceAll("d+/d+", Integer.toString(number));
+    							}
+    				     
+    					}
+    				}
+    			else if (str.matches("z d+/d+")){
+    				for (int begin =0; begin<str.length(); begin++){
+						String substring = str.substring(begin);
+						if (substring.matches("d+/d+")) {
+							int num = Integer.parseInt( substring.substring(0,substring.indexOf("/")) );
+							int denom = Integer.parseInt( substring.substring(substring.indexOf("/"))+1);
+							int number = num*Tick/denom;
+							str.replaceAll("d+/d+", Integer.toString(number));
+						}
+    				}
+    			}
+    			}
+    		this.token = output;
+    		MusicBody(token, voicecounter);
+    		}
+    	
+    	public void AccOctave(ArrayList<Token> output){
+    		for (int i=0; i<output.size(); i++){
+    			String str = output.get(i).string;
+    		}
+    	}	
+    	
     		
     	public void MusicBody(ArrayList<Token> output, ArrayList<Token> voicecounter){
     		ArrayList<ArrayList<Token>> Body = new ArrayList<ArrayList<Token>>();
@@ -168,13 +263,15 @@ public class Lexer {
     		this.MusicBody = Body; 
     	
     	}
+    	
+    	
     	private static int lcm(int a, int b) { 
             long A = a; 
             long B = b;   
             return (int) (A * (B / gcd(A, B))); 
         } 
         
-        private static int lcm(List<Integer> input) { 
+        private static int lcmlist(List<Integer> input) { 
             int current = input.get(0); 
             for (int i = 1; i < input.size(); i++) 
                 current = lcm(current, input.get(i)); 
