@@ -34,7 +34,8 @@ public class Token {
 	 */
 
 	public static enum Type {
-		M, C, K, L,Q, T, X, V, Rest, Pitch, Tuplets, ChordsBegin, ChordsEnd, Barline, RepeatBegin, RepeatEnd, Repeat_first, Repeat_second
+		M, C, K, L,Q, T, X, V, Rest, Pitch, Tuplets, ChordsBegin, ChordsEnd, 
+		Barline, RepeatBegin, RepeatEnd, Repeat_first, Repeat_second, Whitespace
 	}
 
 	public final Type type;
@@ -82,19 +83,10 @@ public class Token {
 		case Rest:
 			this.pattern = Pattern.compile("z [[d* /? d+] | /]?");
 			this.basenote = "z";
-			this.noteLength = 0.0;
-			//other choice?
-			this.octave = 0;
-			this.accid = 0;
-			this.chord = 0;
 			break;
 		case Pitch:
 			this.pattern = Pattern.compile("[\\^ | \\^\\^ | _ | __ | =]? [A-Ga-g] ['+ ,+]? [[d* /? d+] | /]?");
 			this.basenote = Pattern.compile("[A-Ga-g]").toString();
-			this.noteLength = 0.0;
-			this.octave = 0;
-			this.accid = 0;
-			this.chord = 0;
 			break;
 		case Tuplets:
 			this.pattern = Pattern.compile("\\([234]");
@@ -119,7 +111,10 @@ public class Token {
 			break;
         case Repeat_second:
             this.pattern = Pattern.compile("\\[2"); 
-            break;		
+            break;
+        case Whitespace:
+            this.pattern = Pattern.compile(" ");
+            break;
 		default:
 			throw new RuntimeException("The input type is invalid");
 		}
