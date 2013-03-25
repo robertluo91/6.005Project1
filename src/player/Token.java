@@ -41,7 +41,7 @@ public class Token {
 	public final Pattern pattern;
 	public final String string;
 	/**
-	 * Method Token converts regular expressions which are used as grammars tostrings
+	 * Method Token converts regular expressions which are used as grammars to strings
 	 * @param type: a regex which belongs to the types of regex defined in enum.
 	 * string: the string expression of the regex
 	 */
@@ -75,6 +75,7 @@ public class Token {
 			break;
 		case Rest:
 			this.pattern = Pattern.compile("z [[d* /? d+] | /]?");
+			
 			break;
 		case Pitch:
 			this.pattern = Pattern.compile("[\\^ | \\^\\^ | _ | __ | =]? [A-Ga-g] ['+ ,+]? [[d* /? d+] | /]?");
