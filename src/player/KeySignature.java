@@ -6,26 +6,26 @@ public class KeySignature {
   
     // Need to design hash map to map 
     // key signatures to the respective signature.\ 
-    // integer array [A, B, C, D, E, F, G] 
+    // integer array [A, B, C, D, E, F, G, z] 
     // 0 is neutral 
     // 1 is sharp 
     // -1 is flat 
-    int[] C = { 0, 0, 0, 0, 0, 0, 0 }; 
-    int[] G = { 0, 0, 0, 0, 0, 1, 0 }; 
-    int[] D = { 0, 0, 1, 0, 0, 1, 0 }; 
-    int[] A = { 0, 0, 1, 0, 0, 1, 1 }; 
-    int[] E = { 0, 0, 1, 1, 0, 1, 1 }; 
-    int[] B = { 1, 0, 1, 1, 0, 1, 1 }; 
-    int[] Fsharp = { 1, 0, 1, 1, 1, 1, 1 }; 
-    int[] Csharp = { 1, 1, 1, 1, 1, 1, 1 }; 
+    int[] C = { 0, 0, 0, 0, 0, 0, 0, 0}; 
+    int[] G = { 0, 0, 0, 0, 0, 1, 0, 0}; 
+    int[] D = { 0, 0, 1, 0, 0, 1, 0, 0}; 
+    int[] A = { 0, 0, 1, 0, 0, 1, 1, 0}; 
+    int[] E = { 0, 0, 1, 1, 0, 1, 1, 0}; 
+    int[] B = { 1, 0, 1, 1, 0, 1, 1, 0}; 
+    int[] Fsharp = { 1, 0, 1, 1, 1, 1, 1, 0}; 
+    int[] Csharp = { 1, 1, 1, 1, 1, 1, 1, 0}; 
   
-    int[] F = { 0, -1, 0, 0, 0, 0, 0 }; 
-    int[] Bflat = { 0, -1, 0, 0, -1, 0, 0 }; 
-    int[] Eflat = { -1, -1, 0, 0, -1, 0, 0 }; 
-    int[] Aflat = { -1, -1, 0, -1, -1, 0, 0 }; 
-    int[] Dflat = { -1, -1, 0, -1, -1, 0, -1 }; 
-    int[] Gflat = { -1, -1, -1, -1, -1, 0, -1 }; 
-    int[] Cflat = { -1, -1, -1, -1, -1, -1, -1 }; 
+    int[] F = { 0, -1, 0, 0, 0, 0, 0, 0}; 
+    int[] Bflat = { 0, -1, 0, 0, -1, 0, 0, 0}; 
+    int[] Eflat = { -1, -1, 0, 0, -1, 0, 0, 0}; 
+    int[] Aflat = { -1, -1, 0, -1, -1, 0, 0, 0}; 
+    int[] Dflat = { -1, -1, 0, -1, -1, 0, -1, 0}; 
+    int[] Gflat = { -1, -1, -1, -1, -1, 0, -1, 0}; 
+    int[] Cflat = { -1, -1, -1, -1, -1, -1, -1, 0}; 
   
     // hash map mapping string key signatures to int[] 
     // always capitalized, also utilizing ^ for sharp and _ for flat 
