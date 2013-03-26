@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import player.Token;
 import java.util.List;
 import player.Token.Type;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * A lexer takes a string and splits it into tokens that are meaningful to a
@@ -50,13 +52,13 @@ public class Lexer {
                         Type.Barline, Type.RepeatBegin, Type.RepeatEnd,
                         Type.Repeat_first, Type.Repeat_second, Type.Whitespace };
                 for (Type t : typelist) {
-                    Token testToken = new Token(t, "", "", 0.0, 0, 0,0);
+                    Token testToken = new Token(t, "", 0, 0.0, 0, 0,0);
                     if (testToken.pattern.matcher(currentString).matches()) {
                         // a token has been identified because its Matcher
                         // matches method == True
                         anyMatchSoFar = true;
                         currentlen = i;
-                        output.add(new Token(t, currentString, "0", 0.0, 0, 0,0));
+                        output.add(new Token(t, currentString, 0, 0.0, 0, 0,0));
 
                     }
                 }
@@ -133,11 +135,11 @@ public class Lexer {
                         Type.RepeatBegin, Type.RepeatEnd, Type.Repeat_first,
                         Type.Repeat_second, Type.Whitespace };
                 for (Type t : typelist) {
-                    Token testToken = new Token(t, "", "", 0.0, 0, 0,0);
+                    Token testToken = new Token(t, "", 0, 0.0, 0, 0,0);
                     if (testToken.pattern.matcher(currentString).matches()) {
                         anyMatchSoFar = true;
                         currentlen = i;
-                        output.add(new Token(t, currentString, "0", 0.0, 0, 0,0));
+                        output.add(new Token(t, currentString, 0, 0.0, 0, 0,0));
                     }
                 }
             }
@@ -217,18 +219,18 @@ public class Lexer {
             if (output.get(i).type == Token.Type.Rest) {
                 if (str.matches("z")) {
                     str.concat("1/1");
-                    output.get(i).basenote = "z";
+                    output.get(i).basenote = 7;
                     output.get(i).noteLength = 1.0;
                 } else if (str.matches("z/")) {
                     str.replaceAll("/", "1/2");
-                    output.get(i).basenote = "z";
+                    output.get(i).basenote = 7;
                     output.get(i).noteLength = 0.5;
 
                 } else if (str.matches("z/d+")) {
                     str.replaceAll("/", "1/");
                     int denom = Integer
                             .parseInt(str.substring(str.indexOf("/") + 1));
-                    output.get(i).basenote = "z";
+                    output.get(i).basenote = 7;
                     output.get(i).noteLength = 1.0 / denom;
 
                 } else if (str.matches("zd+/d+")) {
@@ -243,7 +245,7 @@ public class Lexer {
                             denom = denom / (int) gcd;
                             str.replaceAll("d+/d+", Integer.toString(num) + "/"
                                     + Integer.toString(denom));
-                            output.get(i).basenote = "z";
+                            output.get(i).basenote = 7;
                             output.get(i).noteLength = num * 1.0 / denom;
                         }
                     }
@@ -252,11 +254,9 @@ public class Lexer {
                 for (int begin = 0; begin < str.length(); begin++) {
                     int hatcount = 0;
                     if (str.substring(begin, begin + 1).matches("[A-G]")) {
-                        output.get(i).basenote = str
-                                .substring(begin, begin + 1);
+                        output.get(i).basenote = stringToNumber(str.substring(begin, begin + 1));
                     } else if (str.substring(begin, begin + 1).matches("[a-g]")) {
-                        output.get(i).basenote = str
-                                .substring(begin, begin + 1).toUpperCase();
+                        output.get(i).basenote = stringToNumber(str.substring(begin, begin + 1).toUpperCase());
                         output.get(i).octave = output.get(i).octave + 1;
                     } else if (str.substring(begin, begin + 1) == "^") {
                         output.get(i).accid = output.get(i).accid + 1;
@@ -452,6 +452,18 @@ public class Lexer {
         this.MusicBody = Body;
 
     }
+    
+    //converts a letter in string format into an int [0-7]
+    public int stringToNumber(String str) {
+    	  char[] ls = "ABCDEFGZ".toCharArray();
+    	  Map<Character, Integer> m = new HashMap<Character, Integer>();
+    	  int j = 1;
+    	  for(char c: ls) {
+    	    m.put(c, j++);
+    	  }
+    	  
+    	  return m.get(str.charAt(0));
+    	}
 
     private static int lcm(int a, int b) {
         long A = a;
