@@ -96,7 +96,7 @@ public class Token {
 			this.pattern = Pattern.compile("\\]");
 			break;
 		case Barline:
-			this.pattern = Pattern.compile("\\| |  \\|\\| | \\[\\| | \\|\\]"); 
+			this.pattern = Pattern.compile("(\\||\\|\\||\\[\\||\\|\\])?"); 
 			break;
 		case RepeatBegin:
 			this.pattern = Pattern.compile("\\|:");
