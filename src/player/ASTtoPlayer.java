@@ -25,7 +25,8 @@ public class ASTtoPlayer {
             e.printStackTrace();
         }
     }
-    
+
+
     public List<Node> traverse(AST T, SequencePlayer sp){
         nodes = new ArrayList<Node>();
         currentNode = t.root; 

@@ -6,13 +6,14 @@ import java.util.ArrayList;
 import player.Token;
 
 import java.util.List;
+import java.lang.Double;
 
 import player.Token.Type;
 
+
 /**
  * A lexer takes a string and splits it into tokens that are meaningful to a
- * parser. 17 token types: Rest, Pitch, Dupspec, Trispec, Quadspec, Barline,
- * Nrepeat For detailed description of token types, see Token.java
+ * parser. For detailed description of token types, see Token.java
  */
 public class Lexer {
 
@@ -197,6 +198,7 @@ public class Lexer {
 	ArrayList<Token> token;
 	int currentlen;
 	int parserPeekIndex;
+	int Tick;
 
 	public Lexer(String string) {
 
@@ -213,7 +215,15 @@ public class Lexer {
 			boolean anyMatchSoFar = false;
 			for (int i = currentlen + 1; i < length; i++) {
 				String currentString = Expression.substring(currentlen, i);
-				for (Type t : Token.Type.values()) {
+				Type[] typelist = { Type.M, Type.C,
+						Type.K, Type.L, Type.Q, Type.T,
+						Type.X, Type.V, Type.Rest,
+						Type.Pitch, Type.Tuplets,
+						Type.ChordsBegin, Type.ChordsEnd,
+						Type.Barline, Type.RepeatBegin,
+						Type.RepeatEnd, Type.Repeat_first,
+						Type.Repeat_second, Type.Whitespace };
+				for (Type t : typelist) {
 					Token testToken = new Token(t, "", "", 0.0, 0, 0);
 					if (testToken.pattern.matcher(currentString).matches()) {
 						// a token has been identified because its Matcher
@@ -221,20 +231,78 @@ public class Lexer {
 						anyMatchSoFar = true;
 						currentlen = i;
 						output.add(new Token(t, currentString, "0", 0.0, 0, 0));
+
 					}
 				}
 			}
 			if (!anyMatchSoFar) {
-				// indicates a blank space: skip to the next position
+				// indicates a blank space in the very beginning of the string:
+				// skip to the next position
 				currentlen++;
 			}
 		}
-		Header(output);
-
+		Chordcheck(output);
+		
+	}
+	
+	public void Chordcheck(ArrayList<Token> output){
+		 int diff = 0;   // check if output tokens have equal chordsbegin and chordsend
+	        for (int i = 0; i < output.size(); i++) {
+	            if (output.get(i).type == Type.ChordsBegin) diff++;
+	            if (output.get(i).type == Type.ChordsEnd) diff--;
+	            if (diff>1) throw new RuntimeException("2 or more consecutive chordbegin");
+	            else if (diff <0) throw new RuntimeException("chordend more than chardbegin");
+	        }
+	        if (diff != 0) throw new RuntimeException("invalid input pattern: should have equal number of chordbegin and chordend");
+	     for (int i = 0; i < output.size(); i++){ //checks if output tokens have Whitespace within chords
+	    	 boolean inchord = false;
+	    	 if (output.get(i).type == Type.ChordsBegin){
+	    		 inchord = true; }
+	    	 else if (output.get(i).type == Type.ChordsEnd){
+	    		 inchord = false; }
+	    	 if (inchord = true){
+	    		 if (output.get(i).type != Type.Pitch && output.get(i).type != Type.Rest){
+	    			 throw new RuntimeException("there are types other than pitch and rest in chord");
+	    		 }
+	    	 }
+	     } 
+	     Header(output);
+	}
+	
+	//The following ChordGen method generates Chord type tokens, it's not used at this point, delete later
+	public void ChordGen(String string){ 
+		String Expression = new String(string);
+		ArrayList<Token> output = new ArrayList<Token>();
+		int length = Expression.length();
+		while (currentlen < length) {
+			boolean anyMatchSoFar = false;
+			for (int i = currentlen + 1; i < length; i++) {
+				String currentString = Expression.substring(currentlen, i);
+				Type[] typelist = { Type.M, Type.C,
+						Type.K, Type.L, Type.Q, Type.T,
+						Type.X, Type.V, Type.Rest,
+						Type.Pitch, Type.Tuplets, Type.Chord,
+						Type.Barline, Type.RepeatBegin,
+						Type.RepeatEnd, Type.Repeat_first,
+						Type.Repeat_second, Type.Whitespace };
+				for (Type t : typelist) {
+					Token testToken = new Token(t, "", "", 0.0, 0, 0);
+					if (testToken.pattern.matcher(currentString).matches()) {
+						anyMatchSoFar = true;
+						currentlen = i;
+						output.add(new Token(t, currentString, "0", 0.0, 0, 0));
+					}
+				}
+			}
+			if (!anyMatchSoFar) {
+				currentlen++;
+			}
+		}
 	}
 
+	//adds all the header tokens into Headers and remove them from output
+	// make sure V1, V2, etc is only added to header once if they exist
 	public void Header(ArrayList<Token> output) {
-
 		ArrayList<Token> Headers = new ArrayList<Token>();
 		for (int i = 0; i < output.size(); i++) {
 			String str = output.get(i).string;
@@ -255,10 +323,6 @@ public class Lexer {
 		this.MusicHeader = Headers;
 
 		KeyTempo(Headers);
-		Ticker(output);
-		// above method adds all the header info into Headers which is an
-		// arraylist of tokens, and remove them from output
-		// make sure V1, V2, etc is only added to header once if they exist
 	}
 
 	public void KeyTempo(ArrayList<Token> Headers) {
@@ -294,34 +358,31 @@ public class Lexer {
 			}
 
 		}
-		this.voicecounter = voicecounter;
+		this.voicecounter = voicecounter; //voicecounter is not used later
 	}
 
-	// Ticker method changes all the note-length into the actual tick time. also
-	// changes the noteLength, basenote, octave, accid fields for Rest and Pitch
-	// types
-	public void Ticker(ArrayList<Token> output) {
-
-		ArrayList<Integer> Denom = new ArrayList<Integer>();
+	// NoteLength method updates all the note-lengths for pitch and rest tokens
+	//also changes basenote, octave, accid fields for Rest, Pitch types
+	public void NoteLength(ArrayList<Token> output) {
 		for (int i = 0; i < output.size(); i++) {
 			String str = output.get(i).string;
+			if (output.get(i).type == Token.Type.Rest){
 			if (str.matches("z")) {
 				str.concat("1/1");
 				output.get(i).basenote = "z";
 				output.get(i).noteLength = 1.0;
-			} else if (str.matches("z /")) {
+			} else if (str.matches("z/")) {
 				str.replaceAll("/", "1/2");
 				output.get(i).basenote = "z";
 				output.get(i).noteLength = 0.5;
-				Denom.add(2);
-			} else if (str.matches("z /d+")) {
-
+			
+			} else if (str.matches("z/d+")) {
 				str.replaceAll("/", "1/");
 				int denom = Integer.parseInt(str.substring(str.indexOf("/") + 1));
 				output.get(i).basenote = "z";
 				output.get(i).noteLength = 1.0 / denom;
-				Denom.add(denom);
-			} else if (str.matches("z d+/d+")) {
+				
+			} else if (str.matches("zd+/d+")) {
 				for (int begin = 0; begin < str.length(); begin++) {
 					String substring = str.substring(begin);
 					if (substring.matches("d+/d+")) {
@@ -332,48 +393,57 @@ public class Lexer {
 						denom = denom / (int) gcd;
 						str.replaceAll("d+/d+", Integer.toString(num) + "/"+ Integer.toString(denom));
 						output.get(i).basenote = "z";
-						output.get(i).noteLength = num * 1.0 / denom;
-						Denom.add(denom);
+						output.get(i).noteLength = num * 1.0 / denom;					
 					}
 				}
+			}
 			} else if (output.get(i).type == Token.Type.Pitch) {
 				for (int begin = 0; begin < str.length(); begin++) {
+					int hatcount = 0;
 
 					if (str.substring(begin, begin + 1).matches("[A-G]")) {
 						output.get(i).basenote = str.substring(begin, begin + 1);
 					}
-					if (str.substring(begin, begin + 1).matches("[a-g]")) {
+					else if (str.substring(begin, begin + 1).matches("[a-g]")) {
 						output.get(i).basenote = str.substring(begin, begin + 1).toUpperCase();
 						output.get(i).octave = output.get(i).octave + 1;
 					}
-					if (str.substring(begin, begin + 1) == "^") {
+					else if (str.substring(begin, begin + 1) == "^") {
 						output.get(i).accid = output.get(i).accid + 1;
+						hatcount +=1;
 					}
-					if (str.substring(begin, begin + 1) == "_") {
+					else if (str.substring(begin, begin + 1) == "_") {
 						output.get(i).accid = output.get(i).accid - 1;
+						hatcount -=1;
 					}
 
-					if (str.substring(begin, begin + 1) == "'") {
+					else if (str.substring(begin, begin + 1) == "'") {
 						output.get(i).octave = output.get(i).octave + 1;
 					}
-					if (str.substring(begin, begin + 1) == ",") {
+					else if (str.substring(begin, begin + 1) == ",") {
 						output.get(i).octave = output.get(i).octave - 1;
 					}
+					if (hatcount >2){
+						throw new RuntimeException("accidental too high for this pitch");
+					}
+					else if (hatcount <2){
+						throw new RuntimeException("accidental too low for this pitch");
+					}
 				}
-				if (str.matches("[\\^ | \\^\\^ | _ | __ | =]? [A-Ga-g] ['+ ,+]? /")) {
+				if (str.matches("[\\^+\\_+=]?[A-Ga-g]['+,+]?/")) {
 					str.replaceAll("/", "1/2");
 					output.get(i).noteLength = 0.5;
-					Denom.add(2);
-				} else if (str.matches("[\\^ | \\^\\^ | _ | __ | =]? [A-Ga-g] ['+ ,+]? /d+")) {
+					
+				} else if (str.matches("[\\^+\\_+=]?[A-Ga-g]['+,+]?/d+")) {
 					str.replaceAll("/", "1/");
 					int denom = Integer.parseInt(str.substring(str.indexOf("/") + 1));
 					output.get(i).noteLength = 1.0 / denom;
-					Denom.add(denom);
-				} else if (str.matches("[\\^ | \\^\\^ | _ | __ | =]? [A-Ga-g] ['+ ,+]?")) {
+					
+				} else if (str.matches("[\\^+\\_+=]?[A-Ga-g]['+,+]?")) {
 					str.concat("1/1");
 					output.get(i).noteLength = 1.0;
-					Denom.add(1);
-				} else if (str.matches("[\\^ | \\^\\^ | _ | __ | =]? [A-Ga-g] ['+ ,+]? d+/d+")) {
+					
+				} else if (str.matches("[\\^+\\_+=]?[A-Ga-g]['+,+]?d+/d+")) {
 					for (int begin = 0; begin < str.length(); begin++) {
 
 						String substring = str.substring(begin);
@@ -383,27 +453,110 @@ public class Lexer {
 							long gcd = gcd((long) num, (long) denom);
 							num = num / (int) gcd;
 							denom = denom / (int) gcd;
-							str.replaceAll("d+/d+", Integer.toString(num) + "/"
-									+ Integer.toString(denom));
+							str.replaceAll("d+/d+", Integer.toString(num) + "/"+ Integer.toString(denom));
 							output.get(i).noteLength = num * 1.0 / denom;
-							Denom.add(denom);
+							
 						}
 					}
 				}
 			}
 		}
-		int Tick = lcmlist(Denom);
-		for (int i2 = 0; i2 < output.size(); i2++) {
-			if (output.get(i2).type==Token.Type.Pitch) {
-				output.get(i2).noteLength = output.get(i2).noteLength*Tick;
-			} else if (output.get(i2).type==Token.Type.Rest) {
-				output.get(i2).noteLength = output.get(i2).noteLength*Tick;
+		token = output;
+		Tupnotelen(output);
+	}
+	
+	//updates notelength for all pitches and rests under chords and tuplets, return exception if there are 
+	//other types other than Pitch, Rest, or 'chord' in tuplets
+	public void Tupnotelen(ArrayList<Token> output){
+		for (int i=0; i < output.size(); i++){
+			if (output.get(i).type == Type.Tuplets){
+				int tup = Integer.parseInt(output.get(i).string.substring(1));
+				int k = 0;
+				boolean chord = false;
+				for (int start = i+1; start <output.size(); start++){
+					if (k<tup){
+					if (output.get(start).type == Type.ChordsBegin){
+						chord = true;		
+					}
+					if (output.get(start).type == Type.ChordsEnd){
+						chord = false;	
+						k++;
+					}
+					if (chord){
+						if (output.get(start).type == Type.Pitch){
+							output.get(start).noteLength = output.get(start).noteLength*(tup-1)/tup;
+							
+						}
+						else if (output.get(start).type == Type.Rest){
+							output.get(start).noteLength = output.get(start).noteLength*(tup-1)/tup;
+							
+						}
+					}else{
+						if (output.get(start).type == Type.Pitch){
+							output.get(start).noteLength = output.get(start).noteLength*(tup-1)/tup;
+							k++;
+						}
+						else if (output.get(start).type == Type.Rest){
+							output.get(start).noteLength = output.get(start).noteLength*(tup-1)/tup;
+							k++;	
+						}
+						if (output.get(start).type!= Type.Rest && output.get(start).type != Type.Pitch){ 
+							throw new RuntimeException("other types other than Pitch, Rest, or 'chord' in tuplets");}
+						}
+					}
+					else if (k==tup){
+						break;}
+				}
 			}
 		}
-		this.token = output;
+		LCM(output);
+		token = output;
+	}
+	
+	//calculates all the least common mutiple for all the denominators in the notelengths for pitch, rest
+	public void LCM(ArrayList<Token> output){
+		ArrayList<Integer> Denom = new ArrayList<Integer>();
+		for (int i=0; i<output.size(); i++){
+			if (output.get(i).type == Type.Pitch || output.get(i).type == Type.Rest){
+				if (output.get(i).noteLength==1.0){
+					Denom.add(1);
+				}
+				else if (output.get(i).noteLength != 1.0){
+				
+					int deno = 1;
+					String str;
+					String substring = "0";
+					if (output.get(i).noteLength < 1.0){
+						str = Double.toString(output.get(i).noteLength);
+						substring = str.substring(str.indexOf(".")+1);
+					}
+					else if (output.get(i).noteLength > 1.0){
+						str = Double.toString(output.get(i).noteLength);
+						substring = str.substring(str.indexOf(".")+1);
+						}
+					for (int a=0; a< substring.length(); a++){
+							deno = deno*10;
+						}
+					long gcd = gcd((long) Integer.parseInt(substring), (long) deno);
+					Denom.add(deno/(int) gcd);	
+				}
+			}
+		}
+		Ticker(output,Denom);
+	}
+	
+	// Ticker method changes all the note-length into the actual tick time. 
+	public void Ticker(ArrayList<Token> output, ArrayList<Integer> Denom){
+		int Tick = lcmlist(Denom);
+		for (int i = 0; i < output.size(); i++) {
+			if (output.get(i).type == Type.Pitch || output.get(i).type == Type.Rest) {
+				output.get(i).noteLength = output.get(i).noteLength * Tick;
+			} 
+		}
+		token = output;
+		this.Tick = Tick;
 		MusicBody(token, voicecounter);
 	}
-
 
 	public void MusicBody(ArrayList<Token> output, ArrayList<Token> voicecounter) {
 		ArrayList<ArrayList<Token>> Body = new ArrayList<ArrayList<Token>>();
@@ -428,8 +581,9 @@ public class Lexer {
 							continue;
 						} else {
 							throw new RuntimeException(
-									"Voice in the music didn't appear in the header"); 
-						} //1st error check to see if V in the body also appeared in the header
+									"Voice in the music didn't appear in the header");
+						} // 1st error check to see if V in the body also
+							// appeared in the header
 					}
 
 					if (counter == a) {
@@ -439,8 +593,8 @@ public class Lexer {
 				String str = VoiceArray.get(-1).string;
 				if (str.matches("\\| | \\|\\] | \\|\\| | :\\|") == false) {
 					throw new RuntimeException(
-							"The ending of the voice isn't marked with |, |], :|, or ||"); 
-				} //2nd error check for ending
+							"The ending of the voice isn't marked with |, |], :|, or ||");
+				} // 2nd error check for ending
 				Body.add(VoiceArray);
 			}
 		}
