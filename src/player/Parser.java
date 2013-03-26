@@ -17,14 +17,15 @@ public class Parser {
         int tpb = lexer.Tick; 
         KeySignature KeySig = new KeySignature(key);
         
+        
         //since repetition cannot be made across major section, if an already started repeating stream meets "||", 
         //then it halts, and becomes a complete repeated piece
         //Weixin: we do not deal with nested repetition at this stage, may modify later
         
-        //final AST<ArrayList<Token>> tree;
         List<ArrayList<AST<ArrayList<Token>>>> SequenceofVoiceForest= new ArrayList<ArrayList<AST<ArrayList<Token>>>>();
+        
         for (int u=0; u< Body.size(); u++){
-                          
+            
             List<Integer> BeginIndOfSect = new ArrayList<Integer>();
             BeginIndOfSect.add(0);
             List<AST<ArrayList<Token>>> VoiceTrees = new ArrayList<AST<ArrayList<Token>>>();            
@@ -53,7 +54,7 @@ public class Parser {
                 }
                 //adjust accidental according to the key of header
                 if (a.get(i).type == Token.Type.Pitch){
-                    a.get(i).accid += KeySig(a.get(i).basenote);  
+                    a.get(i).accid += KeySig.current_signature[a.get(i).basenote];  
                 }                
                 //find the sections beginning index
                 //each section contains either no repeating part, one repeating part, or 
@@ -65,12 +66,13 @@ public class Parser {
             }
             BeginIndOfSect.add(Body.size()+1);
             for(int j=0;j<BeginIndOfSect.size()-1;j++){
-                VoiceTrees.add(Parser(Body.subList(BeginIndOfSect.get(j),BeginIndOfSect.get(j+1))));
+                VoiceTrees.add(Parse((ArrayList<Token>) (a.subList(BeginIndOfSect.get(j),BeginIndOfSect.get(j+1)))));
             }
+            SequenceofVoiceForest.add((ArrayList<AST<ArrayList<Token>>>) VoiceTrees);             
         }
     }
    
-    public Parser(ArrayList<Token> a){
+    private AST<ArrayList<Token>> Parse(ArrayList<Token> a){
         if (NonRepeat(a)){
             return NodeTree(a);
         }
@@ -84,7 +86,7 @@ public class Parser {
                     break;
                 }
             }    
-            return NodeTree(a);
+            return NodeTree(((ArrayList<Token>) a).addall());
             return NodeTree(a.subList(indRepeat, a.size()));
         }
             

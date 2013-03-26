@@ -42,16 +42,7 @@ public class KeySignature {
         current_signature = key_signatures.get(key); 
     } 
   
-    /** 
-     *  
-     */
-    public int[] getSignature() { 
-        return current_signature.clone(); 
-    } 
-  
-    /** 
-     *  
-     */
+
     private String keyParse(String basenote) { 
         String answer = basenote.trim(); 
         return answer; 
