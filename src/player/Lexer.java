@@ -1,5 +1,7 @@
 package player;
 import java.util.ArrayList;
+
+import player.Token;
 import player.Token.Type;
 
 /**
@@ -10,11 +12,17 @@ import player.Token.Type;
 public class Lexer {
     /**
      * Creates the lexer over the passed string.
-     * @param string: The string to tokenize.
+     * @param string: The string to tokenze.
      */        
-   
+    
+    
 		ArrayList<ArrayList<Token>> MusicBody;
     	ArrayList<Token> MusicHeader;  //you can call Header  from outside to access the arraylist of all the header tokens
+    	ArrayList<Token> output;
+    	int currentlen;
+    	int parserPeekIndex;
+    	
+    	
     	
 
     	public Lexer(String string) {
@@ -23,11 +31,12 @@ public class Lexer {
     		// append tokens to the global output list
     		String Expression = new String(string);
     		
-    		
-    		ArrayList<Token> output = new ArrayList<Token>();
+    		//********************
+    		output = new ArrayList<Token>();
     		//create an arraylist "output" to put all the tokens generated inside
     		int length = Expression.length();
-    		int currentlen = 0;
+    		//*******************
+    		currentlen = 0;
     		while (currentlen < length) {
     			boolean anyMatchSoFar = false;
     			for (int i = currentlen+1; i <length; i++) {
@@ -120,4 +129,48 @@ public class Lexer {
     		this.MusicHeader = Headers;
     		this.MusicBody = Body;  
     	}
+    	
+    	
+    	/////////////////////////////   YI   ////////////////////////////////
+    	 /**
+         * peek at the first token in the token list
+         * @return the current first token in the token list
+         */
+        public Token peek() {
+            if (parserPeekIndex >= output.size()) {
+                return null;
+            }
+            return output.get(parserPeekIndex);
+        }
+        
+        /**
+         * get the token next to the current index
+         * @return the next token to the current index
+         * @throws Exception
+         */
+        public Token next() throws Exception {
+            if (parserPeekIndex >= output.size()) {
+                throw new Exception("Internal parser error");
+            }
+            return output.get(parserPeekIndex++);
+        }
+        
+        /**
+         * check if the type of the token at parserPeekIndex equals to the expected token type
+         * @param t the expected token type
+         * @throws Exception
+         */
+        public void expect(Type t) throws Exception {
+            if (parserPeekIndex >= output.size()) {
+                throw new Exception("Internal parser error");
+            }
+            Token peeked = output.get(parserPeekIndex);
+            if (peeked.type.equals(t)) {
+                parserPeekIndex++;
+            } else {
+                throw new Exception("Syntax error at token " + peeked + 
+                        ", expecting " + t);
+            }
+        }
+        
     }
