@@ -34,19 +34,26 @@ public class Token {
 	 */
 
 	public static enum Type {
-		M, C, K, L,Q, T, X, V, Rest, Pitch, Tuplets, ChordsBegin, ChordsEnd, Barline, RepeatBegin, RepeatEnd, Nrepeat
+		M, C, K, L,Q, T, X, V, Rest, Pitch, Tuplets, ChordsBegin, ChordsEnd, 
+		Barline, RepeatBegin, RepeatEnd, Repeat_first, Repeat_second, Whitespace
 	}
 
 	public final Type type;
 	public final Pattern pattern;
 	public final String string;
+	public String basenote;
+	public double noteLength;
+	public int octave;
+	public int accid;
+	public int chord;
+	
 	/**
-	 * Method Token converts regular expressions which are used as grammars tostrings
+	 * Method Token converts regular expressions which are used as grammars to strings
 	 * @param type: a regex which belongs to the types of regex defined in enum.
 	 * string: the string expression of the regex
 	 */
-
-	public Token(Type type, String string) {
+	
+	public Token(Type type, String string, String basenote, double noteLength, int octave, int accid, int chord) {
 		this.type = type;
 		switch (type) {
 		case M:
@@ -71,36 +78,43 @@ public class Token {
 			this.pattern = Pattern.compile("X:.*");
 			break;
 		case V:
-			this.pattern = Pattern.compile("V:d+");
+			this.pattern = Pattern.compile("V:d+"); 
 			break;
 		case Rest:
 			this.pattern = Pattern.compile("z [[d* /? d+] | /]?");
+			this.basenote = "z";
 			break;
 		case Pitch:
 			this.pattern = Pattern.compile("[\\^ | \\^\\^ | _ | __ | =]? [A-Ga-g] ['+ ,+]? [[d* /? d+] | /]?");
+			this.basenote = Pattern.compile("[A-Ga-g]").toString();
 			break;
 		case Tuplets:
 			this.pattern = Pattern.compile("\\([234]");
 			break;
 		case ChordsBegin:
-			this.pattern = Pattern.compile("\\[");
+			this.pattern = Pattern.compile("\\["); 
 			break;
 		case ChordsEnd:
 			this.pattern = Pattern.compile("\\]");
 			break;
 		case Barline:
-			this.pattern = Pattern.compile("\\| |  \\|\\| | \\[\\| | \\|\\]");
+			this.pattern = Pattern.compile("\\| |  \\|\\| | \\[\\| | \\|\\]"); 
 			break;
 		case RepeatBegin:
 			this.pattern = Pattern.compile("\\|:");
 			break;
-
 		case RepeatEnd:
 			this.pattern = Pattern.compile(":\\|");
 			break;
-		case Nrepeat:
-			this.pattern = Pattern.compile("\\[[12]");
+		case Repeat_first:
+			this.pattern = Pattern.compile("\\[1"); 
 			break;
+        case Repeat_second:
+            this.pattern = Pattern.compile("\\[2"); 
+            break;
+        case Whitespace:
+            this.pattern = Pattern.compile(" ");
+            break;
 		default:
 			throw new RuntimeException("The input type is invalid");
 		}
