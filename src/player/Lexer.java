@@ -21,8 +21,7 @@ public class Lexer {
      */
 
     ArrayList<ArrayList<Token>> MusicBody;
-    ArrayList<Token> MusicHeader; // you can call Header from outside to access
-                                    // the arraylist of all the header tokens
+    ArrayList<Token> MusicHeader; 
     String Key;
     ArrayList<Token> voicecounter;
     int Tempo;
@@ -117,6 +116,7 @@ public class Lexer {
         }
         Header(output);
     }
+    
     
 /**
     // The following ChordGen method generates Chord type tokens, it's not used
@@ -406,7 +406,18 @@ public class Lexer {
         }
         token = output;
         this.Tick = Tick;
-        MusicBody(token, voicecounter);
+        WhiteDelete(output);
+    }
+    
+    //delete all the whitespace type in token
+    public void WhiteDelete(ArrayList<Token> output) {
+    	for (int i= 0; i<output.size(); i++){
+    		if (output.get(i).type==Type.Whitespace){
+    			output.remove(output.get(i));
+    		}
+    	}
+    	token = output;
+    	MusicBody(token, voicecounter);
     }
 
     public void MusicBody(ArrayList<Token> output, ArrayList<Token> voicecounter) {
