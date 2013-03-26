@@ -44,23 +44,23 @@ public class Lexer {
 			for (int i = currentlen + 1; i < length; i++) {
 				String currentString = Expression.substring(currentlen, i);
 				for (Type t : Token.Type.values()) {
-					Token testToken = new Token(t, "", "", 0.0, 0, 0);
+					Token testToken = new Token(t, "", "", 0.0,0,0,0);
 					if (testToken.pattern.matcher(currentString).matches()) {
 						// a token has been identified because its Matcher
 						// matches method == True
 						anyMatchSoFar = true;
 						currentlen = i;
-						output.add(new Token(t, currentString, "0", 0.0, 0, 0));
+						output.add(new Token(t,currentString,"0",0.0,0,0,0));
 					}
 				}
 			}
 			if (!anyMatchSoFar) {
 				// indicates a blank space: skip to the next position
-				currentlen++;
+				//currentlen++;
+			    throw new RuntimeException("unrecoginzed input");
 			}
 		}
 		Header(output);
-
 	}
 
 	public void Header(ArrayList<Token> output) {

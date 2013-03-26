@@ -3,7 +3,7 @@ package player;
 import java.util.List;
 
 public class NodeTree<E> implements AST<E>{
-    final E value; 
+    private final E value; 
     public NodeTree(E value) { 
         this.value = value; 
     }

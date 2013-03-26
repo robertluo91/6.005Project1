@@ -141,4 +141,12 @@ public class TokenTest {
         assertEquals(t2.type,Type.Repeat_second);
         assertEquals(t2.string,"[2"); 
     }
+    
+    @Test
+    //Whitespace
+    public void testWhitespace(){
+        Token t = new Token(Type.Whitespace, " ","",0.0,0,0,0);
+        assertEquals(t.type,Type.Whitespace);
+        assertEquals(t.string," ");
+    }
 }
