@@ -224,8 +224,7 @@ public class Lexer {
 					for (int begin = 0; begin < str.length(); begin++) {
 						String substring = str.substring(begin);
 						if (substring.matches("d+/d+")) {
-							int num = Integer.parseInt(substring.substring(0,
-									substring.indexOf("/")));
+							int num = Integer.parseInt(substring.substring(0,substring.indexOf("/")));
 							int denom = Integer.parseInt(substring
 									.substring(substring.indexOf("/")) + 1);
 							long gcd = gcd((long) num, (long) denom);
@@ -287,15 +286,12 @@ public class Lexer {
 
 						String substring = str.substring(begin);
 						if (substring.matches("d+/d+")) {
-							int num = Integer.parseInt(substring.substring(0,
-									substring.indexOf("/")));
-							int denom = Integer.parseInt(substring
-									.substring(substring.indexOf("/")) + 1);
+							int num = Integer.parseInt(substring.substring(0,substring.indexOf("/")));
+							int denom = Integer.parseInt(substring.substring(substring.indexOf("/")) + 1);
 							long gcd = gcd((long) num, (long) denom);
 							num = num / (int) gcd;
 							denom = denom / (int) gcd;
-							str.replaceAll("d+/d+", Integer.toString(num) + "/"
-									+ Integer.toString(denom));
+							str.replaceAll("d+/d+", Integer.toString(num) + "/"+ Integer.toString(denom));
 							output.get(i).noteLength = num * 1.0 / denom;
 
 						}
@@ -326,30 +322,17 @@ public class Lexer {
 						}
 						if (chord) {
 							if (output.get(start).type == Type.Pitch) {
-								output.get(start).noteLength = output
-										.get(start).noteLength
-										* (tup - 1)
-										/ tup;
+								output.get(start).noteLength = output.get(start).noteLength* (tup - 1)/ tup;
 
 							} else if (output.get(start).type == Type.Rest) {
-								output.get(start).noteLength = output
-										.get(start).noteLength
-										* (tup - 1)
-										/ tup;
-
+								output.get(start).noteLength = output.get(start).noteLength* (tup - 1)/ tup;
 							}
 						} else {
 							if (output.get(start).type == Type.Pitch) {
-								output.get(start).noteLength = output
-										.get(start).noteLength
-										* (tup - 1)
-										/ tup;
+								output.get(start).noteLength = output.get(start).noteLength* (tup - 1)/tup;
 								k++;
 							} else if (output.get(start).type == Type.Rest) {
-								output.get(start).noteLength = output
-										.get(start).noteLength
-										* (tup - 1)
-										/ tup;
+								output.get(start).noteLength = output.get(start).noteLength* (tup - 1)/tup;
 								k++;
 							}
 							if (output.get(start).type != Type.Rest
