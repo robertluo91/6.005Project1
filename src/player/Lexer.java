@@ -50,13 +50,13 @@ public class Lexer {
                         Type.Barline, Type.RepeatBegin, Type.RepeatEnd,
                         Type.Repeat_first, Type.Repeat_second, Type.Whitespace };
                 for (Type t : typelist) {
-                    Token testToken = new Token(t, "", "", 0.0, 0, 0);
+                    Token testToken = new Token(t, "", "", 0.0, 0, 0,0);
                     if (testToken.pattern.matcher(currentString).matches()) {
                         // a token has been identified because its Matcher
                         // matches method == True
                         anyMatchSoFar = true;
                         currentlen = i;
-                        output.add(new Token(t, currentString, "0", 0.0, 0, 0));
+                        output.add(new Token(t, currentString, "0", 0.0, 0, 0,0));
 
                     }
                 }
@@ -123,11 +123,11 @@ public class Lexer {
                         Type.RepeatBegin, Type.RepeatEnd, Type.Repeat_first,
                         Type.Repeat_second, Type.Whitespace };
                 for (Type t : typelist) {
-                    Token testToken = new Token(t, "", "", 0.0, 0, 0);
+                    Token testToken = new Token(t, "", "", 0.0, 0, 0,0);
                     if (testToken.pattern.matcher(currentString).matches()) {
                         anyMatchSoFar = true;
                         currentlen = i;
-                        output.add(new Token(t, currentString, "0", 0.0, 0, 0));
+                        output.add(new Token(t, currentString, "0", 0.0, 0, 0,0));
                     }
                 }
             }

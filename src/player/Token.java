@@ -53,7 +53,7 @@ public class Token {
 	 * string: the string expression of the regex
 	 */
 	
-	public Token(Type type, String string, String basenote, double noteLength, int octave, int accid) {
+	public Token(Type type, String string, String basenote, double noteLength, int octave, int accid, int chord) {
 		this.type = type;
 		switch (type) {
 		case M:
