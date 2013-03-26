@@ -71,6 +71,8 @@ public class Lexer {
 
     }
 
+    //check if the chords are valid, also stores the # of pitches/rests in chords into the 
+    //chord parameter of the 1st pitch/rest after chordsbegin
     public void Chordcheck(ArrayList<Token> output) {
         int diff = 0; // check if output tokens have equal chordsbegin and
                         // chordsend
