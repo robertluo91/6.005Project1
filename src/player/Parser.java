@@ -32,30 +32,56 @@ public class Parser {
             ArrayList<Token> a = Body.get(u);
             int end = a.size();
             
-            for(int i=0;i<end; i++){
+            int i=0;
+            while (i<end){
                 //adjust temporary accidental within measure
-                if (a.get(i).accid !=0){
-                    //find the index of barline, and apply the change to all index within the measure after i
-                    int EndofMeasure = i;
-                    for (int j=i+1;j<end;j++){
-                        if (a.get(j).type== Token.Type.Barline){
-                            EndofMeasure = j;
-                            break;
-                        }
-                    }
-                    for (int j=i+1;j<EndofMeasure;j++){
-                        if (a.get(j).type== Token.Type.Pitch 
-                                && a.get(j).basenote==a.get(i).basenote
-                                && a.get(j).octave==a.get(i).octave
-                                && a.get(j).accid == 0){
-                            a.get(j).accid = a.get(i).accid; 
-                        }
+                //by the way we perform before the next loop, we know that the ith token is the first element 
+                //       within its measure
+                //find the index of barline, and apply the change to all index within the measure after i
+                int EndofMeasure = i;
+                for (int j=i;j<end;j++){
+                    if (a.get(j).type== Token.Type.Barline){
+                        EndofMeasure = j;
+                        break;
                     }
                 }
+                if (EndofMeasure == i){
+                    throw new RuntimeException("measure cannot be empty");
+                }
+                //the originally accidented pitch should not be affected by earlier temporary accidental
+                //and they should affect the later pitch without original nontrivial accidental
+                List<Integer> measureaccids = new ArrayList<Integer>();
+                for (int j=i;j<EndofMeasure;j++){
+                    if (a.get(j).type== Token.Type.Pitch 
+                            && a.get(j).accid != 0){
+                        measureaccids.add(j); 
+                    }
+                }
+                for (int j:measureaccids){
+                    for (int k=j+1;k<end; k++){
+                        if (a.get(k).type== Token.Type.Pitch 
+                                && a.get(k).basenote==a.get(j).basenote
+                                && a.get(k).octave==a.get(j).octave 
+                                && !measureaccids.contains(k)){
+                                a.get(k).accid = a.get(j).accid;                                                               
+                        }
+                        if (a.get(k).accid>2||a.get(k).accid<-2){
+                            throw new RuntimeException("invalid use of accid");
+                        }
+                    }                        
+                }
+                i = EndofMeasure+1; 
+            }
+            
+            i=0;
+            while(i<end){
                 //adjust accidental according to the key of header
                 if (a.get(i).type == Token.Type.Pitch){
                     a.get(i).accid += KeySig.current_signature[a.get(i).basenote];  
-                }                
+                }
+                if (a.get(i).accid>2||a.get(i).accid<-2){
+                    throw new RuntimeException("invalid use of accid");
+                }
                 //find the sections beginning index
                 //each section contains either no repeating part, one repeating part, or 
                 if (a.get(i).string.equals("||")||a.get(i).string.equals("|]")||a.get(i).string.equals(":|")
@@ -63,8 +89,10 @@ public class Parser {
                         && a.get(Math.min(i+1,a.size())).type!= Token.Type.Repeat_second){
                     BeginIndOfSect.add(i+1);
                 }
+                i++;
             }
-            BeginIndOfSect.add(Body.size()+1);
+
+            BeginIndOfSect.add(end+1);
             for(int j=0;j<BeginIndOfSect.size()-1;j++){
                 VoiceTrees.add(Parse((ArrayList<Token>) (a.subList(BeginIndOfSect.get(j),BeginIndOfSect.get(j+1)))));
             }
@@ -86,19 +114,10 @@ public class Parser {
                     break;
                 }
             }    
-            return NodeTree(((ArrayList<Token>) a).addall());
-            return NodeTree(a.subList(indRepeat, a.size()));
+            return NodeTree(((ArrayList<Token>) a).addAll(a.subList(indRepeat, a.size())));
         }
             
         else if (SingleChild(a)){            
-            //ArrayList<Token> Empty = new ArrayList<Token>();
-            //int indChild = 0;
-            //for (int j=0; j<a.size();j++){
-                //if(a.get(j).type== Token.Type.Repeat_first){
-                    //indChild = j;
-                //}
-            //}
-            //return ParentTree(a, a.subList(indChild, a.size()), Empty);
             throw new RuntimeException("cannot have [1 without [2");
         }
         else {
