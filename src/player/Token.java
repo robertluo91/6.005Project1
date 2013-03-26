@@ -35,7 +35,7 @@ public class Token {
 
 	public static enum Type {
 		M, C, K, L,Q, T, X, V, Rest, Pitch, Tuplets, ChordsBegin, ChordsEnd, 
-		Barline, RepeatBegin, RepeatEnd, Repeat_first, Repeat_second, Whitespace, Chord
+		Barline, RepeatBegin, RepeatEnd, Repeat_first, Repeat_second, Whitespace, Chord, Percent
 	}
 
 	public final Type type;
@@ -115,6 +115,9 @@ public class Token {
             break;
         case Whitespace:
             this.pattern = Pattern.compile(" ");
+            break;
+        case Percent:
+            this.pattern = Pattern.compile("%");
             break;
 		default:
 			throw new RuntimeException("The input type is invalid");
