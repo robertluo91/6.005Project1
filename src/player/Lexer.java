@@ -82,31 +82,39 @@ public class Lexer {
             if (diff > 1)
                 throw new RuntimeException("2 or more consecutive chordbegin");
             else if (diff < 0)
-                throw new RuntimeException("chordend more than chardbegin");
+                throw new RuntimeException("chordend more than chordbegin");
         }
-        if (diff != 0)
+        if (diff != 0){
             throw new RuntimeException(
-                    "invalid input pattern: should have equal number of chordbegin and chordend");
+                    "invalid input pattern: should have equal number of chordbegin and chordend");}
         for (int i = 0; i < output.size(); i++) { // checks if output tokens
-                                                    // have Whitespace within
+                                                    // have types other than pitch and rest within
                                                     // chords
-            boolean inchord = false;
             if (output.get(i).type == Type.ChordsBegin) {
-                inchord = true;
-            } else if (output.get(i).type == Type.ChordsEnd) {
-                inchord = false;
-            }
-            if (inchord = true) {
-                if (output.get(i).type != Type.Pitch
-                        && output.get(i).type != Type.Rest) {
-                    throw new RuntimeException(
-                            "there are types other than pitch and rest in chord");
+                
+                int k = 0;
+                for (int a =i+1; a< output.size(); a++){
+                	if (output.get(a).type == Type.Pitch
+                            || output.get(a).type == Type.Rest) {
+                		k +=1;
+                	}
+                	else if (output.get(i).type != Type.Pitch
+                        && output.get(i).type != Type.Rest && output.get(a).type != Type.ChordsEnd){
+                		throw new RuntimeException(
+                                "there are types other than pitch and rest in chord");
+                	}
+                	else if (output.get(a).type == Type.ChordsEnd){
+                		output.get(i+1).chord = k;
+                		break;
+                	}
                 }
+            
             }
         }
         Header(output);
     }
-
+    
+/**
     // The following ChordGen method generates Chord type tokens, it's not used
     // at this point, maybe delete later
     public void ChordGen(String string) {
@@ -136,7 +144,8 @@ public class Lexer {
             }
         }
     }
-
+*/
+    
     // adds all the header tokens into Headers and remove them from output
     // make sure V1, V2, etc is only added to header once if they exist
     public void Header(ArrayList<Token> output) {

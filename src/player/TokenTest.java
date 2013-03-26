@@ -145,7 +145,7 @@ public class TokenTest {
     @Test
     //Whitespace
     public void testWhitespace(){
-        Token t = new Token(Type.Whitespace, " ","",0.0,0,0);
+        Token t = new Token(Type.Whitespace, " ","",0.0,0,0,0);
         assertEquals(t.type,Type.Whitespace);
         assertEquals(t.string," ");
     }
