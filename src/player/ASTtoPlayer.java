@@ -16,10 +16,8 @@ public class ASTtoPlayer {
     private int ticksPerQuarterNote;
     private int time;
     private ArrayList<Token> currentNode;
-    private List<ArrayList<Token>> nodes;
-
     
-    public ASTtoPlayer(AST t){
+    public ASTtoPlayer(ParentTree<ArrayList<Token>> t){
         try {
             SequencePlayer sp = new SequencePlayer(beatsPerMinute,ticksPerQuarterNote);
             time = 0;
@@ -32,14 +30,13 @@ public class ASTtoPlayer {
     }
 
 
-    public List<ArrayList<Token>> traverse(AST t, SequencePlayer sp){
-        nodes = new ArrayList<ArrayList<Token>>();
+    public void traverse(ParentTree<ArrayList<Token>> t, SequencePlayer sp){
+        new ArrayList<ArrayList<Token>>();
         currentNode = t.root; 
         addNotesInNode(currentNode,sp);
-        for(int i = 0; i < t.numChildren()-1; i++){
-            traverse(t.getChild(i),sp);
-        }
-        traverse(t.getChild(t.numChildren()),sp);
+        addNotesInNode(t.leftChild,sp);
+        addNotesInNode(currentNode,sp);
+        addNotesInNode(t.rightChild,sp);
     }
     
     public void addNotesInNode(ArrayList<Token> node,SequencePlayer sp){

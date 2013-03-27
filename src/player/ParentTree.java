@@ -1,25 +1,17 @@
 package player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ParentTree<E> implements AST<E>{
-    final NodeTree middle;
-    final NodeTree left;
-    final NodeTree right;
-        
-    public ParentTree(NodeTree middle, NodeTree left, NodeTree right) throws RuntimeException{
-        NodeTree currentMiddle = null;
-        NodeTree currentLeft = null;
-        NodeTree currentRight = null;
-        this.middle = current;
-        this.left = left;
-        this.right = right;
-    }
- 
-    public <R> R accept(Visitor<R> v) {
-        return v.on(this);
-    }
+    final ArrayList<Token> root;
+    final ArrayList<Token> leftChild;
+    final ArrayList<Token> rightChild;
     
-
+    public ParentTree(ArrayList<Token> root, ArrayList<Token> leftChild, ArrayList<Token> rightChild) { 
+        this.root = root;
+        this.leftChild = leftChild;
+        this.rightChild = rightChild;     
+    }
 }
 
