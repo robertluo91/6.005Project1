@@ -48,16 +48,18 @@ public class Lexer {
          } 
         
      } 
-    //throws IOException for somecases?
-    public boolean processNextLine() throws IOException { 
-        String strLine = br.readLine(); 
-        if (strLine == null) { 
-            return false; 
+    //throws IOException for some cases?
+    public void processNextLine() throws IOException { 
+    	
+        String strLine; 
+        String string = "";
+        while ( (strLine = br.readLine())!= null){
+        	string += strLine;
+        	
         }
-        Read(strLine);
         
-        //System.out.println("processed "+ strLine); 
-        return true; 
+        Read(string);
+         
     } 
     /**
      * Creates the lexer over the passed string.
@@ -84,7 +86,7 @@ public class Lexer {
                         Type.T, Type.X, Type.V, Type.Rest, Type.Pitch,
                         Type.Tuplets, Type.ChordsBegin, Type.ChordsEnd,
                         Type.Barline, Type.RepeatBegin, Type.RepeatEnd,
-                        Type.Repeat_first, Type.Repeat_second, Type.Whitespace };
+                        Type.Repeat_first, Type.Repeat_second, Type.Whitespace, Type.Comment };
                 for (Type t : typelist) {
                     Token testToken = new Token(t, "", 0, 0.0, 0, 0,0);
                     if (testToken.pattern.matcher(currentString).matches()) {
@@ -447,7 +449,7 @@ public class Lexer {
     //delete all the whitespace type and Percent type in token
     public void WhiteDelete(ArrayList<Token> output) {
     	for (int i= 0; i<output.size(); i++){
-    		if (output.get(i).type==Type.Whitespace ||output.get(i).type==Type.Percent){
+    		if (output.get(i).type==Type.Whitespace ||output.get(i).type==Type.Comment){
     			output.remove(output.get(i));
     		}
     	}
