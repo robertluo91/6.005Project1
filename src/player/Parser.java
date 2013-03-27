@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.HashMap;
 
 public class Parser {
-    
+    public final ArrayList<ArrayList<AST<ArrayList<Token>>>> SequenceofVoiceForest
+    = new ArrayList<ArrayList<AST<ArrayList<Token>>>>();
+
     public Parser(Lexer lexer) {                
         ArrayList<Token> Headers = lexer.MusicHeader;
         ArrayList<ArrayList<Token>> Body = lexer.MusicBody;
@@ -21,8 +23,6 @@ public class Parser {
         //since repetition cannot be made across major section, if an already started repeating stream meets "||", 
         //then it halts, and becomes a complete repeated piece
         //Weixin: we do not deal with nested repetition at this stage, may modify later
-        
-        List<ArrayList<AST<ArrayList<Token>>>> SequenceofVoiceForest= new ArrayList<ArrayList<AST<ArrayList<Token>>>>();
         
         for (int u=0; u< Body.size(); u++){
             
@@ -38,7 +38,7 @@ public class Parser {
             while (i<end){
                 //adjust temporary accidental within measure
                 //by the way we perform before the next loop, we know that the ith token is the first element 
-                //       within its measure
+;                //       within its measure
                 //find the index of barline, and apply the change to all index within the measure after i
                 int EndofMeasure = i;
                 for (int j=i;j<end;j++){
