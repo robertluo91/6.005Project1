@@ -2,7 +2,7 @@ package player;
 
 import java.util.ArrayList;
 import java.io.BufferedReader; 
-import java.io.DataInputStream; 
+
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.IOException; 
@@ -26,39 +26,47 @@ public class Lexer {
     ArrayList<Token> voicecounter;
     int Tempo;
     ArrayList<Token> token;
-    int currentlen;
+    ArrayList<Token> check1;
     int parserPeekIndex;
     int Tick;
+    int linenum;
     final String filename; 
-    final FileInputStream fstream; 
-    final DataInputStream in; 
-    final BufferedReader br; 
+    FileInputStream fstream; 
+   
+    BufferedReader br; 
 
     //constructor takes in the name of the file, and BufferedReader reads the
     //content in the abc file, and store it into br? 
     public Lexer(String filename) {
-    	 this.filename = filename; 
+    	 this.filename = filename;
+    	 fstream = null;
+    	 br = null;
+    	 linenum =0;
          try { 
              fstream = new FileInputStream(filename); 
-             in = new DataInputStream(fstream); 
-             br = new BufferedReader(new InputStreamReader(in)); 
+             
+             br = new BufferedReader(new InputStreamReader(fstream));
+             processNextLine();
          } catch (Exception e) { 
              e.printStackTrace(); 
-             throw new RuntimeException("Error: " + e.getMessage()); 
+              
          } 
-        
+         
      } 
     //throws IOException for some cases?
     public void processNextLine() throws IOException { 
     	
         String strLine; 
         String string = "";
-        while ( (strLine = br.readLine())!= null){
+       
+        while ((strLine = br.readLine()) != null){
+        	//System.out.println(strLine);
         	string += strLine;
+        	linenum += 1;
         	
         }
         
-        Read(string);
+        Tokenize(string);
          
     } 
     /**
@@ -67,7 +75,7 @@ public class Lexer {
      * @param string
      *            : The string to tokenize.
      */
-    public void Read(String string){
+    public void Tokenize(String string){
 
         // iterate through the input string and identify tokens;
         // append tokens to the global output list
@@ -75,7 +83,7 @@ public class Lexer {
         ArrayList<Token> output = new ArrayList<Token>();
         // create an arraylist "output" to put all the tokens generated inside
         int length = Expression.length();
-        currentlen = 0;
+        int currentlen = 0;
         parserPeekIndex = 0;
 
         while (currentlen < length) {
@@ -93,7 +101,7 @@ public class Lexer {
                         // a token has been identified because its Matcher
                         // matches method == True
                         anyMatchSoFar = true;
-                        currentlen = i;
+                        
                         output.add(new Token(t, currentString, 0, 0.0, 0, 0,0));
 
                     }
@@ -105,6 +113,7 @@ public class Lexer {
                 currentlen++;
             }
         }
+        this.check1 = output;
         Chordcheck(output);
 
     }
