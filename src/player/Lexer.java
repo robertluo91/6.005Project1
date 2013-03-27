@@ -1,6 +1,11 @@
 package player;
 
 import java.util.ArrayList;
+import java.io.BufferedReader; 
+import java.io.DataInputStream; 
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.IOException; 
 import player.Token;
 import java.util.List;
 import player.Token.Type;
@@ -13,12 +18,7 @@ import java.util.HashMap;
  */
 public class Lexer {
 
-    /**
-     * Creates the lexer over the passed string.
-     * 
-     * @param string
-     *            : The string to tokenize.
-     */
+    
 
     ArrayList<ArrayList<Token>> MusicBody;
     ArrayList<Token> MusicHeader; 
@@ -29,8 +29,45 @@ public class Lexer {
     int currentlen;
     int parserPeekIndex;
     int Tick;
+    final String filename; 
+    final FileInputStream fstream; 
+    final DataInputStream in; 
+    final BufferedReader br; 
 
-    public Lexer(String string) {
+    //constructor takes in the name of the file, and BufferedReader reads the
+    //content in the abc file, and store it into br? 
+    public Lexer(String filename) {
+    	 this.filename = filename; 
+         try { 
+             fstream = new FileInputStream(filename); 
+             in = new DataInputStream(fstream); 
+             br = new BufferedReader(new InputStreamReader(in)); 
+         } catch (Exception e) { 
+             e.printStackTrace(); 
+             throw new RuntimeException("Error: " + e.getMessage()); 
+         } 
+        
+     } 
+    //throws IOException for some cases?
+    public void processNextLine() throws IOException { 
+    	
+        String strLine; 
+        String string = "";
+        while ( (strLine = br.readLine())!= null){
+        	string += strLine;
+        	
+        }
+        
+        Read(string);
+         
+    } 
+    /**
+     * Creates the lexer over the passed string.
+     * 
+     * @param string
+     *            : The string to tokenize.
+     */
+    public void Read(String string){
 
         // iterate through the input string and identify tokens;
         // append tokens to the global output list
@@ -49,7 +86,7 @@ public class Lexer {
                         Type.T, Type.X, Type.V, Type.Rest, Type.Pitch,
                         Type.Tuplets, Type.ChordsBegin, Type.ChordsEnd,
                         Type.Barline, Type.RepeatBegin, Type.RepeatEnd,
-                        Type.Repeat_first, Type.Repeat_second, Type.Whitespace };
+                        Type.Repeat_first, Type.Repeat_second, Type.Whitespace, Type.Comment };
                 for (Type t : typelist) {
                     Token testToken = new Token(t, "", 0, 0.0, 0, 0,0);
                     if (testToken.pattern.matcher(currentString).matches()) {
@@ -409,10 +446,10 @@ public class Lexer {
         WhiteDelete(output);
     }
     
-    //delete all the whitespace type in token
+    //delete all the whitespace type and Percent type in token
     public void WhiteDelete(ArrayList<Token> output) {
     	for (int i= 0; i<output.size(); i++){
-    		if (output.get(i).type==Type.Whitespace){
+    		if (output.get(i).type==Type.Whitespace ||output.get(i).type==Type.Comment){
     			output.remove(output.get(i));
     		}
     	}
