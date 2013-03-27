@@ -2,6 +2,11 @@ package player;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import sound.Pitch;
 import sound.SequencePlayer;
 
 
@@ -10,11 +15,9 @@ public class ASTtoPlayer {
     private int beatsPerMinute;
     private int ticksPerQuarterNote;
     private int time;
-    private Node currentNode;
-    private List<Node> nodes;
-
+    private ArrayList<Token> currentNode;
     
-    public ASTtoPlayer(AST t){
+    public ASTtoPlayer(ParentTree<ArrayList<Token>> t){
         try {
             SequencePlayer sp = new SequencePlayer(beatsPerMinute,ticksPerQuarterNote);
             time = 0;
@@ -27,31 +30,29 @@ public class ASTtoPlayer {
     }
 
 
-    public List<Node> traverse(AST T, SequencePlayer sp){
-        nodes = new ArrayList<Node>();
+    public void traverse(ParentTree<ArrayList<Token>> t, SequencePlayer sp){
+        new ArrayList<ArrayList<Token>>();
         currentNode = t.root; 
-        addNotesInNode(currentNode);
-        for(int i = 0; i < t.numChildren-1; i++){
-            traverse(T.getChild(i),sp);
-        }
-        traverse(T.getChild(t.numChildren),sp);
+        addNotesInNode(currentNode,sp);
+        addNotesInNode(t.leftChild,sp);
+        addNotesInNode(currentNode,sp);
+        addNotesInNode(t.rightChild,sp);
     }
     
-    public void addNotesInNode(Node node,SequencePlayer sp){
-        for(int i =0; i < node.size; i++){
+    public void addNotesInNode(ArrayList<Token> node,SequencePlayer sp){
+        for(int i =0; i < node.size(); i++){
             //If the note is not a chord, the numNotesInChord should be zero
-            for(int j = 0; j < node.get(i).numNotesInChord; j++){
-                sp.addNote(node.get(i).baseNode,time,node.get(i).duration);
+            for(int j = 0; j < node.get(i).chord; j++){
+                Token note = node.get(i);
+                sp.addNote(new Pitch(intkey[note.basenote]).octaveTranspose(note.octave).transpose(note.accid).toMidiNote(),time,(int)note.noteLength);
             }
-            time += node.get(i).duration;
+            time += node.get(i).noteLength;
         }
         
 
     }
-    
-    public void addEachField(SequencePlayer sp, Node n){
-        sp.addNode(n.accidental,n.baseNote,n.octave,n.noteLength);
-    }
+
+    public static final char[] intkey = {'A','B','C','D','E','F','G','z'};
     
         
 }
