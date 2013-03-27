@@ -13,5 +13,5 @@ public class ParentTree<E> implements AST<E>{
         this.leftChild = leftChild;
         this.rightChild = rightChild;     
     }
-
 }
+
