@@ -35,7 +35,7 @@ public class Token {
 
 	public static enum Type {
 		M, C, K, L,Q, T, X, V, Rest, Pitch, Tuplets, ChordsBegin, ChordsEnd, 
-		Barline, RepeatBegin, RepeatEnd, Repeat_first, Repeat_second, Whitespace, Chord, Comment
+		Barline, RepeatBegin, RepeatEnd, Repeat_first, Repeat_second, Whitespace, Comment
 	}
 
 	public final Type type;
@@ -109,9 +109,6 @@ public class Token {
 			break;
         case Repeat_second:
             this.pattern = Pattern.compile("\\[2"); 
-            break;
-        case Chord:  //token Type chord isn's used at this pt, delete later
-        	this.pattern = Pattern.compile("\\[([\\^+\\_+=]?[A-Ga-g]['+,+]?[[d*/?d+]|/]?|z[[d*/?d+]|/]?)+\\]"); 
             break;
         case Whitespace:
             this.pattern = Pattern.compile(" ");
