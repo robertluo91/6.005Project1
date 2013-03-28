@@ -128,22 +128,22 @@ public class Lexer {
         		headernum++;
         	}
         	else if (str.startsWith("V:")){
-        		boolean voicecheck = true;
-        		for (int i =0; i<headerinfo.size(); i++){
-        			if (headerinfo.get(i).string == str){
-        				voicecheck = false;
-        			}
-        		}
-        			if (voicecheck == true){
-        				headerinfo.add(new Token(Type.V, str, 0, 0.0, 0, 0,0));
-        				headernum++;}
-        			
-        			else {
-        				string += str;
-        	        	bodyline += 1;
-        		
-        				}
-        		}
+                int i=0;                
+                while (i<headerinfo.size()){
+                    if (headerinfo.get(i).string == str){
+                        break;
+                    }
+                    else i++;
+                }
+                if (i==headerinfo.size()){
+                    headerinfo.add(new Token(Type.V, str, 0, 0.0, 0, 0,0));
+                    headernum++;
+                }
+                else{
+                    string += str;
+                    bodyline += 1;
+                }
+        	}
         	else {
         		string += str;
         		bodyline += 1;
@@ -189,7 +189,7 @@ public class Lexer {
             if (!anyMatchSoFar) {
                 // indicates a blank space in the beginning of the string:
                 // skip to the next position
-                current++;
+                throw new RuntimeException("invalid input");
             }
         }
        
