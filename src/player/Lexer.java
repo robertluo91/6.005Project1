@@ -16,9 +16,7 @@ import java.util.HashMap;
  * A lexer takes a string and splits it into tokens that are meaningful to a
  * parser. For detailed description of token types, see Token.java
  */
-public class Lexer {
-
-    
+public class Lexer {    
 
     ArrayList<ArrayList<Token>> MusicBody;
     ArrayList<Token> MusicHeader; 
