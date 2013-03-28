@@ -27,7 +27,7 @@ public class Lexer {
     ArrayList<Token> token;
     ArrayList<Token> check1;
     int parserPeekIndex;
-    int currentlen;
+    int current;
     int Tick;
     int headernum;
     int bodyline;
@@ -167,37 +167,27 @@ public class Lexer {
         // create an arraylist "output" to put all the tokens generated inside
         int length = string.length();
         System.out.println(length);
-        currentlen = 0;
-        parserPeekIndex = 0;
+        current = 0;
+        //parserPeekIndex = 0;
 
-        while (currentlen <length) {
-            boolean anyMatchSoFar = false;
-            
-            for (int i = currentlen+1; i <length; i++) {
-                String currentString = string.substring(currentlen, i);
-                
+        while (current <length) {
+            boolean anyMatchSoFar = false;            
+            for (int i = length; i >current; i--) {
+                //find the longeset possible valid token
+                String currentString = string.substring(current, i);                
                 for (Type t : Type.values()) {
-                    Token testToken = new Token(t, "", 0, 0.0, 0, 0,0);
-                    
+                    Token testToken = new Token(t, "", 0, 0.0, 0, 0,0);                    
                     if (testToken.pattern.matcher(currentString).matches()) {
-                    	Token To = testToken;
                     	anyMatchSoFar = true;
-                        for (int a=i+1; a<length; a++){
-                        	if (To.pattern.matcher(string.substring(currentlen,a)).matches()==false){
-                        		Token T = new Token(t, string.substring(currentlen,a-1), 0, 0.0, 0, 0,0);
-                                output.add(T);
-                                currentlen = a-1;
-                                break;
-                        	}
-                        
-                        }    
+                    	current = i;
+                    	output.add(new Token(t, currentString, 0, 0.0, 0, 0,0));                       
                     }
                 }
             }
             if (!anyMatchSoFar) {
                 // indicates a blank space in the beginning of the string:
                 // skip to the next position
-                currentlen++;
+                current++;
             }
         }
         //Collections.reverse(output);
@@ -210,8 +200,10 @@ public class Lexer {
         System.out.println(output.get(6).string);
         System.out.println(output.get(7).string);
         System.out.println(output.get(8).string);
-        //System.out.println(output.get(9).string);
-        
+        System.out.println(output.get(9).string);
+        System.out.println(output.get(10).string);
+        System.out.println(output.get(11).string);
+        System.out.println(output.get(12).string);
         //this.check1 = output;
         //Chordcheck(output);
 
