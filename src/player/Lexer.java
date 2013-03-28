@@ -56,7 +56,7 @@ public class Lexer {
          } 
          
      } 
-    //throws IOException for some cases?
+    //creates the header token arraylist and music body in string
     public void processNextLine() throws IOException { 
     	
         String str; 
@@ -151,7 +151,7 @@ public class Lexer {
         this.totalnum = headernum + bodyline;
         this.MusicHeader= headerinfo;
         //KeyTempo(MusicHeader);
-        BodyTokenize(string);
+        //BodyTokenize(string);
          
     } 
     /**
@@ -167,6 +167,7 @@ public class Lexer {
         // create an arraylist "output" to put all the tokens generated inside
         int length = string.length();
         System.out.println(length);
+
         current = 0;
         //parserPeekIndex = 0;
 
@@ -178,7 +179,7 @@ public class Lexer {
                 for (Type t : Type.values()) {
                     Token testToken = new Token(t, "", 0, 0.0, 0, 0,0);                    
                     if (testToken.pattern.matcher(currentString).matches()) {
-                    	anyMatchSoFar = true;
+                    	anyMatchSoFar = true;  
                     	current = i;
                     	output.add(new Token(t, currentString, 0, 0.0, 0, 0,0));                       
                     }
@@ -190,7 +191,7 @@ public class Lexer {
                 current++;
             }
         }
-        //Collections.reverse(output);
+       
         System.out.println(output.get(0).string);
         System.out.println(output.get(1).string);
         System.out.println(output.get(2).string);
