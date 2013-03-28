@@ -1,7 +1,7 @@
 package player;
-
+import java.lang.RuntimeException;
 import java.util.ArrayList;
-import java.util.Collections;
+
 import java.io.BufferedReader; 
 
 import java.io.FileInputStream;
@@ -32,7 +32,8 @@ public class Lexer {
     int currentlen;
     int Tick;
     int headernum;
-    int linenum;
+    int bodyline;
+    int totalnum;
     final String filename; 
     FileInputStream fstream; 
    
@@ -45,7 +46,7 @@ public class Lexer {
     	 fstream = null;
     	 br = null;
     	 headernum = 0;
-    	 linenum =0;
+    	 bodyline =0;
          try { 
              fstream = new FileInputStream(filename); 
              
@@ -134,22 +135,24 @@ public class Lexer {
         			if (headerinfo.get(i).string == str){
         				voicecheck = false;
         			}
+        		}
         			if (voicecheck = true){
         				headerinfo.add(new Token(Type.K, str, 0, 0.0, 0, 0,0));
         				headernum++;}
         			
         			else {
         				string += str;
-        	        	linenum += 1;
-        			}
+        	        	bodyline += 1;
+        		
         		}
         	}
         	else {string += str;
-        	linenum += 1;
+        	bodyline += 1;
         	}
         }
+        this.totalnum = headernum + bodyline;
         this.MusicHeader= headerinfo;
-        KeyTempo(MusicHeader);
+        //KeyTempo(MusicHeader);
         BodyTokenize(string);
          
     } 
@@ -165,24 +168,31 @@ public class Lexer {
         ArrayList<Token> output = new ArrayList<Token>();
         // create an arraylist "output" to put all the tokens generated inside
         int length = string.length();
+        System.out.println(length);
         currentlen = 0;
         parserPeekIndex = 0;
 
         while (currentlen <length) {
             boolean anyMatchSoFar = false;
+            
             for (int i = currentlen+1; i <length; i++) {
                 String currentString = string.substring(currentlen, i);
                 
                 for (Type t : Type.values()) {
                     Token testToken = new Token(t, "", 0, 0.0, 0, 0,0);
+                    
                     if (testToken.pattern.matcher(currentString).matches()) {
-                        // a token has been identified because its Matcher
-                        // matches method == True
-                        anyMatchSoFar = true;
-                        Token T = new Token(t, currentString, 0, 0.0, 0, 0,0);
-                        output.add(T);
-                        currentlen = i;
-                         
+                    	Token To = testToken;
+                    	anyMatchSoFar = true;
+                        for (int a=i+1; a<length; a++){
+                        	if (To.pattern.matcher(string.substring(currentlen,a)).matches()==false){
+                        		Token T = new Token(t, string.substring(currentlen,a-1), 0, 0.0, 0, 0,0);
+                                output.add(T);
+                                currentlen = a-1;
+                                break;
+                        	}
+                        
+                        }    
                     }
                 }
             }
@@ -205,7 +215,7 @@ public class Lexer {
         //System.out.println(output.get(9).string);
         
         //this.check1 = output;
-        Chordcheck(output);
+        //Chordcheck(output);
 
     }
 

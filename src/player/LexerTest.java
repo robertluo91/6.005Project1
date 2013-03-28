@@ -31,7 +31,7 @@ public class LexerTest {
     public void LineTest1() {
         
         Lexer lexer = new Lexer("piece1copy.abc");
-        assertEquals(lexer.linenum, 7);
+        assertEquals(lexer.totalnum, 7);
 
     }
 
@@ -41,7 +41,7 @@ public class LexerTest {
     public void LineTest2() {
         
         Lexer lexer = new Lexer("scale copy.abc");
-        assertEquals(lexer.linenum, 8);
+        assertEquals(lexer.totalnum, 8);
 
     }
    /** 
