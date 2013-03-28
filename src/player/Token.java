@@ -84,7 +84,7 @@ public class Token {
 			this.pattern = Pattern.compile("z([0-9]*/?[0-9]*)");
 			break;
 		case Pitch:
-			this.pattern = Pattern.compile("((\\^){1,2})|((\\_){1,2})|(\\=)?[A-Ga-g][(,+)|('+)]?([0-9]*/?[0-9]*)");	
+			this.pattern = Pattern.compile("(((\\^){1,2})|((\\_){1,2})|(\\=))?[A-Ga-g][(,+)|('+)]?([0-9]*/?[0-9]*)");	
 			break;
 		case Tuplets:
 			this.pattern = Pattern.compile("\\([234]");
