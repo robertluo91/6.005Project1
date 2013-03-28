@@ -134,8 +134,8 @@ public class Lexer {
         				voicecheck = false;
         			}
         		}
-        			if (voicecheck = true){
-        				headerinfo.add(new Token(Type.K, str, 0, 0.0, 0, 0,0));
+        			if (voicecheck == true){
+        				headerinfo.add(new Token(Type.V, str, 0, 0.0, 0, 0,0));
         				headernum++;}
         			
         			else {
@@ -151,7 +151,7 @@ public class Lexer {
         this.totalnum = headernum + bodyline;
         this.MusicHeader= headerinfo;
         //KeyTempo(MusicHeader);
-        //BodyTokenize(string);
+        BodyTokenize(string);
          
     } 
     /**
@@ -205,7 +205,7 @@ public class Lexer {
         System.out.println(output.get(10).string);
         System.out.println(output.get(11).string);
         System.out.println(output.get(12).string);
-        //this.check1 = output;
+        this.check1 = output;
         //Chordcheck(output);
 
     }
@@ -253,7 +253,7 @@ public class Lexer {
             }
         }
         token = output;
-        NoteLength(output);
+        //NoteLength(output);
     }
     
     //get the Tempo and Key of the music from header and get all the voices into voicecounter
