@@ -40,7 +40,7 @@ public class Token {
 
 	public final Type type;
 	public final Pattern pattern;
-	public final String string;
+	public String string;
 	public int basenote;
 	public double noteLength;
 	public int octave;
@@ -81,10 +81,10 @@ public class Token {
 			this.pattern = Pattern.compile("V:d+"); 
 			break;
 		case Rest:
-			this.pattern = Pattern.compile("z[[d*/?d+]|/]?");
+			this.pattern = Pattern.compile("z([d*/?d+]|/)?");
 			break;
 		case Pitch:
-			this.pattern = Pattern.compile("[\\^|\\^\\^|_|__|=]?[A-Ga-g]['+,+]?[[d*/?d+]|/]?");	
+			this.pattern = Pattern.compile("((\\^)|(\\^\\^)|_|(__)|=)?[A-Ga-g]['+,+]?((d*/?d+)|/)?");	
 			break;
 		case Tuplets:
 			this.pattern = Pattern.compile("\\([234]");
@@ -96,7 +96,7 @@ public class Token {
 			this.pattern = Pattern.compile("\\]");
 			break;
 		case Barline:
-			this.pattern = Pattern.compile("(\\||\\|\\||\\[\\||\\|\\])?"); 
+			this.pattern = Pattern.compile("((\\|)|(\\|\\|)|(\\[\\|)|(\\|]))"); 
 			break;
 		case RepeatBegin:
 			this.pattern = Pattern.compile("\\|:");
