@@ -8,8 +8,7 @@ import java.util.List;
 import java.util.HashMap;
 
 public class Parser {
-    public final ArrayList<ArrayList<AST<ArrayList<Token>>>> SequenceofVoiceForest
-    = new ArrayList<ArrayList<AST<ArrayList<Token>>>>();
+    public final ArrayList<ArrayList<AST>> SequenceofVoiceForest  = new ArrayList<ArrayList<AST>>();
 
     public Parser(Lexer lexer) {                
         ArrayList<Token> Headers = lexer.MusicHeader;
@@ -27,7 +26,7 @@ public class Parser {
         for (int u=0; u< Body.size(); u++){
             
             List<Integer> EndIndOfMajorSect = new ArrayList<Integer>();
-            List<AST<ArrayList<Token>>> VoiceTrees = new ArrayList<AST<ArrayList<Token>>>();            
+            List<AST> VoiceTrees = new ArrayList<AST>();            
             ArrayList<Token> a = Body.get(u);
             int end = a.size();
             EndIndOfMajorSect.add(end);
@@ -96,14 +95,14 @@ public class Parser {
             for(int j=0;j<EndIndOfMajorSect.size()-1;j++){
                 VoiceTrees.add(Parse((ArrayList<Token>) (a.subList(EndIndOfMajorSect.get(j),EndIndOfMajorSect.get(j+1)))));
             }
-            SequenceofVoiceForest.add((ArrayList<AST<ArrayList<Token>>>) VoiceTrees);             
+            SequenceofVoiceForest.add((ArrayList<AST>) VoiceTrees);             
         }
     }
    
-    private AST<ArrayList<Token>> Parse(ArrayList<Token> a){        
+    private AST Parse(ArrayList<Token> a){        
         if (NoChild(a)){
-            List<Token> r = ParseRepeat(a);  
-            return NodeTree(r);
+            ArrayList<Token> r = ParseRepeat(a);  
+            return new NodeTree(r);
         }
             
         else if (SingleChild(a)){            
@@ -122,7 +121,7 @@ public class Parser {
                     break;
                 }
             }
-            return ParentTree(ParseRepeat(a), 
+            return new ParentTree(ParseRepeat(a), 
                     ParseRepeat((ArrayList<Token>) a.subList(indChildOne, indChildTwo-1)), 
                     ParseRepeat((ArrayList<Token>) a.subList(indChildTwo, a.size())));      
         }
@@ -137,8 +136,8 @@ public class Parser {
     //        }
     //    }
     //    return true;
-    //}
-    
+    //}    
+
     private boolean NoChild(ArrayList<Token> list){
         for (int i=0;i<list.size();i++){
             if (list.get(i).type== Token.Type.Repeat_first){

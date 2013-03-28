@@ -1,5 +1,7 @@
 package player;
 
-public interface AST<E> {
+import java.util.ArrayList;
 
+public interface AST {
+    public ArrayList<Token> toArrayList();
 }
