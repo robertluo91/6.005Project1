@@ -142,11 +142,12 @@ public class Lexer {
         				string += str;
         	        	bodyline += 1;
         		
+        				}
         		}
-        	}
-        	else {string += str;
-        	bodyline += 1;
-        	}
+        	else {
+        		string += str;
+        		bodyline += 1;
+        		}
         }
         this.totalnum = headernum + bodyline;
         this.MusicHeader= headerinfo;
