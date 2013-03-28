@@ -54,14 +54,14 @@ public class LexerTest {
 
     }
     */
-    /**
+    
     @Test
     //Test Tokenize method
     public void TokenizeTest1() {
         
-        Lexer lexer = new Lexer("piece1copy.abc");
+        Lexer lexer = new Lexer("piece2copy.abc");
         ArrayList<Token> resultTokens = lexer.check1; 
-        Token[] expected = { new Token(Type.X, "X:1",0,0.0,0, 0,0),   
+        Token[] expected = { new Token(Type.X, "X: 1",0,0.0,0, 0,0),   
                 new Token(Type.T, "T: Piece No.1",0,0.0,0, 0,0), new Token(Type.M, "M:4/4",0,0.0,0, 0,0),
                 new Token(Type.L, "L:1/4",0,0.0,0, 0,0), new Token(Type.Q, "Q:140",0,0.0,0, 0,0),
                 new Token(Type.K, "K:C",0,0.0,0, 0,0) };   
@@ -70,8 +70,8 @@ public class LexerTest {
         }
 
     }
-    */
-
+    
+/**
     @Test
     //Test Header
     public void HeaderTest1() {
@@ -87,5 +87,6 @@ public class LexerTest {
         }
 
     }
+    */
 }
     
