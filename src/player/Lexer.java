@@ -17,9 +17,7 @@ import java.util.HashMap;
  * A lexer takes a string and splits it into tokens that are meaningful to a
  * parser. For detailed description of token types, see Token.java
  */
-public class Lexer {
-
-    
+public class Lexer {    
 
     ArrayList<ArrayList<Token>> MusicBody;
     ArrayList<Token> MusicHeader; 
@@ -29,7 +27,7 @@ public class Lexer {
     ArrayList<Token> token;
     ArrayList<Token> check1;
     int parserPeekIndex;
-    int currentlen;
+    int current;
     int Tick;
     int headernum;
     int bodyline;
@@ -169,37 +167,28 @@ public class Lexer {
         // create an arraylist "output" to put all the tokens generated inside
         int length = string.length();
         System.out.println(length);
-        currentlen = 0;
-        parserPeekIndex = 0;
 
-        while (currentlen <length-1) {
-            boolean anyMatchSoFar = false;
-            
-            for (int i = currentlen+1; i <length; i++) {
-                String currentString = string.substring(currentlen, i);
-                
+        current = 0;
+        //parserPeekIndex = 0;
+
+        while (current <length) {
+            boolean anyMatchSoFar = false;            
+            for (int i = length; i >current; i--) {
+                //find the longeset possible valid token
+                String currentString = string.substring(current, i);                
                 for (Type t : Type.values()) {
-                    Token testToken = new Token(t, "", 0, 0.0, 0, 0,0);
-                    
+                    Token testToken = new Token(t, "", 0, 0.0, 0, 0,0);                    
                     if (testToken.pattern.matcher(currentString).matches()) {
-                    	Token To = testToken;
-                    	anyMatchSoFar = true;
-                        for (int a=i; a<length; a++){
-                        	if (To.pattern.matcher(string.substring(currentlen,a)).matches()==false){
-                        		Token T = new Token(t, string.substring(currentlen,a-1), 0, 0.0, 0, 0,0);
-                                output.add(T);
-                                currentlen = a-1;
-                                break;
-                        	}
-                        
-                        }    
+                    	anyMatchSoFar = true;  
+                    	current = i;
+                    	output.add(new Token(t, currentString, 0, 0.0, 0, 0,0));                       
                     }
                 }
             }
             if (!anyMatchSoFar) {
                 // indicates a blank space in the beginning of the string:
                 // skip to the next position
-                currentlen++;
+                current++;
             }
         }
        
@@ -212,8 +201,10 @@ public class Lexer {
         System.out.println(output.get(6).string);
         System.out.println(output.get(7).string);
         System.out.println(output.get(8).string);
-        //System.out.println(output.get(9).string);
-        
+        System.out.println(output.get(9).string);
+        System.out.println(output.get(10).string);
+        System.out.println(output.get(11).string);
+        System.out.println(output.get(12).string);
         //this.check1 = output;
         //Chordcheck(output);
 
