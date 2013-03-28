@@ -19,7 +19,7 @@ public class Token {
 	 * X ::= .*
 	 * V ::= .*
 	 * Octave ::= ("'"+) | (","+)
-	 * NoteLength ::= [d* /? d+] | /
+	 * NoteLength ::= [d* /? d*] 
 	 * Accidental ::= "^" | "^^" | "_" | "__" | "="
 	 * Basenote ::= [A-Ga-g]
 	 * Pitch ::= Accidental? Basenote Octave? NoteLength?
@@ -78,13 +78,13 @@ public class Token {
 			this.pattern = Pattern.compile("X:.*");
 			break;
 		case V:
-			this.pattern = Pattern.compile("V:d+"); 
+			this.pattern = Pattern.compile("V:.*"); 
 			break;
 		case Rest:
-			this.pattern = Pattern.compile("z([d*/?d+]|/)?");
+			this.pattern = Pattern.compile("z([0-9]*/?[0-9]*)");
 			break;
 		case Pitch:
-			this.pattern = Pattern.compile("((\\^)|(\\^\\^)|_|(__)|=)?[A-Ga-g]['+,+]?((d*/?d+)|/)?");	
+			this.pattern = Pattern.compile("((\\^){1,2})|((\\_){1,2})|(\\=)?[A-Ga-g][(,+)|('+)]?([0-9]*/?[0-9]*)");	
 			break;
 		case Tuplets:
 			this.pattern = Pattern.compile("\\([234]");
@@ -96,7 +96,7 @@ public class Token {
 			this.pattern = Pattern.compile("\\]");
 			break;
 		case Barline:
-			this.pattern = Pattern.compile("((\\|)|(\\|\\|)|(\\[\\|)|(\\|]))"); 
+			this.pattern = Pattern.compile("(\\||\\|\\||\\|])"); 
 			break;
 		case RepeatBegin:
 			this.pattern = Pattern.compile("\\|:");
