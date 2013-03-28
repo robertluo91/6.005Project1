@@ -3,8 +3,8 @@ import java.lang.RuntimeException;
 import java.util.ArrayList;
 
 import java.io.BufferedReader; 
-
 import java.io.FileInputStream;
+import java.io.DataInputStream;
 import java.io.InputStreamReader;
 import java.io.IOException; 
 import player.Token;
@@ -33,8 +33,8 @@ public class Lexer {
     int bodyline;
     int totalnum;
     final String filename; 
-    FileInputStream fstream; 
-   
+    FileInputStream fstream;
+    DataInputStream in;
     BufferedReader br; 
 
     //constructor takes in the name of the file, and BufferedReader reads the
@@ -45,11 +45,16 @@ public class Lexer {
     	 br = null;
     	 headernum = 0;
     	 bodyline =0;
+    	 String currentline;
+    	 ArrayList<String> lines = new ArrayList<String>();
          try { 
-             fstream = new FileInputStream(filename); 
-             
-             br = new BufferedReader(new InputStreamReader(fstream));
-             processNextLine();
+             fstream = new FileInputStream(filename);              
+             in = new DataInputStream(fstream);
+             br = new BufferedReader(new InputStreamReader(in));
+             while ((currentline = br.readLine()) != null){
+                 lines.add(currentline);
+             }
+             processLine(lines);
          } catch (Exception e) { 
              e.printStackTrace(); 
               
@@ -57,85 +62,86 @@ public class Lexer {
          
      } 
     //creates the header token arraylist and music body in string
-    public void processNextLine() throws IOException { 
+    public void processLine(ArrayList<String> lines) throws IOException { 
     	
         String str; 
-        String string="";
+        String string="";        
+        
         ArrayList<Token> headerinfo = new ArrayList<Token>();
-        while ((str = br.readLine()) != null){
-        	System.out.println(str);
-        	if (str.startsWith("X:")){
-        		for (int i =0; i<headerinfo.size(); i++){
-        			if (headerinfo.get(i).string == str){
-        				throw new IOException("same piece of header info appeared twice");
-        			}
-        		}
-        		headerinfo.add(new Token(Type.X, str, 0, 0.0, 0, 0,0));
-        		headernum++;
-        	}
-        	else if (str.startsWith("C:")){
-        		for (int i =0; i<headerinfo.size(); i++){
-        			if (headerinfo.get(i).string == str){
-        				throw new IOException("same piece of header info appeared twice");
-        			}
-        		}
-        		headerinfo.add(new Token(Type.C, str, 0, 0.0, 0, 0,0));
-        		headernum++;
-        	}
-        	else if (str.startsWith("L:")){
-        		for (int i =0; i<headerinfo.size(); i++){
-        			if (headerinfo.get(i).string == str){
-        				throw new IOException("same piece of header info appeared twice");
-        			}
-        		}
-        		headerinfo.add(new Token(Type.L, str, 0, 0.0, 0, 0,0));
-        		headernum++;
-        	}
-        	else if (str.startsWith("M:")){
-        		for (int i =0; i<headerinfo.size(); i++){
-        			if (headerinfo.get(i).string == str){
-        				throw new IOException("same piece of header info appeared twice");
-        			}
-        		}
-        		headerinfo.add(new Token(Type.M, str, 0, 0.0, 0, 0,0));
-        		headernum++;
-        	}
-        	else if (str.startsWith("Q:")){
-        		for (int i =0; i<headerinfo.size(); i++){
-        			if (headerinfo.get(i).string == str){
-        				throw new IOException("same piece of header info appeared twice");
-        			}
-        		}
-        		headerinfo.add(new Token(Type.Q, str, 0, 0.0, 0, 0,0));
-        		headernum++;
-        	}
-        	else if (str.startsWith("T:")){
-        		for (int i =0; i<headerinfo.size(); i++){
-        			if (headerinfo.get(i).string == str){
-        				throw new IOException("same piece of header info appeared twice");
-        			}
-        		}
-        		headerinfo.add(new Token(Type.T, str, 0, 0.0, 0, 0,0));
-        		headernum++;
-        	}
-        	else if (str.startsWith("K:")){
-        		for (int i =0; i<headerinfo.size(); i++){
-        			if (headerinfo.get(i).string == str){
-        				throw new IOException("same piece of header info appeared twice");
-        			}
-        		}
-        		headerinfo.add(new Token(Type.K, str, 0, 0.0, 0, 0,0));
-        		headernum++;
-        	}
-        	else if (str.startsWith("V:")){
-                int i=0;                
-                while (i<headerinfo.size()){
+        for (int l = 0;l<lines.size();l++){
+            str = lines.get(l);
+            System.out.println(str);
+            if (str.startsWith("X:")){
+                for (int i =0; i<headerinfo.size(); i++){
+                    if (headerinfo.get(i).string.startsWith("X:")){
+                        throw new IOException("same piece of header info appeared twice");
+                    }
+                }
+                headerinfo.add(new Token(Type.X, str, 0, 0.0, 0, 0,0));
+                headernum++;
+            }
+            else if (str.startsWith("C:")){
+                for (int i =0; i<headerinfo.size(); i++){
+                    if (headerinfo.get(i).string.startsWith("C:")){
+                        throw new IOException("same piece of header info appeared twice");
+                    }
+                }
+                headerinfo.add(new Token(Type.C, str, 0, 0.0, 0, 0,0));
+                headernum++;
+            }
+            else if (str.startsWith("L:")){
+                for (int i =0; i<headerinfo.size(); i++){
+                    if (headerinfo.get(i).string.startsWith("L:")){
+                        throw new IOException("same piece of header info appeared twice");
+                    }
+                }
+                headerinfo.add(new Token(Type.L, str, 0, 0.0, 0, 0,0));
+                headernum++;
+            }
+            else if (str.startsWith("M:")){
+                for (int i =0; i<headerinfo.size(); i++){
+                    if (headerinfo.get(i).string.startsWith("M:")){
+                        throw new IOException("same piece of header info appeared twice");
+                    }
+                }
+                headerinfo.add(new Token(Type.M, str, 0, 0.0, 0, 0,0));
+                headernum++;
+            }
+            else if (str.startsWith("Q:")){
+                for (int i =0; i<headerinfo.size(); i++){
+                    if (headerinfo.get(i).string.startsWith("Q:")){
+                        throw new IOException("same piece of header info appeared twice");
+                    }
+                }
+                headerinfo.add(new Token(Type.Q, str, 0, 0.0, 0, 0,0));
+                headernum++;
+            }
+            else if (str.startsWith("T:")){
+                for (int i =0; i<headerinfo.size(); i++){
+                    if (headerinfo.get(i).string.startsWith("T:")){
+                        throw new IOException("same piece of header info appeared twice");
+                    }
+                }
+                headerinfo.add(new Token(Type.T, str, 0, 0.0, 0, 0,0));
+                headernum++;
+            }
+            else if (str.startsWith("K:")){
+                for (int i =0; i<headerinfo.size(); i++){
+                    if (headerinfo.get(i).string.startsWith("K:")){
+                        throw new IOException("same piece of header info appeared twice");
+                    }
+                }
+                headerinfo.add(new Token(Type.K, str, 0, 0.0, 0, 0,0));
+                headernum++;
+            }
+            else if (str.startsWith("V:")){              
+                int i=0;
+                for (i =0; i<headerinfo.size(); i++){
                     if (headerinfo.get(i).string == str){
                         break;
                     }
-                    else i++;
-                }
-                if (i==headerinfo.size()){
+                }    
+                if (i>headerinfo.size()-1){
                     headerinfo.add(new Token(Type.V, str, 0, 0.0, 0, 0,0));
                     headernum++;
                 }
@@ -143,17 +149,18 @@ public class Lexer {
                     string += str;
                     bodyline += 1;
                 }
-        	}
-        	else {
-        		string += str;
-        		bodyline += 1;
-        		}
+            }
+            else {
+                string += str;
+                bodyline += 1;
+                }                   
         }
+
         this.totalnum = headernum + bodyline;
         this.MusicHeader= headerinfo;
         //KeyTempo(MusicHeader);
         BodyTokenize(string);
-         
+        
     } 
     /**
      * Creates the lexer over the passed string.

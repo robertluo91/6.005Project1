@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import player.Lexer;
@@ -66,10 +67,9 @@ public class LexerTest {
         
         ArrayList<Token> resultTokens = lexer.MusicHeader; 
         Token[] expected = { new Token(Type.X, "X: 1",0,0.0,0, 0,0),   
-                new Token(Type.T, "T:Bagatelle No.25 in A, WoO.59",0,0.0,0, 0,0), new Token(Type.C, "C:Ludwig van Beethoven",0,0.0,0, 0,0),
-                new Token(Type.V, "V:1",0,0.0,0, 0,0), new Token(Type.V, "V:2",0,0.0,0, 0,0),
+                new Token(Type.T, "T:Bagatelle No.25 in A, WoO.59",0,0.0,0, 0,0), new Token(Type.C, "C:Ludwig van Beethoven",0,0.0,0, 0,0),                
                 new Token(Type.M, "M:3/8",0,0.0,0, 0,0),new Token(Type.L, "L:1/16",0,0.0,0, 0,0),new Token(Type.Q, "Q:240",0,0.0,0, 0,0),
-                new Token(Type.K, "K:Am",0,0.0,0, 0,0)};   
+                new Token(Type.K, "K:Am",0,0.0,0, 0,0),new Token(Type.V, "V:1",0,0.0,0, 0,0), new Token(Type.V, "V:2",0,0.0,0, 0,0),};   
         for (int i=0;i<resultTokens.size();i++){
         	assertTokenEquals(resultTokens.get(i), expected[i]);
         }
@@ -90,6 +90,13 @@ public class LexerTest {
         for (int i=0;i<expected.length;i++){
         	assertTokenEquals(resultTokens.get(i), expected[i]);
         }
+
+    }
+    
+    @Test(expected = IOException.class)
+    //Test info in the header
+    public void HeaderTest3() {        
+        Lexer lexer = new Lexer("testpiece.abc");
 
     }
     

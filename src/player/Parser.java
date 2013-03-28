@@ -1,21 +1,18 @@
 package player;
 
-import sound.Pitch; 
-import player.Token.Type;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.HashMap;
 
 public class Parser {
     public final ArrayList<ArrayList<AST>> SequenceofVoiceForest  = new ArrayList<ArrayList<AST>>();
-
+    public final int tpb;
+    public final int tempo;
     public Parser(Lexer lexer) {                
-        ArrayList<Token> Headers = lexer.MusicHeader;
+        //ArrayList<Token> Headers = lexer.MusicHeader;
         ArrayList<ArrayList<Token>> Body = lexer.MusicBody;
         String key = lexer.Key;
-        int tempo = lexer.Tempo;
-        int tpb = lexer.Tick; 
+        tempo = lexer.Tempo;
+        tpb = lexer.Tick; 
         KeySignature KeySig = new KeySignature(key);
         
         //we don't deal with nested repetition
