@@ -7,24 +7,26 @@ public class Parser {
     public final ArrayList<ArrayList<AST>> SequenceofVoiceForest  = new ArrayList<ArrayList<AST>>();
     public final int tpb;
     public final int tempo;
+    public final int size;
+    
     public Parser(Lexer lexer) {                
-        //ArrayList<Token> Headers = lexer.MusicHeader;
         ArrayList<ArrayList<Token>> Body = lexer.MusicBody;
+        size= lexer.size;
         String key = lexer.Key;
         tempo = lexer.Tempo;
         tpb = lexer.Tick; 
         KeySignature KeySig = new KeySignature(key);
         
+        //Weixin: we deal with cases where there are either no "[1,[2" or both "[1,[2" exist; if both exist, 
+        //        each variant can contain repetitions
         //we don't deal with nested repetition
         //since repetition cannot be made across major section, if an already started repeating stream meets "||", 
-        //then it halts, and becomes a complete repeated piece
-        //Weixin: we do not deal with nested repetition at this stage, may modify later
+        //then it halts, and becomes a complete repeated piece    
         
-        for (int u=0; u< Body.size(); u++){
-            
+        for (int voice=0; voice< size; voice++){           
             List<Integer> EndIndOfMajorSect = new ArrayList<Integer>();
             List<AST> VoiceTrees = new ArrayList<AST>();            
-            ArrayList<Token> a = Body.get(u);
+            ArrayList<Token> a = Body.get(voice);
             int end = a.size();
             EndIndOfMajorSect.add(end);
             
@@ -160,7 +162,7 @@ public class Parser {
                 ||list.get(end).string.equals("|]")
                 ||list.get(end).string.equals(":|"))
         {  return true; }
-        return false;
+        else return false;
     }
     
     //"Parse" a string without variants

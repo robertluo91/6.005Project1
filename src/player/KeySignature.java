@@ -36,17 +36,17 @@ public class KeySignature {
   
     /** 
      */
-    public KeySignature(String basenote) { 
+    public KeySignature(String key) { 
         assignKeySignatures(); 
-        String key = keyParse(basenote); 
+        //String key = keyParse(basenote); 
         current_signature = key_signatures.get(key); 
     } 
   
 
-    private String keyParse(String basenote) { 
-        String answer = basenote.trim(); 
-        return answer; 
-    } 
+    //private String keyParse(String basenote) { 
+    //    String answer = basenote.trim(); 
+    //    return answer; 
+    //} 
   
     private void assignKeySignatures() { 
         // sharp signatures 

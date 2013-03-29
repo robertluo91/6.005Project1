@@ -28,6 +28,8 @@ public class ASTtoPlayer {
             for (int voice=0; voice<SequenceofVoiceForest.size(); voice++){
                 traverse(SequenceofVoiceForest.get(voice),sp);
             }
+            sp.play();
+            System.out.println(sp);
         } catch (MidiUnavailableException e) {
             e.printStackTrace();
         } catch (InvalidMidiDataException e) {
@@ -41,18 +43,6 @@ public class ASTtoPlayer {
         }
     }
     
-    
-    //public ASTtoPlayer(ParentTree<ArrayList<Token>> t){
-      //  try {
-        //    SequencePlayer sp = new SequencePlayer(beatsPerMinute,ticksPerBeat);
-            //time = clock;
-          //  traverse(t,sp);           
-        //} catch (MidiUnavailableException e) {
-         //   e.printStackTrace();
-        //} catch (InvalidMidiDataException e) {
-        //    e.printStackTrace();
-        //}
-   // }
 
 
     public void traverse(AST t, SequencePlayer sp){
