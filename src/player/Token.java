@@ -8,35 +8,35 @@ import java.util.regex.Pattern;
  */
 
 public class Token {
-	/**
-	 * All the types of tokens that can be made. Group symbols into token types as follows: (all in regular expression format)
-	 * C ::= .*
-	 * K ::= .*
-	 * L ::= .*
-	 * M ::= .*
-	 * Q ::= .*
-	 * T ::= .*
-	 * X ::= .*
-	 * V ::= .*
-	 * Octave ::= ("'"+) | (","+)
-	 * NoteLength ::= [d* /? d*] 
-	 * Accidental ::= "^" | "^^" | "_" | "__" | "="
-	 * Basenote ::= [A-Ga-g]
-	 * Pitch ::= Accidental? Basenote Octave? NoteLength?
-	 * Rest ::= "z"note-length?
-	 * Tuplets ::= "([234]"
-	 * Barline ::= "|" | "||" | "[|" | "|]"
-	 * Nrepeat ::= "["[12]
-	 * ChordsBegin::= "["
-	 * ChordsEnd::= "]"
-	 * RepeatBegin ::="|:"
-	 * RepeatEnd ::=":|"
-	 */
+    /**
+     * All the types of tokens that can be made. Group symbols into token types as follows: (all in regular expression format)
+     * C ::= .*
+     * K ::= .*
+     * L ::= .*
+     * M ::= .*
+     * Q ::= .*
+     * T ::= .*
+     * X ::= .*
+     * V ::= .*
+     * Octave ::= ("'"+) | (","+)
+     * NoteLength ::= [d* /? d*] 
+     * Accidental ::= "^" | "^^" | "_" | "__" | "="
+     * Basenote ::= [A-Ga-g]
+     * Pitch ::= Accidental? Basenote Octave? NoteLength?
+     * Rest ::= "z"note-length?
+     * Tuplets ::= "([234]"
+     * Barline ::= "|" | "||" | "[|" | "|]"
+     * Nrepeat ::= "["[12]
+     * ChordsBegin::= "["
+     * ChordsEnd::= "]"
+     * RepeatBegin ::="|:"
+     * RepeatEnd ::=":|"
+     */
 
-	public static enum Type {
-		M, C, K, L,Q, T, X, V, Rest, Pitch, Tuplets, ChordsBegin, ChordsEnd, 
-		Barline, RepeatBegin, RepeatEnd, Repeat_first, Repeat_second, Whitespace, Comment
-	}
+    public static enum Type {
+        M, C, K, L,Q, T, X, V, Rest, Pitch, Tuplets, ChordsBegin, ChordsEnd, 
+        Barline, RepeatBegin, RepeatEnd, Repeat_first, Repeat_second, Whitespace, Comment
+    }
 
 	public final Type type;
 	public final Pattern pattern;
@@ -118,9 +118,9 @@ public class Token {
         case Comment:
             this.pattern = Pattern.compile("%.*");
             break;
-		default:
-			throw new RuntimeException("The input type is invalid");
-		}
-		this.string = string;
-	}
+        default:
+            throw new RuntimeException("The input type is invalid");
+        }
+        this.string = string;
+    }
 }

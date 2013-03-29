@@ -1,9 +1,8 @@
 package player;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class ParentTree<E> implements AST<E>{
+public class ParentTree implements AST{
     final ArrayList<Token> root;
     final ArrayList<Token> leftChild;
     final ArrayList<Token> rightChild;
@@ -12,6 +11,16 @@ public class ParentTree<E> implements AST<E>{
         this.root = root;
         this.leftChild = leftChild;
         this.rightChild = rightChild;     
+    }
+    
+    @Override
+    public ArrayList<Token> toArrayList() {
+        ArrayList<Token> PTREE= new ArrayList<Token>();
+        PTREE.addAll(root);
+        PTREE.addAll(leftChild);
+        PTREE.addAll(root);
+        PTREE.addAll(rightChild);
+        return PTREE;
     }
 }
 

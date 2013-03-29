@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import player.Lexer;
@@ -93,19 +94,20 @@ public class LexerTest {
         assertEquals(lexer.bodyline, 6);
     }
     
- /**
+
     @Test
     //Test info in the header
     public void HeaderTest1() {
         
         Lexer lexer = new Lexer("fur_elise copy.abc");
-        
+        assertEquals(lexer.MusicBody.size(),2);
         ArrayList<Token> resultTokens = lexer.MusicHeader; 
-        Token[] expected = { new Token(Type.X, "X: 1",0,0.0,0, 0,0,0,0),   
-                new Token(Type.T, "T:Bagatelle No.25 in A, WoO.59",0,0.0,0, 0,0,0,0), new Token(Type.C, "C:Ludwig van Beethoven",0,0.0,0, 0,0,0,0),
-                new Token(Type.V, "V:1",0,0.0,0, 0,0,0,0), new Token(Type.V, "V:2",0,0.0,0, 0,0,0,0),
-                new Token(Type.M, "M:3/8",0,0.0,0, 0,0,0,0),new Token(Type.L, "L:1/16",0,0.0,0, 0,0,0,0),new Token(Type.Q, "Q:240",0,0.0,0, 0,0,0,0),
-                new Token(Type.K, "K:Am",0,0.0,0, 0,0,0,0)};   
+
+        Token[] expected = { new Token(Type.X, "X: 1",0,0,0, 0,0,0,0),   
+                new Token(Type.T, "T:Bagatelle No.25 in A, WoO.59",0,0,0, 0,0,0,0), new Token(Type.C, "C:Ludwig van Beethoven",0,0,0, 0,0,0,0),                
+                new Token(Type.V, "V:1",0,0,0, 0,0,0,0), new Token(Type.V, "V:2",0,0,0, 0,0,0,0),new Token(Type.M, "M:3/8",0,0,0, 0,0,0,0),new Token(Type.L, "L:1/16",0,0,0, 0,0,0,0),new Token(Type.Q, "Q:240",0,0,0, 0,0,0,0),
+                new Token(Type.K, "K:Am",0,0,0, 0,0,0,0)};   
+
         for (int i=0;i<resultTokens.size();i++){
         	assertTokenEquals(resultTokens.get(i), expected[i]);
         }
@@ -119,33 +121,43 @@ public class LexerTest {
         
         Lexer lexer = new Lexer("piece2 copy.abc");
         ArrayList<Token> resultTokens = lexer.check1; 
-        Token[] expected = { new Token(Type.ChordsBegin, "[",2,2,2, 2,2,0,0),   
-                new Token(Type.Pitch, "^F/",2,2,2, 2,2,0,0), new Token(Type.Pitch, "e/",2,2,2, 2,2,0,0),
-                new Token(Type.ChordsEnd, "]",2,2,2, 2,2,0,0), new Token(Type.Whitespace, " ",2,2,2, 2,2,0,0),
-                new Token(Type.ChordsBegin, "[",2,2,2, 2,2,0,0) }; 
-        expected[1].chord=2;//why do we need to do this step and why would above assigning not return an error?
-        					//why would there be dynamic updating? 
+
+        Token[] expected = { new Token(Type.ChordsBegin, "[",0,0,0, 0,0,0,0),   
+                new Token(Type.Pitch, "^F/2",0,0,0, 0,0,0,0), new Token(Type.Pitch, "e/2",0,0,0, 0,0,0,0),
+                new Token(Type.ChordsEnd, "]",0,0,0, 0,0,0,0), new Token(Type.ChordsBegin, "[",0,0,0, 0,0,0,0),
+                new Token(Type.Pitch, "F/2",0,0,0, 0,0,0,0) };   
+
         for (int i=0;i<expected.length;i++){
         	assertTokenEquals(resultTokens.get(i), expected[i]);
         }
     }
     
+
     @Test
     //Test Chordcheck method
     public void ChordcheckTest1() {
         
         Lexer lexer = new Lexer("piece2 copy.abc");
         ArrayList<Token> resultTokens = lexer.check1; 
-        Token[] expected = { new Token(Type.ChordsBegin, "[",0,0.0,0, 0,0,0,0),   
-                new Token(Type.Pitch, "^F/",0,0.0,0, 0,2,0,0), new Token(Type.Pitch, "e/",0,0.0,0, 0,0,0,0),
-                new Token(Type.ChordsEnd, "]",0,0.0,0, 0,0,0,0), new Token(Type.Whitespace, " ",0,0.0,0, 0,0,0,0),
-                new Token(Type.ChordsBegin, "[",0,0.0,0, 0,0,0,0) }; 
+        Token[] expected = { new Token(Type.ChordsBegin, "[",0,0,0, 0,0,0,0),   
+                new Token(Type.Pitch, "^F/",0,0,0,0, 0,2,0), new Token(Type.Pitch, "e/",0,0,0,0, 0,0,0),
+                new Token(Type.ChordsEnd, "]",0,0,0,0, 0,0,0), new Token(Type.Whitespace, " ",0,0,0,0, 0,0,0),
+                new Token(Type.ChordsBegin, "[",0,0,0,0, 0,0,0) }; 
         expected[1].chord=2;
         for (int i=0;i<expected.length;i++){
         	assertTokenEquals(resultTokens.get(i), expected[i]);
         }
     }
-    */
+    
+
+    @Test(expected = IOException.class)
+    //Test info in the header
+    public void HeaderTest3() {        
+        Lexer lexer = new Lexer("testpiece.abc");
+
+    }
+    
+
 
 }
     

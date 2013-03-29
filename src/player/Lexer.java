@@ -25,6 +25,7 @@ public class Lexer {
     ArrayList<Token> voicecounter;
     String M;
     String L;
+    int size;
     int Tempo;
     ArrayList<Token> token;
     ArrayList<Token> check1;
@@ -618,6 +619,7 @@ public class Lexer {
             }
         }
         this.MusicBody = Body;
+        this.size= Body.size();
         System.out.println("# of arraylist in music body "+Body.size());
 
     }
