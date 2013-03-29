@@ -25,10 +25,9 @@ public class Parser {
         
         for (int voice=0; voice< size; voice++){           
             List<Integer> EndIndOfMajorSect = new ArrayList<Integer>();
-            List<AST> VoiceTrees = new ArrayList<AST>();            
+            List<AST> TreesCurrentVoice = new ArrayList<AST>();            
             ArrayList<Token> a = Body.get(voice);
             int end = a.size();
-            EndIndOfMajorSect.add(end);
             
             //check valid ending
             if (!ValidEnding(a)) throw new RuntimeException("invalid ending type");
@@ -45,6 +44,7 @@ public class Parser {
                         break;
                     }
                 }
+                //by assumption, the first token of a voice is not a barline
                 if (EndofMeasure == i){
                     throw new RuntimeException("measure cannot be empty");
                 }
@@ -83,18 +83,18 @@ public class Parser {
                     throw new RuntimeException("invalid use of accid");
                 }
                 
-                //find the major sections beginning index
+                //find the major sections ending index
                 if (a.get(i).string.equals("||")||a.get(i).string.equals("|]")){
-                    EndIndOfMajorSect.add(i+1);
+                    EndIndOfMajorSect.add(i);
                 }
                 i++;
             }
             
-            VoiceTrees.add(Parse((ArrayList<Token>) (a.subList(0,EndIndOfMajorSect.get(0)))));
+            TreesCurrentVoice.add(Parse((ArrayList<Token>) (a.subList(0,EndIndOfMajorSect.get(0)+1))));
             for(int j=0;j<EndIndOfMajorSect.size()-1;j++){
-                VoiceTrees.add(Parse((ArrayList<Token>) (a.subList(EndIndOfMajorSect.get(j),EndIndOfMajorSect.get(j+1)))));
+                TreesCurrentVoice.add(Parse((ArrayList<Token>) (a.subList(EndIndOfMajorSect.get(j)+1,EndIndOfMajorSect.get(j+1)+1))));
             }
-            SequenceofVoiceForest.add((ArrayList<AST>) VoiceTrees);             
+            SequenceofVoiceForest.add((ArrayList<AST>) TreesCurrentVoice);             
         }
     }
    
@@ -125,17 +125,6 @@ public class Parser {
                     ParseRepeat((ArrayList<Token>) a.subList(indChildTwo, a.size())));      
         }
     }
-
-    //private boolean NonRepeat(ArrayList<Token> list){
-    //    for (int i=0;i<list.size();i++){
-    //        if (list.get(i).type== Token.Type.RepeatBegin
-    //                || list.get(i).type== Token.Type.RepeatEnd
-    //                || list.get(i).type== Token.Type.Repeat_first){
-    //            return false;    
-    //        }
-    //    }
-    //    return true;
-    //}    
 
     private boolean NoChild(ArrayList<Token> list){
         for (int i=0;i<list.size();i++){
