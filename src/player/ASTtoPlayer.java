@@ -57,8 +57,10 @@ public class ASTtoPlayer {
             int j = i;
             for(j = i; j < i+node.get(i).chord+1; j++){
                 Token note = node.get(i);
+                if (note.basenote!=7){
                 sp.addNote(new Pitch(intkey[note.basenote]).octaveTranspose(note.octave).transpose(note.accid).toMidiNote(),
                         clock,(int)note.noteLength);
+                }
             }
             i=j+1;
         }
