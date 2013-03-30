@@ -55,8 +55,16 @@ public class Token {
 	 * string: the string expression of the regex
 	 */
 	
-	public Token(Type type, String string, int basenote, int noteLength, int octave, int accid, int chord, int num, int den) {
+	public Token(Type type, String string, int basenote,int num, int den, int noteLength, int accid, int octave,int chord) {
 		this.type = type;
+		this.basenote = basenote;
+		this.basenote = basenote;
+		this.num = num;
+		this.den = den;
+		this.noteLength = noteLength;
+		this.accid = accid;
+		this.octave = octave;
+		this.chord = chord;
 		switch (type) {
 		case M:
 			this.pattern = Pattern.compile("M:.*");

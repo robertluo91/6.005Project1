@@ -35,7 +35,7 @@ public class Parser {
             while (i<end){
                 //adjust temporary accidental within measure
                 //by the way we perform before the next loop, we know that the ith token is the first element 
-;                //       within its measure
+                //       within its measure
                 //find the index of barline, and apply the change to all index within the measure after i
                 int EndofMeasure = i;
                 for (int j=i;j<end;j++){
@@ -90,10 +90,19 @@ public class Parser {
                 i++;
             }
             
-            TreesCurrentVoice.add(Parse((ArrayList<Token>) (a.subList(0,EndIndOfMajorSect.get(0)+1))));
-            for(int j=0;j<EndIndOfMajorSect.size()-1;j++){
-                TreesCurrentVoice.add(Parse((ArrayList<Token>) (a.subList(EndIndOfMajorSect.get(j)+1,EndIndOfMajorSect.get(j+1)+1))));
-            }
+            ArrayList<Token> asub0 = new ArrayList<Token>();
+            asub0.addAll(a.subList(0,EndIndOfMajorSect.get(0)+1));
+
+            TreesCurrentVoice.add(Parse(asub0));
+            for(int j=0;j<EndIndOfMajorSect.size();j++){
+                ArrayList<Token> asub = new ArrayList<Token>();
+                asub.addAll(a.subList(EndIndOfMajorSect.get(j)+1,EndIndOfMajorSect.get(j+1)+1));
+                TreesCurrentVoice.add(Parse(asub));
+            }   
+            //TreesCurrentVoice.add(Parse((ArrayList<Token>) (a.subList(0,EndIndOfMajorSect.get(0)+1))));
+            //for(int j=0;j<EndIndOfMajorSect.size()-1;j++){
+            //    TreesCurrentVoice.add(Parse((ArrayList<Token>) (a.subList(EndIndOfMajorSect.get(j)+1,EndIndOfMajorSect.get(j+1)+1))));
+            //}
             SequenceofVoiceForest.add((ArrayList<AST>) TreesCurrentVoice);             
         }
     }
@@ -200,8 +209,8 @@ public class Parser {
         ArrayList<Token> Parsedlist= new ArrayList<Token>();
         if (BeginRepeat.get(0)!=-1||BeginRepeat.get(0)!=0){
             Parsedlist.addAll(list.subList(0, BeginRepeat.get(0)));
-            Parsedlist.addAll(list.subList(BeginRepeat.get(0), EndRepeat.get(0)));
-            Parsedlist.addAll(list.subList(BeginRepeat.get(0), EndRepeat.get(0)));
+            Parsedlist.addAll(list.subList(BeginRepeat.get(0)+1, EndRepeat.get(0)));
+            Parsedlist.addAll(list.subList(BeginRepeat.get(0)+1, EndRepeat.get(0)));
         }
         else if (BeginRepeat.get(0)==-1){
             Parsedlist.addAll(list.subList(0, EndRepeat.get(0)));

@@ -28,7 +28,7 @@ public class Lexer {
     int size;
     int Tempo;
     ArrayList<Token> token;
-    ArrayList<Token> check1;
+
     int parserPeekIndex;
     int current;
     int Tick;
@@ -57,17 +57,18 @@ public class Lexer {
              FileInputStream fstream1 = new FileInputStream(filename); 
              
              br = new BufferedReader(new InputStreamReader(fstream));
-             String str2;
+
              cr = new BufferedReader(new InputStreamReader(fstream1));
-             while ((str2 = cr.readLine())!=null){
+             while ((cr.readLine())!=null){
             	 checkerline +=1;
              }
              System.out.println(checkerline);
              processNextLine();
-         } catch (Exception e) { 
+         } catch (IOException e) { 
              e.printStackTrace(); 
-              
-         } 
+             throw new RuntimeException(e.getMessage()); 
+             
+         }
          
      } 
     //creates the header token arraylist and music body in string
@@ -218,9 +219,7 @@ public class Lexer {
         System.out.println(output.get(2).string); 
         System.out.println(output.get(11).string);  
         System.out.println(output.get(output.size()-1).string);
-        
-        
-        this.check1 = output;
+
         Chordcheck(output);
 
     }
@@ -439,7 +438,8 @@ public class Lexer {
                         	int num = Integer.parseInt(substring);
                         	output.get(i).num = num;
                         	output.get(i).den = 2;
-                        	System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);}
+                        	System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);
+                        	break;}
                         }
                 }else if (str.matches("(((\\^){1,2})|((\\_){1,2})|(\\=))?[A-Ga-g]((,+)|('+))?[0-9]+")) {
                 	for (int begin = 0; begin < str.length(); begin++) {
@@ -449,7 +449,8 @@ public class Lexer {
                         	int num = Integer.parseInt(substring);
                         	output.get(i).num = num;
                         	output.get(i).den = 1;
-                        	System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);}
+                        	System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);
+                        	break;}
                         }
                 }else if (str.matches("(((\\^){1,2})|((\\_){1,2})|(\\=))?[A-Ga-g]((,+)|('+))?")) {
                     str.concat("1/1");
@@ -620,7 +621,7 @@ public class Lexer {
         }
         this.MusicBody = Body;
         this.size= Body.size();
-        System.out.println("# of arraylist in music body "+Body.size());
+        System.out.println("# of arraylist in musicbody "+ MusicBody.size());
 
     }
     

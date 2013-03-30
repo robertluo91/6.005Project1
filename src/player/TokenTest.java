@@ -2,7 +2,6 @@ package player;
 
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-
 import player.Token.Type;
 
 
