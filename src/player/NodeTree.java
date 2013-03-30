@@ -19,4 +19,5 @@ public class NodeTree implements AST{
     public ArrayList<Token> toArrayList() {
         return node;
     }
+
 }
