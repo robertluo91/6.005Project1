@@ -4,7 +4,6 @@ import org.junit.Test;
 
 
 import static org.junit.Assert.assertEquals;
-import java.io.IOException;
 import java.util.ArrayList;
 import player.Lexer;
 import player.Token;
@@ -219,7 +218,7 @@ public class LexerTest {
     @Test(expected = RuntimeException.class)
     //the 2nd field of header isn't T
     public void Wrongheader1(){        
-        Lexer lexer = new Lexer("wrongheader1.abc");
+        new Lexer("wrongheader1.abc");
    
     }
     
@@ -251,7 +250,6 @@ public class LexerTest {
      * Conduct another 3 header tests to see if lexer is able to correctly generate 
      * Q=100, L="1/8", M="4/4" fields as required
      */
-    
     /**
     @Test(expected = RuntimeException.class)
     //Test repeated info in the header
@@ -263,4 +261,3 @@ public class LexerTest {
     }
     */
 }
-    
