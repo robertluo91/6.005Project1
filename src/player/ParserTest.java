@@ -11,7 +11,7 @@ import player.Token.Type;
 public class ParserTest {    
     @Test
     public void TokeninTreeTest1() {
-        Lexer lexer = new Lexer("sample_abc\\fur_elise.abc");
+        Lexer lexer = new Lexer("fur_elise copy.abc");
         Parser parser = new Parser(lexer);
         System.out.println(parser.size);
         //ArrayList<AST> Voice = parser.SequenceofVoiceForest.get(0);
