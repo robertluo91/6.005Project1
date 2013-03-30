@@ -3,13 +3,24 @@ package player;
 import java.util.HashMap; 
   
 public class KeySignature { 
+    // hash map mapping string key signature to int[]   
+    HashMap<String, int[]> key_signatures = new HashMap<String, int[]>(); 
   
-    // Need to design hash map to map 
-    // key signatures to the respective signature.\ 
+    int[] current_signature; 
+    
+    /**
+     * 
+     * @param key
+     */
+    public KeySignature(String key) { 
+        assignKeySignatures(); 
+        current_signature = key_signatures.get(key); 
+    }
+    
+    // hash map
+    // key signatures to the respective signature.
     // integer array [A, B, C, D, E, F, G, z] 
-    // 0 is neutral 
-    // 1 is sharp 
-    // -1 is flat 
+    // 0 is neutral, 1 is sharp, -1 is flat    
     int[] C = { 0, 0, 0, 0, 0, 0, 0, 0}; 
     int[] G = { 0, 0, 0, 0, 0, 1, 0, 0}; 
     int[] D = { 0, 0, 1, 0, 0, 1, 0, 0}; 
@@ -26,28 +37,10 @@ public class KeySignature {
     int[] Dflat = { -1, -1, 0, -1, -1, 0, -1, 0}; 
     int[] Gflat = { -1, -1, -1, -1, -1, 0, -1, 0}; 
     int[] Cflat = { -1, -1, -1, -1, -1, -1, -1, 0}; 
-  
-    // hash map mapping string key signatures to int[] 
-    // always capitalized, also utilizing ^ for sharp and _ for flat 
-  
-    HashMap<String, int[]> key_signatures = new HashMap<String, int[]>(); 
-  
-    int[] current_signature; 
-  
-    /** 
+    
+    /**
+     * map from key to its equivalence key class (key signature)
      */
-    public KeySignature(String key) { 
-        assignKeySignatures(); 
-        //String key = keyParse(basenote); 
-        current_signature = key_signatures.get(key); 
-    } 
-  
-
-    //private String keyParse(String basenote) { 
-    //    String answer = basenote.trim(); 
-    //    return answer; 
-    //} 
-  
     private void assignKeySignatures() { 
         // sharp signatures 
         key_signatures.put("C", C); 

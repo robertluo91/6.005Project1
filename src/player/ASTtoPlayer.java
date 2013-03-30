@@ -12,12 +12,19 @@ import javax.sound.midi.MidiUnavailableException;
 import sound.Pitch;
 import sound.SequencePlayer;
 
-
+/**
+ * 
+ *
+ */
 public class ASTtoPlayer {
     
     private int beatsPerMinute;
     private int ticksPerBeat;
     private int clock;
+    /**
+     * 
+     * @param parser
+     */
     public ASTtoPlayer(Parser parser){
         ArrayList<ArrayList<AST>> SequenceofVoiceForest = parser.SequenceofVoiceForest;
         ticksPerBeat = parser.tpb;
@@ -35,7 +42,13 @@ public class ASTtoPlayer {
         } catch (InvalidMidiDataException e) {
             e.printStackTrace();
         }
-    }    
+    }  
+    
+    /**
+     * 
+     * @param VoiceForest
+     * @param sp
+     */
     public void traverse(ArrayList<AST> VoiceForest,SequencePlayer sp){
         clock = 0;
         for (int index=0; index<VoiceForest.size();index++){
@@ -43,12 +56,20 @@ public class ASTtoPlayer {
         }
     }
     
-
-
+    /**
+     * 
+     * @param t
+     * @param sp
+     */
     public void traverse(AST t, SequencePlayer sp){
         addNotesInNode(t.toArrayList(),sp);
     }
     
+    /**
+     * 
+     * @param node
+     * @param sp
+     */
     public void addNotesInNode(ArrayList<Token> node,SequencePlayer sp){
         int i = 0;
         while(i < node.size()){
@@ -59,7 +80,7 @@ public class ASTtoPlayer {
                 Token note = node.get(i);
                 if (note.basenote!=7){
                 sp.addNote(new Pitch(intkey[note.basenote]).octaveTranspose(note.octave).transpose(note.accid).toMidiNote(),
-                        clock,(int)note.noteLength);
+                        clock,(int) note.noteLength);
                 }
             }
             i=j+1;
@@ -69,6 +90,5 @@ public class ASTtoPlayer {
     }
 
     public static final char[] intkey = {'A','B','C','D','E','F','G','z'};
-    
         
 }
