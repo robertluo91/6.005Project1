@@ -198,22 +198,22 @@ public class Parser {
         List<Integer> BeginRepeat = new ArrayList<Integer>();
         List<Integer> EndRepeat = new ArrayList<Integer>();
         List<Integer> Repeat = new ArrayList<Integer>();
+        ArrayList<Token> Parsedlist= new ArrayList<Token>();
         
-        int i =0;
-        while (i<list.size()){
-            if (list.get(i).type== Token.Type.RepeatBegin
-                    || list.get(i).type== Token.Type.RepeatEnd){
+        int firstsymbol =0;
+        boolean omitbegin = false;
+       //true when there is an omitted RepeatBegin at the beginning of the major section 
+        while (firstsymbol<list.size()){
+            if (list.get(firstsymbol).type== Token.Type.RepeatBegin){
                 break;
             }
-            i++;
+            else if(list.get(firstsymbol).type== Token.Type.RepeatEnd){
+                omitbegin = true;
+                break;
+            }
+            else firstsymbol++;
         }
-        
-        //complete the RepeatBegin symbol if needed; 
-        //that is when there is an omitted RepeatBegin at the beginning of the major section 
-        if (list.get(i).type== Token.Type.RepeatEnd){
-            BeginRepeat.add(Integer.MAX_VALUE);
-            Repeat.add(Integer.MAX_VALUE);
-        }
+               
         
         for (int j=0;j<list.size();j++){
             if (list.get(j).type== Token.Type.RepeatBegin){
@@ -226,63 +226,69 @@ public class Parser {
             }
         }
         
-        //complete the RepeatEnd symbol if needed
-        int l= BeginRepeat.get(BeginRepeat.size()-1);
-        while (l<list.size()){
-            if (list.get(l).type == Token.Type.RepeatEnd){
-                break;
-            }
-            l++;
-        }
-        
-        if (l>list.size()-1){
-            EndRepeat.add(list.size()-1);
-            Repeat.add(list.size()-1);
-        }
-        
-        //checked nested; when there is no nested repetition, and the repeat symbol completed,
-        //                then pairs of repeat symbols have no overlap 
-        if (EndRepeat.size()!=BeginRepeat.size()){
-            throw new RuntimeException("invalid repetition type");
-        }
-        //if no throw, then Repeat has a size of even number
-        for (int repeat = 0; repeat< Repeat.size()/2-1;repeat++){
-            if (Repeat.get(2*repeat)!=BeginRepeat.get(repeat)){
-                throw new RuntimeException("nested repetition");
-            }
-            if (Repeat.get(2*repeat+1)==BeginRepeat.get(repeat)){
-                throw new RuntimeException("nested repetition");
-            }
-        }
-        
-                
-        ArrayList<Token> Parsedlist= new ArrayList<Token>();
-        if (BeginRepeat.get(0)!=-1&&BeginRepeat.get(0)!=0){
-            Parsedlist.addAll(list.subList(0, BeginRepeat.get(0)));
-            Parsedlist.addAll(list.subList(BeginRepeat.get(0)+1, EndRepeat.get(0)));
-            Parsedlist.addAll(list.subList(BeginRepeat.get(0)+1, EndRepeat.get(0)));
-        }
-        else if (BeginRepeat.get(0)==Integer.MAX_VALUE){
-            Parsedlist.addAll(list.subList(0, EndRepeat.get(0)));
-            Parsedlist.addAll(list.subList(0, EndRepeat.get(0)));
-        }
-        else if (BeginRepeat.get(0)==0){
-            Parsedlist.addAll(list.subList(1, EndRepeat.get(0)));
-            Parsedlist.addAll(list.subList(1, EndRepeat.get(0)));
-        }
-        for (int j=1; j<EndRepeat.size();j++){            
-            Parsedlist.addAll(list.subList(EndRepeat.get(j-1)+1, BeginRepeat.get(j)));
-            Parsedlist.addAll(list.subList(BeginRepeat.get(j)+1, EndRepeat.get(j)));
-            Parsedlist.addAll(list.subList(BeginRepeat.get(j)+1, EndRepeat.get(j)));
-        } 
-        if (EndRepeat.get(EndRepeat.size()-1)!=list.size()-1){
-            Parsedlist.addAll(list.subList(EndRepeat.get(EndRepeat.size()-1)+1,list.size()-1));
-        }
-        
-        if(BeginRepeat.size()==0){
+        if (Repeat.size()==0){
             Parsedlist = list;
         }
         
+        else {
+            boolean omitend = false;
+            //true when there is an omitted RepeatEnd at the end of the major section
+            int l= BeginRepeat.get(BeginRepeat.size()-1);
+            while (l<list.size()){
+                if (list.get(l).type == Token.Type.RepeatEnd){
+                    break;
+                }
+                else l++;
+            }
+            
+            if (l==list.size()-1){
+                omitend = true;
+            }
+            
+            //checked nested; when there is no nested repetition, and the repeat symbol completed,
+            //                then pairs of repeat symbols have no overlap 
+            int begincorrection = 0;
+            if (omitbegin) begincorrection=1;
+            if (omitend) EndRepeat.add(list.size()); Repeat.add(list.size());
+            if ((BeginRepeat.size()+begincorrection)!=EndRepeat.size()){
+                throw new RuntimeException("invalid repetition type");
+            }
+            int Repeatsize = Repeat.size()+ begincorrection;
+            //if no throw, then Repeat has a size of even number        
+            for (int repeat = 0; repeat< Repeatsize/2-begincorrection;repeat++){
+                if (Repeat.get(2*repeat+begincorrection)!=BeginRepeat.get(repeat)){
+                    throw new RuntimeException("nested repetition");
+                }
+                if (Repeat.get(2*repeat-begincorrection+1)!=EndRepeat.get(repeat)){
+                    throw new RuntimeException("nested repetition");
+                }
+            }
+           
+            
+            if (BeginRepeat.get(0)!=0){
+                if (!omitbegin){
+                Parsedlist.addAll(list.subList(0, BeginRepeat.get(0)));
+                Parsedlist.addAll(list.subList(BeginRepeat.get(0)+1, EndRepeat.get(0)));
+                Parsedlist.addAll(list.subList(BeginRepeat.get(0)+1, EndRepeat.get(0)));
+                }
+                else{
+                    Parsedlist.addAll(list.subList(0, EndRepeat.get(0)));
+                    Parsedlist.addAll(list.subList(0, EndRepeat.get(0)));
+                }
+            }        
+            else {
+                Parsedlist.addAll(list.subList(1, EndRepeat.get(0)));
+                Parsedlist.addAll(list.subList(1, EndRepeat.get(0)));
+            }
+            for (int j=1; j<EndRepeat.size();j++){            
+                Parsedlist.addAll(list.subList(EndRepeat.get(j-1)+1, BeginRepeat.get(j-begincorrection)));
+                Parsedlist.addAll(list.subList(BeginRepeat.get(j-begincorrection)+1, EndRepeat.get(j)));
+                Parsedlist.addAll(list.subList(BeginRepeat.get(j-begincorrection)+1, EndRepeat.get(j)));
+            } 
+            if (EndRepeat.get(EndRepeat.size()-1)!=list.size()-1){
+                Parsedlist.addAll(list.subList(EndRepeat.get(EndRepeat.size()-1)+1,list.size()-1));
+            }                    
+        }
         //remove all symbols except pitch, and rest 
         int m = Parsedlist.size()-1;
         while (m>-1){
