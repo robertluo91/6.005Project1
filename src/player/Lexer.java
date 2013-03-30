@@ -46,11 +46,11 @@ public class Lexer {
     //constructor takes in the name of the file, and BufferedReader reads the
     //content in the abc file, and store it into br? 
     public Lexer(String filename) {
-    	 this.filename = filename;
-    	 fstream = null;
-    	 br = null;
-    	 headernum = 0;
-    	 bodyline =0;
+         this.filename = filename;
+         fstream = null;
+         br = null;
+         headernum = 0;
+         bodyline =0;
          try { 
              fstream = new FileInputStream(filename);
              
@@ -60,7 +60,7 @@ public class Lexer {
 
              cr = new BufferedReader(new InputStreamReader(fstream1));
              while ((cr.readLine())!=null){
-            	 checkerline +=1;
+                 checkerline +=1;
              }
              System.out.println(checkerline);
              processNextLine();
@@ -73,83 +73,83 @@ public class Lexer {
      } 
     //creates the header token arraylist and music body in string
     public void processNextLine() throws IOException { 
-    	
+        
         String str; 
         String str1;
         ArrayList<Token> headerinfo = new ArrayList<Token>();
         str = br.readLine();
         if (str.startsWith("X:")){
-        	System.out.println(str);
-        	headerinfo.add(new Token(Type.X, str, 0, 0, 0, 0,0,0,0));
-        	headernum++;
-        	str = br.readLine();
-        	checkerline -=1;
+            System.out.println(str);
+            headerinfo.add(new Token(Type.X, str, 0, 0, 0, 0,0,0,0));
+            headernum++;
+            str = br.readLine();
+            checkerline -=1;
         }else{
-        	throw new IOException("the 1st field of header isn't X");
+            throw new IOException("the 1st field of header isn't X");
         }
         if (str.startsWith("T:")){
-        	System.out.println(str);
-        	headerinfo.add(new Token(Type.T, str, 0, 0, 0, 0,0,0,0));
-        	headernum++;
-        	str = br.readLine();
-        	checkerline -=1;
+            System.out.println(str);
+            headerinfo.add(new Token(Type.T, str, 0, 0, 0, 0,0,0,0));
+            headernum++;
+            str = br.readLine();
+            checkerline -=1;
         }else{
-        	throw new IOException("the 2nd field of header isn't T");
+            throw new IOException("the 2nd field of header isn't T");
         }
         boolean headercheck = true;
         while (headercheck==true){
-        	if (str.startsWith("X:")||str.startsWith("T:")){
-        		throw new IOException("repeated X or T type");
+            if (str.startsWith("X:")||str.startsWith("T:")){
+                throw new IOException("repeated X or T type");
         }
-        	else if (str.startsWith("C:")||str.startsWith("L:")||str.startsWith("Q:")||
-        			str.startsWith("M:")||str.startsWith("V:")){
-        		for (int i =0; i<headerinfo.size(); i++){
-        			if (headerinfo.get(i).string == str){
-        				throw new IOException("repeated C,L,Q,M,Vi types");}}  
-        		for (Type t : Type.values()) {
+            else if (str.startsWith("C:")||str.startsWith("L:")||str.startsWith("Q:")||
+                    str.startsWith("M:")||str.startsWith("V:")){
+                for (int i =0; i<headerinfo.size(); i++){
+                    if (headerinfo.get(i).string == str){
+                        throw new IOException("repeated C,L,Q,M,Vi types");}}  
+                for (Type t : Type.values()) {
                     Token testToken = new Token(t, "", 0, 0, 0, 0,0,0,0);                    
                     if (testToken.pattern.matcher(str).matches()) {
-                    	
-                    	headerinfo.add(new Token(t, str, 0, 0, 0, 0,0,0,0)); 
-                    	System.out.println(str);
-                       	headernum++;
-                       	str = br.readLine();
-                       	checkerline -=1;}
-        			}
-        	}
-        	else if (str.startsWith("K:")){
-            	headerinfo.add(new Token(Type.K, str, 0, 0, 0, 0,0,0,0));
-            	System.out.println(str);
-            	headernum++;
-            	
-            	headercheck = false;
-            	checkerline -=1;
-            	System.out.println(checkerline);
-            	}
-        	else{
-        		throw new IOException("K is not that last field of the header"); 
-        	}
+                        
+                        headerinfo.add(new Token(t, str, 0, 0, 0, 0,0,0,0)); 
+                        System.out.println(str);
+                        headernum++;
+                        str = br.readLine();
+                        checkerline -=1;}
+                    }
+            }
+            else if (str.startsWith("K:")){
+                headerinfo.add(new Token(Type.K, str, 0, 0, 0, 0,0,0,0));
+                System.out.println(str);
+                headernum++;
+                
+                headercheck = false;
+                checkerline -=1;
+                System.out.println(checkerline);
+                }
+            else{
+                throw new IOException("K is not that last field of the header"); 
+            }
         }
         bodystring = new ArrayList<String>();
-        while (checkerline >0){        	
-        	str1 = br.readLine();
-        	System.out.println(str1);
-        	
-        	if (str1.startsWith("X:")||str1.startsWith("C:")||str1.startsWith("L:")||str1.startsWith("Q:")||
-        			str1.startsWith("M:")||str1.startsWith("T:")||(str1.startsWith("K:"))){
-        		
-        		throw new IOException("headerinfo appeared in the body");
-        			
-        		}
-        	else{
-        		
-        		bodystring.add(str1);        		
-        		bodyline +=1;       		
-        		checkerline -=1;
-        		
-        	}
+        while (checkerline >0){         
+            str1 = br.readLine();
+            System.out.println(str1);
+            
+            if (str1.startsWith("X:")||str1.startsWith("C:")||str1.startsWith("L:")||str1.startsWith("Q:")||
+                    str1.startsWith("M:")||str1.startsWith("T:")||(str1.startsWith("K:"))){
+                
+                throw new IOException("headerinfo appeared in the body");
+                    
+                }
+            else{
+                
+                bodystring.add(str1);               
+                bodyline +=1;               
+                checkerline -=1;
+                
+            }
         }
-        	
+            
         this.totalnum = headernum + bodyline;
         this.MusicHeader= headerinfo;
         KeyTempo(MusicHeader);
@@ -168,12 +168,12 @@ public class Lexer {
         ArrayList<Token> output = new ArrayList<Token>();
         // create an arraylist "output" to put all the tokens generated inside
         for (int a=0; a<bodystring.size(); a++){
-        	String string= bodystring.get(a);
-        	int length = string.length();
-        	if (length ==0){
-        		throw new RuntimeException("Emptyline in music body");
-        	}
-        	//System.out.println(length);
+            String string= bodystring.get(a);
+            int length = string.length();
+            if (length ==0){
+                throw new RuntimeException("Emptyline in music body");
+            }
+            //System.out.println(length);
 
         current = 0;
         //parserPeekIndex = 0;
@@ -186,32 +186,32 @@ public class Lexer {
                 for (Type t : Type.values()) {
                     Token testToken = new Token(t, "", 0, 0, 0, 0, 0,0,0);                    
                     if (testToken.pattern.matcher(currentString).matches()) {
-                    	anyMatchSoFar = true;  
-                    	current = i;
-                    	Token T = new Token(t, currentString, 0, 0, 0, 0, 0,0,0);
-                    	output.add(T);
-                    	if (t==Type.V){
-                    		//System.out.println(currentString+" "+currentString.length());
-                    		boolean c = false;
-                    		//string is immutable type!!!!!
-                    		
-                    	for (int b =0; b<MusicHeader.size(); b++){
-                    		//System.out.println(MusicHeader.get(b).string +" "+ MusicHeader.get(b).string.length());
-                			if (MusicHeader.get(b).string.equals(currentString)){                					
-                				c= true;
-                				break;}
-                    	}
-                		if (c==false){		
-                				throw new RuntimeException("Voice didn't appear in the header");}}
-                    	}
+                        anyMatchSoFar = true;  
+                        current = i;
+                        Token T = new Token(t, currentString, 0, 0, 0, 0, 0,0,0);
+                        output.add(T);
+                        if (t==Type.V){
+                            //System.out.println(currentString+" "+currentString.length());
+                            boolean c = false;
+                            //string is immutable type!!!!!
+                            
+                        for (int b =0; b<MusicHeader.size(); b++){
+                            //System.out.println(MusicHeader.get(b).string +" "+ MusicHeader.get(b).string.length());
+                            if (MusicHeader.get(b).string.equals(currentString)){                                   
+                                c= true;
+                                break;}
+                        }
+                        if (c==false){      
+                                throw new RuntimeException("Voice didn't appear in the header");}}
+                        }
                    }
                 }
             if (!anyMatchSoFar) {
                 //??not necessary? indicates a blank space in the beginning of the string:
                 // skip to the next position
                 current++;
-            	}
-        	}
+                }
+            }
         }
         
         System.out.println(output.get(0).string);
@@ -249,20 +249,20 @@ public class Lexer {
                 
                 int k = 0;
                 for (int a =i+1; a< output.size(); a++){
-                	if (output.get(a).type == Type.Pitch
+                    if (output.get(a).type == Type.Pitch
                             || output.get(a).type == Type.Rest) {
-                		k +=1;
-                	}
-                	else if (output.get(i).type != Type.Pitch
+                        k +=1;
+                    }
+                    else if (output.get(i).type != Type.Pitch
                         && output.get(i).type != Type.Rest && output.get(a).type != Type.ChordsEnd){
-                		throw new RuntimeException(
+                        throw new RuntimeException(
                                 "there are types other than pitch and rest in chord");
-                	}
-                	else if (output.get(a).type == Type.ChordsEnd){
-                		output.get(i+1).chord = k;
-                		System.out.println(i+1 + " k equals" + k+" " +output.get(i+1).chord);
-                		break;
-                	}
+                    }
+                    else if (output.get(a).type == Type.ChordsEnd){
+                        output.get(i+1).chord = k;
+                        System.out.println(i+1 + " k equals" + k+" " +output.get(i+1).chord);
+                        break;
+                    }
                 }
             
             }
@@ -364,7 +364,7 @@ public class Lexer {
                     output.get(i).num = nom;
                     output.get(i).den = 2;
                     System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den);
-                }	else if (str.matches("z[0-9]+")) {
+                }   else if (str.matches("z[0-9]+")) {
                     
                     int num = Integer.parseInt(str.substring(1));
                     output.get(i).basenote = 7;
@@ -431,26 +431,26 @@ public class Lexer {
                     output.get(i).den = denom;
                     System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);
                 } else if (str.matches("(((\\^){1,2})|((\\_){1,2})|(\\=))?[A-Ga-g]((,+)|('+))?[0-9]+/")) {
-                	for (int begin = 0; begin < str.length(); begin++) {
+                    for (int begin = 0; begin < str.length(); begin++) {
 
                         String substring = str.substring(begin, str.length()-1);
                         if (substring.matches("[0-9]+")) {
-                        	int num = Integer.parseInt(substring);
-                        	output.get(i).num = num;
-                        	output.get(i).den = 2;
-                        	System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);
-                        	break;}
+                            int num = Integer.parseInt(substring);
+                            output.get(i).num = num;
+                            output.get(i).den = 2;
+                            System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);
+                            break;}
                         }
                 }else if (str.matches("(((\\^){1,2})|((\\_){1,2})|(\\=))?[A-Ga-g]((,+)|('+))?[0-9]+")) {
-                	for (int begin = 0; begin < str.length(); begin++) {
+                    for (int begin = 0; begin < str.length(); begin++) {
 
                         String substring = str.substring(begin);
                         if (substring.matches("[0-9]+")) {
-                        	int num = Integer.parseInt(substring);
-                        	output.get(i).num = num;
-                        	output.get(i).den = 1;
-                        	System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);
-                        	break;}
+                            int num = Integer.parseInt(substring);
+                            output.get(i).num = num;
+                            output.get(i).den = 1;
+                            System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);
+                            break;}
                         }
                 }else if (str.matches("(((\\^){1,2})|((\\_){1,2})|(\\=))?[A-Ga-g]((,+)|('+))?")) {
                     str.concat("1/1");
@@ -501,15 +501,15 @@ public class Lexer {
                         }
                         if (chord) {
                             if (output.get(start).type == Type.Pitch || output.get(start).type == Type.Rest) {
-                            	
+                                
                                 output.get(start).num = output.get(start).num* (tup - 1);
                                 output.get(start).den = output.get(start).den* tup;
                                 System.out.println("tupletschord:position at"+" "+start+" "+output.get(start).string+" "+output.get(start).basenote+" "+output.get(start).num+" "+output.get(start).den+" "+output.get(start).accid+" "+output.get(start).octave);
                             }
                         } else {
                             if (output.get(start).type == Type.Pitch || output.get(start).type == Type.Rest) {
-                            	
-                            	output.get(start).num = output.get(start).num* (tup - 1);
+                                
+                                output.get(start).num = output.get(start).num* (tup - 1);
                                 output.get(start).den = output.get(start).den* tup;
                                 System.out.println("tuplets:position at"+" "+start+" "+output.get(start).string+" "+output.get(start).basenote+" "+output.get(start).num+" "+output.get(start).den+" "+output.get(start).accid+" "+output.get(start).octave);
                                 k++;
@@ -560,15 +560,15 @@ public class Lexer {
     
     //delete all the whitespace type and comment type in token
     public void WCDelete(ArrayList<Token> output) {
-    	for (int i= 0; i<output.size(); i++){
-    		if (output.get(i).type==Type.Whitespace ||output.get(i).type==Type.Comment){
-    			System.out.println(output.get(i).string+" whitespace or comment");
-    			output.remove(output.get(i));
-    			 			
-    		}
-    	}
-    	token = output;
-    	MusicBody(token, voicecounter);
+        for (int i= 0; i<output.size(); i++){
+            if (output.get(i).type==Type.Whitespace ||output.get(i).type==Type.Comment){
+                System.out.println(output.get(i).string+" whitespace or comment");
+                output.remove(output.get(i));
+                            
+            }
+        }
+        token = output;
+        MusicBody(token, voicecounter);
     }
 
     public void MusicBody(ArrayList<Token> output, ArrayList<Token> voicecounter) {
@@ -589,19 +589,19 @@ public class Lexer {
                 for (int i = 0; i < output.size(); i++) {
                     
                     if (output.get(i).type == Type.V) {
-                    	
-                    	for (int voice = 0; voice<voicecounter.size();voice++){
-                    		if (voicecounter.get(voice).string.equals(output.get(i).string)){
-                    			
-                    			counter = voice;
-                    			break;
-                    		}
-                    	}                     
+                        
+                        for (int voice = 0; voice<voicecounter.size();voice++){
+                            if (voicecounter.get(voice).string.equals(output.get(i).string)){
+                                
+                                counter = voice;
+                                break;
+                            }
+                        }                     
                     }
                     else{
                     if (counter == a) {
                         VoiceArray.add(output.get(i));
-                    	}
+                        }
                     }
                 }
                 String str = VoiceArray.get(VoiceArray.size()-1).string;
@@ -627,15 +627,15 @@ public class Lexer {
     
     //converts a letter in string format into an int [0-7]
     public int stringToNumber(String str) {
-    	  char[] ls = "ABCDEFGZ".toCharArray();
-    	  Map<Character, Integer> m = new HashMap<Character, Integer>();
-    	  int j = 0;
-    	  for(char c: ls) {
-    	    m.put(c, j++);
-    	  }
-    	  
-    	  return m.get(str.charAt(0));
-    	}
+          char[] ls = "ABCDEFGZ".toCharArray();
+          Map<Character, Integer> m = new HashMap<Character, Integer>();
+          int j = 0;
+          for(char c: ls) {
+            m.put(c, j++);
+          }
+          
+          return m.get(str.charAt(0));
+        }
 
     private static int lcm(int a, int b) {
         long A = a;

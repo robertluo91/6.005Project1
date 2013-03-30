@@ -3,7 +3,6 @@ package player;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import java.io.IOException;
 import java.util.ArrayList;
 import player.Lexer;
 import player.Token;
@@ -218,7 +217,7 @@ public class LexerTest {
     @Test(expected = RuntimeException.class)
     //the 2nd field of header isn't T
     public void Wrongheader1(){        
-        Lexer lexer = new Lexer("wrongheader1.abc");
+        new Lexer("wrongheader1.abc");
    
     }
     
