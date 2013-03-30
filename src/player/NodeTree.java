@@ -2,9 +2,6 @@ package player;
 
 import java.util.ArrayList;
 
-
-public class NodeTree<E> implements AST<E>{
-
 public class NodeTree implements AST{
     final ArrayList<Token> node;
     
