@@ -1,8 +1,9 @@
 package player;
-
+import java.lang.RuntimeException;
 import java.util.ArrayList;
+
 import java.io.BufferedReader; 
-import java.io.DataInputStream; 
+
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.IOException; 
@@ -16,9 +17,7 @@ import java.util.HashMap;
  * A lexer takes a string and splits it into tokens that are meaningful to a
  * parser. For detailed description of token types, see Token.java
  */
-public class Lexer {
-
-    
+public class Lexer {    
 
     ArrayList<ArrayList<Token>> MusicBody;
     ArrayList<Token> MusicHeader; 
@@ -26,39 +25,134 @@ public class Lexer {
     ArrayList<Token> voicecounter;
     int Tempo;
     ArrayList<Token> token;
-    int currentlen;
+    ArrayList<Token> check1;
     int parserPeekIndex;
+    int current;
     int Tick;
+    int headernum;
+    int bodyline;
+    int totalnum;
     final String filename; 
-    final FileInputStream fstream; 
-    final DataInputStream in; 
-    final BufferedReader br; 
+    FileInputStream fstream; 
+   
+    BufferedReader br; 
 
     //constructor takes in the name of the file, and BufferedReader reads the
     //content in the abc file, and store it into br? 
     public Lexer(String filename) {
-    	 this.filename = filename; 
+    	 this.filename = filename;
+    	 fstream = null;
+    	 br = null;
+    	 headernum = 0;
+    	 bodyline =0;
          try { 
              fstream = new FileInputStream(filename); 
-             in = new DataInputStream(fstream); 
-             br = new BufferedReader(new InputStreamReader(in)); 
+             
+             br = new BufferedReader(new InputStreamReader(fstream));
+             processNextLine();
          } catch (Exception e) { 
              e.printStackTrace(); 
-             throw new RuntimeException("Error: " + e.getMessage()); 
+              
          } 
-        
+         
      } 
-    //throws IOException for some cases?
+    //creates the header token arraylist and music body in string
     public void processNextLine() throws IOException { 
     	
-        String strLine; 
-        String string = "";
-        while ( (strLine = br.readLine())!= null){
-        	string += strLine;
-        	
+        String str; 
+        String string="";
+        ArrayList<Token> headerinfo = new ArrayList<Token>();
+        while ((str = br.readLine()) != null){
+        	System.out.println(str);
+        	if (str.startsWith("X:")){
+        		for (int i =0; i<headerinfo.size(); i++){
+        			if (headerinfo.get(i).string == str){
+        				throw new IOException("same piece of header info appeared twice");
+        			}
+        		}
+        		headerinfo.add(new Token(Type.X, str, 0, 0.0, 0, 0,0));
+        		headernum++;
+        	}
+        	else if (str.startsWith("C:")){
+        		for (int i =0; i<headerinfo.size(); i++){
+        			if (headerinfo.get(i).string == str){
+        				throw new IOException("same piece of header info appeared twice");
+        			}
+        		}
+        		headerinfo.add(new Token(Type.C, str, 0, 0.0, 0, 0,0));
+        		headernum++;
+        	}
+        	else if (str.startsWith("L:")){
+        		for (int i =0; i<headerinfo.size(); i++){
+        			if (headerinfo.get(i).string == str){
+        				throw new IOException("same piece of header info appeared twice");
+        			}
+        		}
+        		headerinfo.add(new Token(Type.L, str, 0, 0.0, 0, 0,0));
+        		headernum++;
+        	}
+        	else if (str.startsWith("M:")){
+        		for (int i =0; i<headerinfo.size(); i++){
+        			if (headerinfo.get(i).string == str){
+        				throw new IOException("same piece of header info appeared twice");
+        			}
+        		}
+        		headerinfo.add(new Token(Type.M, str, 0, 0.0, 0, 0,0));
+        		headernum++;
+        	}
+        	else if (str.startsWith("Q:")){
+        		for (int i =0; i<headerinfo.size(); i++){
+        			if (headerinfo.get(i).string == str){
+        				throw new IOException("same piece of header info appeared twice");
+        			}
+        		}
+        		headerinfo.add(new Token(Type.Q, str, 0, 0.0, 0, 0,0));
+        		headernum++;
+        	}
+        	else if (str.startsWith("T:")){
+        		for (int i =0; i<headerinfo.size(); i++){
+        			if (headerinfo.get(i).string == str){
+        				throw new IOException("same piece of header info appeared twice");
+        			}
+        		}
+        		headerinfo.add(new Token(Type.T, str, 0, 0.0, 0, 0,0));
+        		headernum++;
+        	}
+        	else if (str.startsWith("K:")){
+        		for (int i =0; i<headerinfo.size(); i++){
+        			if (headerinfo.get(i).string == str){
+        				throw new IOException("same piece of header info appeared twice");
+        			}
+        		}
+        		headerinfo.add(new Token(Type.K, str, 0, 0.0, 0, 0,0));
+        		headernum++;
+        	}
+        	else if (str.startsWith("V:")){
+                int i=0;                
+                while (i<headerinfo.size()){
+                    if (headerinfo.get(i).string == str){
+                        break;
+                    }
+                    else i++;
+                }
+                if (i==headerinfo.size()){
+                    headerinfo.add(new Token(Type.V, str, 0, 0.0, 0, 0,0));
+                    headernum++;
+                }
+                else{
+                    string += str;
+                    bodyline += 1;
+                }
+        	}
+        	else {
+        		string += str;
+        		bodyline += 1;
+        		}
         }
-        
-        Read(string);
+        this.totalnum = headernum + bodyline;
+        this.MusicHeader= headerinfo;
+        //KeyTempo(MusicHeader);
+        BodyTokenize(string);
          
     } 
     /**
@@ -67,45 +161,53 @@ public class Lexer {
      * @param string
      *            : The string to tokenize.
      */
-    public void Read(String string){
+    public void BodyTokenize(String string){
 
-        // iterate through the input string and identify tokens;
-        // append tokens to the global output list
-        String Expression = new String(string);
+        
         ArrayList<Token> output = new ArrayList<Token>();
         // create an arraylist "output" to put all the tokens generated inside
-        int length = Expression.length();
-        currentlen = 0;
-        parserPeekIndex = 0;
+        int length = string.length();
+        System.out.println(length);
 
-        while (currentlen < length) {
-            boolean anyMatchSoFar = false;
-            for (int i = currentlen + 1; i < length; i++) {
-                String currentString = Expression.substring(currentlen, i);
-                Type[] typelist = { Type.M, Type.C, Type.K, Type.L, Type.Q,
-                        Type.T, Type.X, Type.V, Type.Rest, Type.Pitch,
-                        Type.Tuplets, Type.ChordsBegin, Type.ChordsEnd,
-                        Type.Barline, Type.RepeatBegin, Type.RepeatEnd,
-                        Type.Repeat_first, Type.Repeat_second, Type.Whitespace, Type.Comment };
-                for (Type t : typelist) {
-                    Token testToken = new Token(t, "", 0, 0.0, 0, 0,0);
+        current = 0;
+        //parserPeekIndex = 0;
+
+        while (current <length) {
+            boolean anyMatchSoFar = false;            
+            for (int i = length; i >current; i--) {
+                //find the longeset possible valid token
+                String currentString = string.substring(current, i);                
+                for (Type t : Type.values()) {
+                    Token testToken = new Token(t, "", 0, 0.0, 0, 0,0);                    
                     if (testToken.pattern.matcher(currentString).matches()) {
-                        // a token has been identified because its Matcher
-                        // matches method == True
-                        anyMatchSoFar = true;
-                        currentlen = i;
-                        output.add(new Token(t, currentString, 0, 0.0, 0, 0,0));
-
+                    	anyMatchSoFar = true;  
+                    	current = i;
+                    	output.add(new Token(t, currentString, 0, 0.0, 0, 0,0));                       
                     }
                 }
             }
             if (!anyMatchSoFar) {
-                // indicates a blank space in the very beginning of the string:
+                // indicates a blank space in the beginning of the string:
                 // skip to the next position
-                currentlen++;
+                throw new RuntimeException("invalid input");
             }
         }
-        Chordcheck(output);
+       
+        System.out.println(output.get(0).string);
+        System.out.println(output.get(1).string);
+        System.out.println(output.get(2).string);
+        System.out.println(output.get(3).string);
+        System.out.println(output.get(4).string);
+        System.out.println(output.get(5).string);
+        System.out.println(output.get(6).string);
+        System.out.println(output.get(7).string);
+        System.out.println(output.get(8).string);
+        System.out.println(output.get(9).string);
+        System.out.println(output.get(10).string);
+        System.out.println(output.get(11).string);
+        System.out.println(output.get(12).string);
+        this.check1 = output;
+        //Chordcheck(output);
 
     }
 
@@ -117,7 +219,7 @@ public class Lexer {
         for (int i = 0; i < output.size(); i++) {
             if (output.get(i).type == Type.ChordsBegin)
                 diff++;
-            if (output.get(i).type == Type.ChordsEnd)
+            else if (output.get(i).type == Type.ChordsEnd)
                 diff--;
             if (diff > 1)
                 throw new RuntimeException("2 or more consecutive chordbegin");
@@ -151,67 +253,11 @@ public class Lexer {
             
             }
         }
-        Header(output);
+        token = output;
+        //NoteLength(output);
     }
     
-    
-/**
-    // The following ChordGen method generates Chord type tokens, it's not used
-    // at this point, maybe delete later
-    public void ChordGen(String string) {
-        String Expression = new String(string);
-        ArrayList<Token> output = new ArrayList<Token>();
-        int length = Expression.length();
-        while (currentlen < length) {
-            boolean anyMatchSoFar = false;
-            for (int i = currentlen + 1; i < length; i++) {
-                String currentString = Expression.substring(currentlen, i);
-                Type[] typelist = { Type.M, Type.C, Type.K, Type.L, Type.Q,
-                        Type.T, Type.X, Type.V, Type.Rest, Type.Pitch,
-                        Type.Tuplets, Type.Chord, Type.Barline,
-                        Type.RepeatBegin, Type.RepeatEnd, Type.Repeat_first,
-                        Type.Repeat_second, Type.Whitespace };
-                for (Type t : typelist) {
-                    Token testToken = new Token(t, "", 0, 0.0, 0, 0,0);
-                    if (testToken.pattern.matcher(currentString).matches()) {
-                        anyMatchSoFar = true;
-                        currentlen = i;
-                        output.add(new Token(t, currentString, 0, 0.0, 0, 0,0));
-                    }
-                }
-            }
-            if (!anyMatchSoFar) {
-                currentlen++;
-            }
-        }
-    }
-*/
-    
-    // adds all the header tokens into Headers and remove them from output
-    // make sure V1, V2, etc is only added to header once if they exist
-    public void Header(ArrayList<Token> output) {
-        ArrayList<Token> Headers = new ArrayList<Token>();
-        for (int i = 0; i < output.size(); i++) {
-            String str = output.get(i).string;
-            if (str.startsWith("C:") || str.startsWith("K:")
-                    || str.startsWith("L:") || str.startsWith("M:")
-                    || str.startsWith("Q:") || str.startsWith("T:")
-                    || str.startsWith("X:")) {
-                Headers.add(output.get(i));
-                output.remove(i);
-            }
-            if (str.startsWith("V:")) {
-                if (Headers.contains(output.get(i)) == false) {
-                    Headers.add(output.get(i));
-                    output.remove(i);
-                }
-            }
-        }
-        this.MusicHeader = Headers;
-
-        KeyTempo(Headers);
-    }
-
+    //get the Tempo and Key of the music from header and get all the voices into voicecounter
     public void KeyTempo(ArrayList<Token> Headers) {
         ArrayList<Token> voicecounter = new ArrayList<Token>();
         for (int i = 0; i < Headers.size(); i++) {
@@ -221,7 +267,7 @@ public class Lexer {
             if (str.startsWith("V:")) {
                 voicecounter.add(Headers.get(i));
             }
-            if (str.startsWith("K:")) {
+            else if (str.startsWith("K:")) {
                 keychecker = 1;
                 str = str.substring(2);
                 if (str.startsWith(" ")) {
@@ -229,7 +275,7 @@ public class Lexer {
                 }
                 this.Key = str;
             }
-            if (str.startsWith("Q:")) {
+            else if (str.startsWith("Q:")) {
                 Tempochecker = 1;
                 str = str.substring(2);
                 if (str.startsWith(" ")) {
@@ -238,10 +284,12 @@ public class Lexer {
                 this.Tempo = Integer.parseInt(str);
             }
             if (keychecker == 0) {
-                this.Key = "C"; // default Key
+                this.Key = "C";// default Key
+                keychecker = 1;
             }
             if (Tempochecker == 0) {
                 this.Tempo = 100; // default Tempo
+                Tempochecker = 1;
             }
 
         }
@@ -364,7 +412,7 @@ public class Lexer {
                         if (output.get(start).type == Type.ChordsBegin) {
                             chord = true;
                         }
-                        if (output.get(start).type == Type.ChordsEnd) {
+                        else if (output.get(start).type == Type.ChordsEnd) {
                             chord = false;
                             k++;
                         }
@@ -384,7 +432,7 @@ public class Lexer {
                                 k++;
                             }
                             if (output.get(start).type != Type.Rest
-                                    && output.get(start).type != Type.Pitch) {
+                                    && output.get(start).type != Type.Pitch && output.get(start).type != Type.ChordsEnd) {
                                 throw new RuntimeException(
                                         "other types other than Pitch, Rest, or 'chord' in tuplets");
                             }
@@ -399,7 +447,7 @@ public class Lexer {
         token = output;
     }
 
-    // calculates all the least common mutiple for all the denominators in the
+    // calculates all the least common multiple for all the denominators in the
     // notelengths for pitch, rest
     public void LCM(ArrayList<Token> output) {
         ArrayList<Integer> Denom = new ArrayList<Integer>();
@@ -443,11 +491,11 @@ public class Lexer {
         }
         token = output;
         this.Tick = Tick;
-        WhiteDelete(output);
+        WCDelete(output);
     }
     
-    //delete all the whitespace type and Percent type in token
-    public void WhiteDelete(ArrayList<Token> output) {
+    //delete all the whitespace type and comment type in token
+    public void WCDelete(ArrayList<Token> output) {
     	for (int i= 0; i<output.size(); i++){
     		if (output.get(i).type==Type.Whitespace ||output.get(i).type==Type.Comment){
     			output.remove(output.get(i));
@@ -473,8 +521,8 @@ public class Lexer {
 
                 int counter = -1;
                 for (int i = 0; i < output.size(); i++) {
-                    String str = output.get(i).string;
-                    if (str.startsWith("V:")) {
+                    
+                    if (output.get(i).type == Type.V) {
                         if (voicecounter.contains(output.get(i))) {
                             counter = voicecounter.indexOf(output.get(i));
                             continue;
@@ -484,13 +532,14 @@ public class Lexer {
                         } // 1st error check to see if V in the body also
                             // appeared in the header
                     }
-
+                    else{
                     if (counter == a) {
                         VoiceArray.add(output.get(i));
                     }
+                    }
                 }
                 String str = VoiceArray.get(-1).string;
-                if (str.matches("\\| | \\|\\] | \\|\\| | :\\|") == false) {
+                if (str.matches("\\||\\|\\]|\\|\\||:\\|") == false) {
                     throw new RuntimeException(
                             "The ending of the voice isn't marked with |, |], :|, or ||");
                 } // 2nd error check for ending
@@ -505,7 +554,7 @@ public class Lexer {
     public int stringToNumber(String str) {
     	  char[] ls = "ABCDEFGZ".toCharArray();
     	  Map<Character, Integer> m = new HashMap<Character, Integer>();
-    	  int j = 1;
+    	  int j = 0;
     	  for(char c: ls) {
     	    m.put(c, j++);
     	  }
@@ -582,5 +631,10 @@ public class Lexer {
             throw new Exception("Syntax error at token " + peeked
                     + ", expecting " + t);
         }
+    }
+    //delete after debugging
+    public void main(String args[]){
+    	Lexer l = new Lexer("piece1copy.abc");
+    	
     }
 }
