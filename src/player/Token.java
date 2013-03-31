@@ -65,7 +65,6 @@ public class Token {
         this.accid = accid;
         this.octave = octave;
         this.chord = chord;
-        this.isNatural = isNatural;
         switch (type) {
         case M:
             this.pattern = Pattern.compile("M:.*");
