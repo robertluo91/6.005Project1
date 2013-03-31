@@ -88,7 +88,7 @@ public class Parser {
                 if ((a.get(i).type == Token.Type.Pitch)&&(a.get(i).isNatural == false)){
                     a.get(i).accid += KeySig.current_signature[a.get(i).basenote];  
                 }
-                if ((a.get(i).accid>2||a.get(i).accid<-2)&&(a.get(i).isNatural == false)){
+                if (a.get(i).accid>2||a.get(i).accid<-2){
                     throw new RuntimeException("invalid use of accid");
                 }
                 
