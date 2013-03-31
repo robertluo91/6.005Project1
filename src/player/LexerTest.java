@@ -102,7 +102,7 @@ public class LexerTest {
         Token[] expected = { new Token(Type.ChordsBegin, "[", 0,0,0, 0,0,0,0),   
                 new Token(Type.Pitch, "^F/",5,1,2, 3,1,0,2), new Token(Type.Pitch, "e/",4,1,2, 3,0,1,0),
                 new Token(Type.ChordsEnd, "]",0,0,0, 0,0,0,0), new Token(Type.ChordsBegin, "[",0,0,0, 0,0,0,0),
-                new Token(Type.Pitch, "F/",5,1,2, 3,0,0,2) };           
+                new Token(Type.Pitch, "F/",5,1,2, 3,1,0,2) };           
         for (int i=0;i<expected.length;i++){
         	assertTokenEquals(resultTokens.get(i), expected[i]);
         }

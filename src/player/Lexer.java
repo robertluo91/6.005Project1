@@ -343,41 +343,45 @@ public class Lexer {
     // also changes basenote, octave, accid fields for Rest, Pitch types
     public void NoteLength(ArrayList<Token> output) {
         for (int i = 0; i < output.size(); i++) {
-            String str = output.get(i).string;
-            if (output.get(i).type == Token.Type.Rest) {
+        	Token T = output.get(i);
+            String str = T.string;
+            if (T.type == Token.Type.Rest) {
                 if (str.matches("z")) {
                     str.concat("1/1");
-                    output.get(i).basenote = 7;
-                    output.get(i).num = 1;
-                    output.get(i).den = 1;
+                    T.basenote = 7;
+                    T.num = 1;
+                    T.den = 1;
                     //System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den);
                 } else if (str.matches("z/")) {
                    
-                    output.get(i).basenote = 7;
-                    output.get(i).num = 1;
-                    output.get(i).den = 2;
+                    T.basenote = 7;
+                    T.num = 1;
+                    T.den = 2;
                     //System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den);
                 } else if (str.matches("z/[0-9]+")) {
-                    str.replaceAll("/", "1/");
+                    
                     int denom = Integer
                             .parseInt(str.substring(2));
-                    output.get(i).basenote = 7;
-                    output.get(i).num = 1;
-                    output.get(i).den = denom;
+                    if (denom ==0) throw new RuntimeException("Invalid input: denominator of rest length can't be 0");
+                    T.basenote = 7;
+                    T.num = 1;
+                    T.den = denom;
                     //System.out.println(output.get(i).string+" "+output.get(i).basenote+""+output.get(i).num+" "+output.get(i).den);
                 }  else if (str.matches("z[0-9]+/")) {
                     
                     int nom = Integer.parseInt(str.substring(1,str.length()-1));
-                    output.get(i).basenote = 7;
-                    output.get(i).num = nom;
-                    output.get(i).den = 2;
+                    if (nom ==0) throw new RuntimeException("Invalid input: num of rest length can't be 0");
+                    T.basenote = 7;
+                    T.num = nom;
+                    T.den = 2;
                     //System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den);
                 }   else if (str.matches("z[0-9]+")) {
                     
                     int num = Integer.parseInt(str.substring(1));
-                    output.get(i).basenote = 7;
-                    output.get(i).num = num;
-                    output.get(i).den = 1;
+                    if (num ==0) throw new RuntimeException("Invalid input: rest length can't be 0");
+                    T.basenote = 7;
+                    T.num = num;
+                    T.den = 1;
                     //System.out.println(output.get(i).string+" "+output.get(i).basenote+""+output.get(i).num+" "+output.get(i).den);
                 }else if (str.matches("z[0-9]+/[0-9]+")) {
                     for (int begin = 0; begin < str.length(); begin++) {
@@ -386,37 +390,38 @@ public class Lexer {
                             int num = Integer.parseInt(substring.substring(0,substring.indexOf("/")));
                             int denom = Integer.parseInt(substring
                                     .substring(substring.indexOf("/") + 1));
+                            if (num ==0 || denom==0) throw new RuntimeException("Invalid input: num or denom of rest length can't be 0");
                             long gcd = gcd((long) num, (long) denom);
                             num = num / (int) gcd;
                             denom = denom / (int) gcd;
                             str.replaceAll("d+/d+", Integer.toString(num) + "/"
                                     + Integer.toString(denom));
-                            output.get(i).basenote = 7;
-                            output.get(i).num = num;
-                            output.get(i).den = denom;
+                            T.basenote = 7;
+                            T.num = num;
+                            T.den = denom;
                             //System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den);
                         }
                     }
                 }
-            } else if (output.get(i).type == Token.Type.Pitch) {
+            } else if (T.type == Token.Type.Pitch) {
                 for (int begin = 0; begin < str.length(); begin++) {
                     int hatcount = 0;
                     if (str.substring(begin, begin + 1).matches("[A-G]")) {
-                        output.get(i).basenote = stringToNumber(str.substring(begin, begin + 1));
+                        T.basenote = stringToNumber(str.substring(begin, begin + 1));
                     } else if (str.substring(begin, begin + 1).matches("[a-g]")) {
-                        output.get(i).basenote = stringToNumber(str.substring(begin, begin + 1).toUpperCase());
-                        output.get(i).octave = output.get(i).octave + 1;
+                        T.basenote = stringToNumber(str.substring(begin, begin + 1).toUpperCase());
+                        T.octave = output.get(i).octave + 1;
                     } else if (str.substring(begin, begin + 1).equals("^")) {
-                        output.get(i).accid = output.get(i).accid + 1;
+                        T.accid = output.get(i).accid + 1;
                         hatcount += 1;
                     } else if (str.substring(begin, begin + 1).equals("_")) {
-                        output.get(i).accid = output.get(i).accid - 1;
+                        T.accid = output.get(i).accid - 1;
                         hatcount -= 1;
                     } else if (str.substring(begin, begin + 1).equals("=")){
-                        output.get(i).isNatural= true;
+                        T.isNatural= true;
 
                     }else if (str.substring(begin, begin + 1).equals("'")) {
-                        output.get(i).octave = output.get(i).octave + 1;
+                        T.octave = output.get(i).octave + 1;
                     } else if (str.substring(begin, begin + 1).equals(",")) {
                         output.get(i).octave = output.get(i).octave - 1;
                     }
@@ -429,16 +434,17 @@ public class Lexer {
                     }
                 }
                 if (str.matches("(((\\^){1,2})|((\\_){1,2})|(\\=))?[A-Ga-g]((,+)|('+))?/")) {
-                    str.replaceAll("/", "1/2");
-                    output.get(i).num = 1;
-                    output.get(i).den = 2;
+                    
+                    T.num = 1;
+                    T.den = 2;
                     //System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);
                 } else if (str.matches("(((\\^){1,2})|((\\_){1,2})|(\\=))?[A-Ga-g]((,+)|('+))?/[0-9]+")) {
-                    str.replaceAll("/", "1/");
+                    
                     int denom = Integer
                             .parseInt(str.substring(str.indexOf("/") + 1));
-                    output.get(i).num = 1;
-                    output.get(i).den = denom;
+                    if (denom ==0) throw new RuntimeException("Invalid input: denominator of notelength can't be 0");
+                    T.num = 1;
+                    T.den = denom;
                     //System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);
                 } else if (str.matches("(((\\^){1,2})|((\\_){1,2})|(\\=))?[A-Ga-g]((,+)|('+))?[0-9]+/")) {
                     for (int begin = 0; begin < str.length(); begin++) {
@@ -446,8 +452,9 @@ public class Lexer {
                         String substring = str.substring(begin, str.length()-1);
                         if (substring.matches("[0-9]+")) {
                             int num = Integer.parseInt(substring);
-                            output.get(i).num = num;
-                            output.get(i).den = 2;
+                            if (num ==0) throw new RuntimeException("Invalid input: num of notelength can't be 0");
+                            T.num = num;
+                            T.den = 2;
                             //System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);
                             break;}
                         }
@@ -457,15 +464,16 @@ public class Lexer {
                         String substring = str.substring(begin);
                         if (substring.matches("[0-9]+")) {
                             int num = Integer.parseInt(substring);
-                            output.get(i).num = num;
-                            output.get(i).den = 1;
+                            if (num ==0) throw new RuntimeException("Invalid input: notelength can't be 0");
+                            T.num = num;
+                            T.den = 1;
                             //System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);
                             break;}
                         }
                 }else if (str.matches("(((\\^){1,2})|((\\_){1,2})|(\\=))?[A-Ga-g]((,+)|('+))?")) {
-                    str.concat("1/1");
-                    output.get(i).num = 1;
-                    output.get(i).den = 1;
+                    
+                    T.num = 1;
+                    T.den = 1;
                     //System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);
                 } else if (str.matches("(((\\^){1,2})|((\\_){1,2})|(\\=))?[A-Ga-g]((,+)|('+))?([0-9]+/[0-9]+)")) {
                     for (int begin = 0; begin < str.length(); begin++) {
@@ -474,18 +482,38 @@ public class Lexer {
                         if (substring.matches("([0-9]+/[0-9]+)")) {
                             int num = Integer.parseInt(substring.substring(0,substring.indexOf("/")));
                             int denom = Integer.parseInt(substring.substring(substring.indexOf("/") + 1));
+                            if (num ==0||denom==0) throw new RuntimeException("Invalid input: num or denom of notelength can't be 0");
                             long gcd = gcd((long) num, (long) denom);
                             num = num / (int) gcd;
                             denom = denom / (int) gcd;
-                            str.replaceAll("d+/d+", Integer.toString(num) + "/"+ Integer.toString(denom));
-                            output.get(i).num = num;
-                            output.get(i).den = denom;
+                            
+                            T.num = num;
+                            T.den = denom;
                             //System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);
                         }
                     }
                 }
             }
         }
+        
+        for (int i=0; i<output.size(); i++){
+        	if (output.get(i).accid!=0){
+        		Token Tok = output.get(i);
+        		for (int a=i+1; a<output.size();a++){
+        			if (output.get(a).basenote==Tok.basenote&&output.get(a).num==Tok.num&&
+        					output.get(a).den==Tok.den&&output.get(a).basenote==Tok.basenote&& output.get(a).accid==0){
+        				output.get(a).accid = Tok.accid;
+        			}else if (output.get(a).basenote==Tok.basenote&&output.get(a).num==Tok.num &&
+        					output.get(a).den==Tok.den&&output.get(a).basenote==Tok.basenote&& output.get(a).accid!=0){
+        				Tok = output.get(a);
+        			}else if (output.get(a).type ==Type.Barline){
+        				i = a+1;
+        				break;
+        			}
+        		}
+        	}
+        }
+        
         token = output;
         Tupnotelen(output);
       
@@ -579,6 +607,13 @@ public class Lexer {
         }
         token = output;
         MusicBody(token, voicecounter);
+        
+        /**
+        //delete the blow for block after test
+        for (int i=0; i<output.size();i++){
+        	System.out.println(output.get(i).string + " accid is "+output.get(i).accid+" octave is "+output.get(i).octave);
+        }//delete above for block after test
+        */
     }
 
     public void MusicBody(ArrayList<Token> output, ArrayList<Token> voicecounter) {
