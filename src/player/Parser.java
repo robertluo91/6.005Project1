@@ -69,7 +69,7 @@ public class Parser {
                     }
                 }
                 for (int j:measureaccids){
-                    for (int k=j+1;k<end; k++){
+                    for (int k=j+1;k<EndofMeasure; k++){
                         if (a.get(k).type== Token.Type.Pitch 
                                 && a.get(k).basenote==a.get(j).basenote
                                 && a.get(k).octave==a.get(j).octave 
@@ -102,6 +102,10 @@ public class Parser {
                     EndIndOfMajorSect.add(i);
                 }
                 i++;
+                //since we make sure the end of the voice list of tokens is "|" 
+                if (!a.get(end-1).string.equals("||")&&!a.get(end-1).string.equals("|]")){
+                    EndIndOfMajorSect.add(end-1);
+                }
             }
             
             TreesCurrentVoice.add(Parse(SubList(a,0,EndIndOfMajorSect.get(0)+1)));
