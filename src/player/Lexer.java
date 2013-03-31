@@ -335,6 +335,9 @@ public class Lexer {
             }
 
         }
+        int num = Integer.parseInt(this.L.substring(0, this.L.indexOf("/")));
+        int denom = Integer.parseInt(this.L.substring(this.L.indexOf("/") + 1));
+        this.Tempo = this.Tempo/4*(denom/num);
         this.voicecounter = voicecounter; // voicecounter is not used later
         //System.out.println("# of voicecounter"+" "+voicecounter.size());
     }
@@ -495,7 +498,7 @@ public class Lexer {
                 }
             }
         }
-        
+        /**
         for (int i=0; i<output.size(); i++){
         	if (output.get(i).accid!=0){
         		Token Tok = output.get(i);
@@ -513,7 +516,7 @@ public class Lexer {
         		}
         	}
         }
-        
+        */
         token = output;
         Tupnotelen(output);
       
