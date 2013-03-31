@@ -85,10 +85,10 @@ public class Parser {
             i=0;
             while(i<end){
                 //adjust accidental according to the key of header
-                if (a.get(i).type == Token.Type.Pitch){
+                if ((a.get(i).type == Token.Type.Pitch)&&(a.get(i).isNatural == false)){
                     a.get(i).accid += KeySig.current_signature[a.get(i).basenote];  
                 }
-                if (a.get(i).accid>2||a.get(i).accid<-2){
+                if ((a.get(i).accid>2||a.get(i).accid<-2)&&(a.get(i).isNatural == false)){
                     throw new RuntimeException("invalid use of accid");
                 }
                 

@@ -36,7 +36,7 @@ public class ASTtoPlayer {
                 traverse(SequenceofVoiceForest.get(voice),sp);
             }
             sp.play();
-            System.out.println(sp);
+            //System.out.println(sp);
         } catch (MidiUnavailableException e) {
             e.printStackTrace();
         } catch (InvalidMidiDataException e) {
@@ -72,18 +72,21 @@ public class ASTtoPlayer {
      */
     public void addNotesInNode(ArrayList<Token> node,SequencePlayer sp){
         int i = 0;
+        System.out.println(node);
         while(i < node.size()){
             clock += node.get(i).noteLength;
             //If the note is not a chord, the numNotesInChord should be zero
-            int j = i;
-            for(j = i; j < i+node.get(i).chord+1; j++){
-                Token note = node.get(i);
+            int j;
+            for(j=i; j < i+node.get(i).chord+1 && j < node.size(); j++){
+                Token note = node.get(j);
                 if (note.basenote!=7){
-                sp.addNote(new Pitch(intkey[note.basenote]).octaveTranspose(note.octave).transpose(note.accid).toMidiNote(),
+                    Pitch newPitch = new Pitch(intkey[note.basenote]).octaveTranspose(note.octave).transpose(note.accid);
+                    System.out.println(newPitch);
+                    sp.addNote(newPitch.toMidiNote(),
                         clock,(int) note.noteLength);
                 }
             }
-            i=j+1;
+            i=j;
         }
         
 
