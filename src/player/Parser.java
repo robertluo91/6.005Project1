@@ -40,6 +40,7 @@ public class Parser {
             
             //check valid ending
             if (!ValidEnding(a)) throw new RuntimeException("invalid ending type");
+            
             int i=0;
             while (i<end){
                 //adjust temporary accidental within measure
@@ -61,9 +62,10 @@ public class Parser {
                 //and they should affect the later pitch without original nontrivial accidental
                 List<Integer> measureaccids = new ArrayList<Integer>();
                 for (int j=i;j<EndofMeasure;j++){
-                    if (a.get(j).type== Token.Type.Pitch 
-                            && a.get(j).accid != 0){
-                        measureaccids.add(j); 
+                    if (a.get(j).type== Token.Type.Pitch){
+                        if (a.get(j).accid != 0 || a.get(j).isNatural){
+                            measureaccids.add(j); 
+                        }                        
                     }
                 }
                 for (int j:measureaccids){
@@ -72,7 +74,10 @@ public class Parser {
                                 && a.get(k).basenote==a.get(j).basenote
                                 && a.get(k).octave==a.get(j).octave 
                                 && !measureaccids.contains(k)){
-                                a.get(k).accid = a.get(j).accid;                                                               
+                            if (!a.get(j).isNatural){
+                                a.get(k).accid = a.get(j).accid;  
+                            }
+                            else a.get(k).accid = 0;                                                                 
                         }
                         if (a.get(k).accid>2||a.get(k).accid<-2){
                             throw new RuntimeException("invalid use of accid");
