@@ -42,6 +42,13 @@ public class Lexer {
    
     BufferedReader br; 
     BufferedReader cr;
+    
+    @SuppressWarnings("serial")
+    private static final Map<Character,Integer> stringNumMap = new HashMap<Character,Integer>() {{
+        put('A',0); put('B',1); put('C',2);
+        put('D',3); put('E',4); put('F',5);
+        put('G',6); put('Z',7);
+    }};
 
     //constructor takes in the name of the file, and BufferedReader reads the
     //content in the abc file, and store it into br? 
@@ -62,7 +69,7 @@ public class Lexer {
              while ((cr.readLine())!=null){
                  checkerline +=1;
              }
-             System.out.println(checkerline);
+             //System.out.println(checkerline);
              processNextLine();
          } catch (IOException e) { 
              e.printStackTrace(); 
@@ -79,7 +86,7 @@ public class Lexer {
         ArrayList<Token> headerinfo = new ArrayList<Token>();
         str = br.readLine();
         if (str.startsWith("X:")){
-            System.out.println(str);
+            //System.out.println(str);
             headerinfo.add(new Token(Type.X, str, 0, 0, 0, 0,0,0,0));
             headernum++;
             str = br.readLine();
@@ -88,7 +95,7 @@ public class Lexer {
             throw new IOException("the 1st field of header isn't X");
         }
         if (str.startsWith("T:")){
-            System.out.println(str);
+            //System.out.println(str);
             headerinfo.add(new Token(Type.T, str, 0, 0, 0, 0,0,0,0));
             headernum++;
             str = br.readLine();
@@ -111,7 +118,7 @@ public class Lexer {
                     if (testToken.pattern.matcher(str).matches()) {
                         
                         headerinfo.add(new Token(t, str, 0, 0, 0, 0,0,0,0)); 
-                        System.out.println(str);
+                        //System.out.println(str);
                         headernum++;
                         str = br.readLine();
                         checkerline -=1;}
@@ -119,12 +126,12 @@ public class Lexer {
             }
             else if (str.startsWith("K:")){
                 headerinfo.add(new Token(Type.K, str, 0, 0, 0, 0,0,0,0));
-                System.out.println(str);
+                //System.out.println(str);
                 headernum++;
                 
                 headercheck = false;
                 checkerline -=1;
-                System.out.println(checkerline);
+                //System.out.println(checkerline);
                 }
             else{
                 throw new IOException("K is not that last field of the header"); 
@@ -133,7 +140,8 @@ public class Lexer {
         bodystring = new ArrayList<String>();
         while (checkerline >0){         
             str1 = br.readLine();
-            System.out.println(str1);
+            //
+            //System.out.println(str1);
             
             if (str1.startsWith("X:")||str1.startsWith("C:")||str1.startsWith("L:")||str1.startsWith("Q:")||
                     str1.startsWith("M:")||str1.startsWith("T:")||(str1.startsWith("K:"))){
@@ -214,11 +222,11 @@ public class Lexer {
             }
         }
         
-        System.out.println(output.get(0).string);
+        /*System.out.println(output.get(0).string);
         System.out.println(output.get(1).string);
         System.out.println(output.get(2).string); 
         System.out.println(output.get(11).string);  
-        System.out.println(output.get(output.size()-1).string);
+        System.out.println(output.get(output.size()-1).string);*/
 
         Chordcheck(output);
 
@@ -260,7 +268,7 @@ public class Lexer {
                     }
                     else if (output.get(a).type == Type.ChordsEnd){
                         output.get(i+1).chord = k;
-                        System.out.println(i+1 + " k equals" + k+" " +output.get(i+1).chord);
+                        //System.out.println(i+1 + " k equals" + k+" " +output.get(i+1).chord);
                         break;
                     }
                 }
@@ -328,7 +336,7 @@ public class Lexer {
 
         }
         this.voicecounter = voicecounter; // voicecounter is not used later
-        System.out.println("# of voicecounter"+" "+voicecounter.size());
+        //System.out.println("# of voicecounter"+" "+voicecounter.size());
     }
 
     // NoteLength method updates all the note-lengths for pitch and rest tokens
@@ -342,13 +350,13 @@ public class Lexer {
                     output.get(i).basenote = 7;
                     output.get(i).num = 1;
                     output.get(i).den = 1;
-                    System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den);
+                    //System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den);
                 } else if (str.matches("z/")) {
                    
                     output.get(i).basenote = 7;
                     output.get(i).num = 1;
                     output.get(i).den = 2;
-                    System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den);
+                    //System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den);
                 } else if (str.matches("z/[0-9]+")) {
                     str.replaceAll("/", "1/");
                     int denom = Integer
@@ -356,21 +364,21 @@ public class Lexer {
                     output.get(i).basenote = 7;
                     output.get(i).num = 1;
                     output.get(i).den = denom;
-                    System.out.println(output.get(i).string+" "+output.get(i).basenote+""+output.get(i).num+" "+output.get(i).den);
+                    //System.out.println(output.get(i).string+" "+output.get(i).basenote+""+output.get(i).num+" "+output.get(i).den);
                 }  else if (str.matches("z[0-9]+/")) {
                     
                     int nom = Integer.parseInt(str.substring(1,str.length()-1));
                     output.get(i).basenote = 7;
                     output.get(i).num = nom;
                     output.get(i).den = 2;
-                    System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den);
+                    //System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den);
                 }   else if (str.matches("z[0-9]+")) {
                     
                     int num = Integer.parseInt(str.substring(1));
                     output.get(i).basenote = 7;
                     output.get(i).num = num;
                     output.get(i).den = 1;
-                    System.out.println(output.get(i).string+" "+output.get(i).basenote+""+output.get(i).num+" "+output.get(i).den);
+                    //System.out.println(output.get(i).string+" "+output.get(i).basenote+""+output.get(i).num+" "+output.get(i).den);
                 }else if (str.matches("z[0-9]+/[0-9]+")) {
                     for (int begin = 0; begin < str.length(); begin++) {
                         String substring = str.substring(begin);
@@ -386,7 +394,7 @@ public class Lexer {
                             output.get(i).basenote = 7;
                             output.get(i).num = num;
                             output.get(i).den = denom;
-                            System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den);
+                            //System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den);
                         }
                     }
                 }
@@ -404,8 +412,11 @@ public class Lexer {
                     } else if (str.substring(begin, begin + 1).equals("_")) {
                         output.get(i).accid = output.get(i).accid - 1;
                         hatcount -= 1;
-                    }
-                    else if (str.substring(begin, begin + 1).equals("'")) {
+                    } else if (str.substring(begin, begin + 1).equals("=")){
+                        output.get(i).isNatural= true;
+                        output.get(i).accid = 0;
+                        hatcount = 0;
+                    }else if (str.substring(begin, begin + 1).equals("'")) {
                         output.get(i).octave = output.get(i).octave + 1;
                     } else if (str.substring(begin, begin + 1).equals(",")) {
                         output.get(i).octave = output.get(i).octave - 1;
@@ -422,14 +433,14 @@ public class Lexer {
                     str.replaceAll("/", "1/2");
                     output.get(i).num = 1;
                     output.get(i).den = 2;
-                    System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);
+                    //System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);
                 } else if (str.matches("(((\\^){1,2})|((\\_){1,2})|(\\=))?[A-Ga-g]((,+)|('+))?/[0-9]+")) {
                     str.replaceAll("/", "1/");
                     int denom = Integer
                             .parseInt(str.substring(str.indexOf("/") + 1));
                     output.get(i).num = 1;
                     output.get(i).den = denom;
-                    System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);
+                    //System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);
                 } else if (str.matches("(((\\^){1,2})|((\\_){1,2})|(\\=))?[A-Ga-g]((,+)|('+))?[0-9]+/")) {
                     for (int begin = 0; begin < str.length(); begin++) {
 
@@ -438,7 +449,7 @@ public class Lexer {
                             int num = Integer.parseInt(substring);
                             output.get(i).num = num;
                             output.get(i).den = 2;
-                            System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);
+                            //System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);
                             break;}
                         }
                 }else if (str.matches("(((\\^){1,2})|((\\_){1,2})|(\\=))?[A-Ga-g]((,+)|('+))?[0-9]+")) {
@@ -449,14 +460,14 @@ public class Lexer {
                             int num = Integer.parseInt(substring);
                             output.get(i).num = num;
                             output.get(i).den = 1;
-                            System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);
+                            //System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);
                             break;}
                         }
                 }else if (str.matches("(((\\^){1,2})|((\\_){1,2})|(\\=))?[A-Ga-g]((,+)|('+))?")) {
                     str.concat("1/1");
                     output.get(i).num = 1;
                     output.get(i).den = 1;
-                    System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);
+                    //System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);
                 } else if (str.matches("(((\\^){1,2})|((\\_){1,2})|(\\=))?[A-Ga-g]((,+)|('+))?([0-9]+/[0-9]+)")) {
                     for (int begin = 0; begin < str.length(); begin++) {
 
@@ -470,7 +481,7 @@ public class Lexer {
                             str.replaceAll("d+/d+", Integer.toString(num) + "/"+ Integer.toString(denom));
                             output.get(i).num = num;
                             output.get(i).den = denom;
-                            System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);
+                            //System.out.println(output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).accid+" "+output.get(i).octave);
                         }
                     }
                 }
@@ -487,7 +498,7 @@ public class Lexer {
         for (int i = 0; i < output.size(); i++) {
             if (output.get(i).type == Type.Tuplets) {
                 int tup = Integer.parseInt(output.get(i).string.substring(1));
-                System.out.println("havetup"+" "+i+" "+output.get(i).string+" "+tup);
+                //System.out.println("havetup"+" "+i+" "+output.get(i).string+" "+tup);
                 int k = 0;
                 boolean chord = false;
                 for (int start = i + 1; start < output.size(); start++) {
@@ -504,14 +515,14 @@ public class Lexer {
                                 
                                 output.get(start).num = output.get(start).num* (tup - 1);
                                 output.get(start).den = output.get(start).den* tup;
-                                System.out.println("tupletschord:position at"+" "+start+" "+output.get(start).string+" "+output.get(start).basenote+" "+output.get(start).num+" "+output.get(start).den+" "+output.get(start).accid+" "+output.get(start).octave);
+                                //System.out.println("tupletschord:position at"+" "+start+" "+output.get(start).string+" "+output.get(start).basenote+" "+output.get(start).num+" "+output.get(start).den+" "+output.get(start).accid+" "+output.get(start).octave);
                             }
                         } else {
                             if (output.get(start).type == Type.Pitch || output.get(start).type == Type.Rest) {
                                 
                                 output.get(start).num = output.get(start).num* (tup - 1);
                                 output.get(start).den = output.get(start).den* tup;
-                                System.out.println("tuplets:position at"+" "+start+" "+output.get(start).string+" "+output.get(start).basenote+" "+output.get(start).num+" "+output.get(start).den+" "+output.get(start).accid+" "+output.get(start).octave);
+                                //System.out.println("tuplets:position at"+" "+start+" "+output.get(start).string+" "+output.get(start).basenote+" "+output.get(start).num+" "+output.get(start).den+" "+output.get(start).accid+" "+output.get(start).octave);
                                 k++;
                             } 
                             else if (output.get(start).type != Type.ChordsEnd) {
@@ -550,7 +561,7 @@ public class Lexer {
             if (output.get(i).type == Type.Pitch
                     || output.get(i).type == Type.Rest) {
                 output.get(i).noteLength = output.get(i).num * Tick/output.get(i).den;
-                System.out.println("Tickchange"+" "+output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).noteLength);
+                //System.out.println("Tickchange"+" "+output.get(i).string+" "+output.get(i).basenote+" "+output.get(i).num+" "+output.get(i).den+" "+output.get(i).noteLength);
             }
         }
         token = output;
@@ -562,7 +573,7 @@ public class Lexer {
     public void WCDelete(ArrayList<Token> output) {
         for (int i= 0; i<output.size(); i++){
             if (output.get(i).type==Type.Whitespace ||output.get(i).type==Type.Comment){
-                System.out.println(output.get(i).string+" whitespace or comment");
+                //System.out.println(output.get(i).string+" whitespace or comment");
                 output.remove(output.get(i));
                             
             }
@@ -609,33 +620,26 @@ public class Lexer {
                     throw new RuntimeException(
                             "The ending of the voice isn't marked with |, |], :|, or ||");
                 } // 2nd error check for ending
-                System.out.println("voice "+ a + " "+ VoiceArray.get(0).string);
+                /*System.out.println("voice "+ a + " "+ VoiceArray.get(0).string);
                 System.out.println("voice "+ a +" "+ VoiceArray.get(1).string);
                 System.out.println("voice "+ a +" "+ VoiceArray.get(2).string);
                 System.out.println("voice "+ a +" "+ VoiceArray.get(3).string);
                 System.out.println("voice "+ a +" "+ VoiceArray.get(VoiceArray.size()-3).string);
                 System.out.println("voice "+ a +" "+ VoiceArray.get(VoiceArray.size()-2).string);
-                System.out.println("voice "+ a +" "+ VoiceArray.get(VoiceArray.size()-1).string);
+                System.out.println("voice "+ a +" "+ VoiceArray.get(VoiceArray.size()-1).string);*/
                 Body.add(VoiceArray);
             }
         }
         this.MusicBody = Body;
         this.size= Body.size();
-        System.out.println("# of arraylist in musicbody "+ MusicBody.size());
+        //System.out.println("# of arraylist in musicbody "+ MusicBody.size());
 
     }
-    
+
     //converts a letter in string format into an int [0-7]
     public int stringToNumber(String str) {
-          char[] ls = "ABCDEFGZ".toCharArray();
-          Map<Character, Integer> m = new HashMap<Character, Integer>();
-          int j = 0;
-          for(char c: ls) {
-            m.put(c, j++);
-          }
-          
-          return m.get(str.charAt(0));
-        }
+        return stringNumMap.get(str.charAt(0));
+    }
 
     private static int lcm(int a, int b) {
         long A = a;

@@ -16,6 +16,6 @@ public class ParserTest {
         ArrayList<AST> Voice = parser.SequenceofVoiceForest.get(0);
         AST Tree = Voice.get(0);
         ArrayList<Token> tokens = Tree.toArrayList();        
-        assertEquals(tokens.get(0), new Token(Type.Pitch, "E",0,4,0, 0,0,0,0));
+        assertEquals(new Token (Type.Pitch, "e",4,0,0, 0,0,0,0), tokens.get(0));
     }
 }

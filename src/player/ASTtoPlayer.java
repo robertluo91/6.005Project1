@@ -12,12 +12,19 @@ import javax.sound.midi.MidiUnavailableException;
 import sound.Pitch;
 import sound.SequencePlayer;
 
-
+/**
+ * 
+ *
+ */
 public class ASTtoPlayer {
     
     private int beatsPerMinute;
     private int ticksPerBeat;
     private int clock;
+    /**
+     * 
+     * @param parser
+     */
     public ASTtoPlayer(Parser parser){
         ArrayList<ArrayList<AST>> SequenceofVoiceForest = parser.SequenceofVoiceForest;
         ticksPerBeat = parser.tpb;
@@ -29,13 +36,19 @@ public class ASTtoPlayer {
                 traverse(SequenceofVoiceForest.get(voice),sp);
             }
             sp.play();
-            System.out.println(sp);
+            //System.out.println(sp);
         } catch (MidiUnavailableException e) {
             e.printStackTrace();
         } catch (InvalidMidiDataException e) {
             e.printStackTrace();
         }
-    }    
+    }  
+    
+    /**
+     * 
+     * @param VoiceForest
+     * @param sp
+     */
     public void traverse(ArrayList<AST> VoiceForest,SequencePlayer sp){
         clock = 0;
         for (int index=0; index<VoiceForest.size();index++){
@@ -43,32 +56,42 @@ public class ASTtoPlayer {
         }
     }
     
-
-
+    /**
+     * 
+     * @param t
+     * @param sp
+     */
     public void traverse(AST t, SequencePlayer sp){
         addNotesInNode(t.toArrayList(),sp);
     }
     
+    /**
+     * 
+     * @param node
+     * @param sp
+     */
     public void addNotesInNode(ArrayList<Token> node,SequencePlayer sp){
         int i = 0;
+        System.out.println(node);
         while(i < node.size()){
             clock += node.get(i).noteLength;
             //If the note is not a chord, the numNotesInChord should be zero
-            int j = i;
-            for(j = i; j < i+node.get(i).chord+1; j++){
-                Token note = node.get(i);
+            int j;
+            for(j=i; j < i+node.get(i).chord+1 && j < node.size(); j++){
+                Token note = node.get(j);
                 if (note.basenote!=7){
-                sp.addNote(new Pitch(intkey[note.basenote]).octaveTranspose(note.octave).transpose(note.accid).toMidiNote(),
-                        clock,(int)note.noteLength);
+                    Pitch newPitch = new Pitch(intkey[note.basenote]).octaveTranspose(note.octave).transpose(note.accid);
+                    System.out.println(newPitch);
+                    sp.addNote(newPitch.toMidiNote(),
+                        clock,(int) note.noteLength);
                 }
             }
-            i=j+1;
+            i=j;
         }
         
 
     }
 
     public static final char[] intkey = {'A','B','C','D','E','F','G','z'};
-    
         
 }

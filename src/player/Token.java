@@ -48,6 +48,7 @@ public class Token {
     public int chord;
     public int num;
     public int den;
+    public boolean isNatural = false;
     
     /**
      * Method Token converts regular expressions which are used as grammars to strings
@@ -58,13 +59,13 @@ public class Token {
     public Token(Type type, String string, int basenote,int num, int den, int noteLength, int accid, int octave,int chord) {
         this.type = type;
         this.basenote = basenote;
-        this.basenote = basenote;
         this.num = num;
         this.den = den;
         this.noteLength = noteLength;
         this.accid = accid;
         this.octave = octave;
         this.chord = chord;
+        this.isNatural = isNatural;
         switch (type) {
         case M:
             this.pattern = Pattern.compile("M:.*");
@@ -130,5 +131,21 @@ public class Token {
             throw new RuntimeException("The input type is invalid");
         }
         this.string = string;
+    }
+    
+    
+    public String toString(){
+        return type.toString() + " " + basenote + " " + noteLength + " " + octave + " " +
+         accid + " " + chord + " " + num + " " + den;
+    }
+    
+    public boolean equals(Object o){
+
+        Token t = (Token)o;
+        return (type == t.type)&&(pattern.equals(t.pattern))&&
+                (string.equals(t.string))&&(basenote == t.basenote)&&
+                (noteLength==t.noteLength)&&(octave==t.octave)&&
+                (accid == t.accid)&&(chord == t.chord)&&(num == t.num)&&
+                (den == t.den);
     }
 }

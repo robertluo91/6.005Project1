@@ -1,10 +1,16 @@
 package player;
 
 import java.util.ArrayList;
-
+/**
+ * 
+ *
+ */
 public class NodeTree implements AST{
     final ArrayList<Token> node;
-    
+    /**
+     * 
+     * @param node
+     */
     public NodeTree(ArrayList<Token> node){
         this.node = node;
     }
@@ -13,4 +19,5 @@ public class NodeTree implements AST{
     public ArrayList<Token> toArrayList() {
         return node;
     }
+
 }

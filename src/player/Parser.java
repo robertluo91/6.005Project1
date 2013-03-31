@@ -2,7 +2,10 @@ package player;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * 
+ *
+ */
 public class Parser {
     public final ArrayList<ArrayList<AST>> SequenceofVoiceForest  = new ArrayList<ArrayList<AST>>();
     public final int tpb;
@@ -11,8 +14,6 @@ public class Parser {
     
     /**
      * @param lexer arraylist of voice_list, where voice_list is an arraylist of tokens for a particular voice
-     * @return SequenceofVoiceForest, an arraylist of voice_trees, where voice_trees is an arraylist of 
-     *         trees for a particular voice
      * @throws RuntimeException when invalid ending, empty measure, wrong pattern of accid, confusion caused by pure nested repetition
      *         and when there is "[1" but no "[2" or the reverse, and if "[2" before "[1" in a major section 
      */
@@ -29,7 +30,7 @@ public class Parser {
         //we don't deal with nested repetition
         //since repetition cannot be made across major section, if an already started repeating stream meets "||", 
         //then it halts, and becomes a complete repeated piece    
-        
+   
         for (int voice=0; voice< size; voice++){
             //need to know the end of major section in order to deal with repetition
             List<Integer> EndIndOfMajorSect = new ArrayList<Integer>();
@@ -84,10 +85,10 @@ public class Parser {
             i=0;
             while(i<end){
                 //adjust accidental according to the key of header
-                if (a.get(i).type == Token.Type.Pitch){
+                if ((a.get(i).type == Token.Type.Pitch)&&(a.get(i).isNatural == false)){
                     a.get(i).accid += KeySig.current_signature[a.get(i).basenote];  
                 }
-                if (a.get(i).accid>2||a.get(i).accid<-2){
+                if ((a.get(i).accid>2||a.get(i).accid<-2)&&(a.get(i).isNatural == false)){
                     throw new RuntimeException("invalid use of accid");
                 }
                 
@@ -177,6 +178,11 @@ public class Parser {
         return true;
     }
     
+    /**
+     * 
+     * @param list
+     * @return
+     */
     private boolean ValidEnding(ArrayList<Token> list){
         int end = list.size()-1;
         if (list.get(end).string.equals("|")
@@ -300,6 +306,13 @@ public class Parser {
         return Parsedlist;
     }
     
+    /**
+     * 
+     * @param list
+     * @param start
+     * @param end
+     * @return
+     */
     private ArrayList<Token> SubList(ArrayList<Token> list, int start, int end){
         ArrayList<Token> returnlist = new ArrayList<Token>();
         returnlist.addAll(list.subList(start,end));
