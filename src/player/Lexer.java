@@ -414,8 +414,7 @@ public class Lexer {
                         hatcount -= 1;
                     } else if (str.substring(begin, begin + 1).equals("=")){
                         output.get(i).isNatural= true;
-                        output.get(i).accid = 0;
-                        hatcount = 0;
+
                     }else if (str.substring(begin, begin + 1).equals("'")) {
                         output.get(i).octave = output.get(i).octave + 1;
                     } else if (str.substring(begin, begin + 1).equals(",")) {
