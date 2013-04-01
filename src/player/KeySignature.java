@@ -9,8 +9,8 @@ public class KeySignature {
     int[] current_signature; 
     
     /**
-     * 
-     * @param key
+     * hashmap from key to int[] showing the accidental changes due to key
+     * @param key String in K field in header
      */
     public KeySignature(String key) { 
         assignKeySignatures(); 

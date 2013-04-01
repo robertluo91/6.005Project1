@@ -124,8 +124,9 @@ public class Parser {
             SequenceofVoiceForest.add((ArrayList<AST>) TreesCurrentVoice);             
         }
     }
+    
    /**
-    * given an arraylist of tokens possibly with variants and repetition 
+    * Given an arraylist of tokens possibly with variants and repetition, construct an AST equivalent to the list 
     * @param majorsection arraylist of tokens
     * @return AST equivalent to the list
     * @throws RuntimeException if have only one of [1,[2; and if [2 appears before [1 
@@ -148,10 +149,10 @@ public class Parser {
                     break;
                 }                
             }
-            if (NoSecondChildren(majorsection.subList(indChildOne+1,majorsection.size()-1))){            
+            if (NoSecondChildren(SubList(majorsection,indChildOne+1,majorsection.size()-1))){            
                 throw new RuntimeException("cannot have [1 without [2");
             }
-            if (!NoSecondChildren(majorsection.subList(0,indChildOne))){
+            if (!NoSecondChildren(SubList(majorsection,0,indChildOne))){
                 throw new RuntimeException("cannot have [2 before [1");
             }
             for (int j=indChildOne; j< majorsection.size();j++){
@@ -171,6 +172,7 @@ public class Parser {
     }
     
     /**
+     * Check if an arraylist of token (in our case, a major section) has a first variant
      * @param list ArrayList of token
      * @return NoFirstChild boolean showing that if it has no first variant
      */
@@ -184,10 +186,11 @@ public class Parser {
     }
     
     /**
-     * @param list List of token
+     * Check if an arraylist of token (in our case, a major section) has a second variant
+     * @param list ArrayList of token
      * @return NoFirstChild boolean showing that if it has no second variant
      */
-    private boolean NoSecondChildren(List<Token> list){
+    private boolean NoSecondChildren(ArrayList<Token> list){
         for (int i=0;i<list.size();i++){
             if (list.get(i).type== Token.Type.Repeat_second){
                 return false;    
@@ -197,17 +200,16 @@ public class Parser {
     }
     
     /**
-     * 
-     * @param list
-     * @return
+     * Check if an arraylist of token (in our case, a major section) has a valid ending
+     * @param list ArrayList of token
+     * @return ValidEnding boolean showing that if it has valid ending pattern 
      */
     private boolean ValidEnding(ArrayList<Token> list){
         int end = list.size()-1;
         if (list.get(end).string.equals("|")
                 ||list.get(end).string.equals("||")
                 ||list.get(end).string.equals("|]")
-                ||list.get(end).string.equals(":|"))
-        {  return true; }
+                ||list.get(end).string.equals(":|")) { return true; }
         else return false;
     }
     
@@ -271,8 +273,7 @@ public class Parser {
                     omitend = true;
                 }
             }            
-            
-            
+                       
             //checked nested; when there is no nested repetition, and the repeat symbol completed,
             //                then pairs of repeat symbols have no overlap 
             int begincorrection = 0;
@@ -339,26 +340,27 @@ public class Parser {
     }
     
     /**
-     * 
-     * @param list
-     * @param start
-     * @param end
-     * @return
+     * Take a sub-arraylist
+     * @param list an arraylist of tokens 
+     * @param start starting index of the sublist
+     * @param end ending index of the sublist
+     * @return sublist an arraylist inside list, starting at start, ending at end
      */
     private ArrayList<Token> SubList(ArrayList<Token> list, int start, int end){
-        ArrayList<Token> returnlist = new ArrayList<Token>();
-        returnlist.addAll(list.subList(start,end));
-        return returnlist;
+        ArrayList<Token> sublist = new ArrayList<Token>();
+        sublist.addAll(list.subList(start,end));
+        return sublist;
     }
+    
     /**
-     * to complete the truncated first variant as a valid piece
+     * Complete a truncated section (arraylist of token e.g.first variant) as a valid piece
      * @param list, arraylist of token without barline
-     * @return returnlist, complete the list by adding a barline at end
+     * @return completedlist, list completed by adding a barline at end
      */
     private ArrayList<Token> Complete(ArrayList<Token> list){
-        ArrayList<Token> returnlist = new ArrayList<Token>();
-        returnlist.addAll(list);
-        returnlist.add(new Token(Type.Barline, "|", 0, 0, 0, 0, 0, 0, 0));
-        return returnlist;
+        ArrayList<Token> completedlist = new ArrayList<Token>();
+        completedlist.addAll(list);
+        completedlist.add(new Token(Type.Barline, "|", 0, 0, 0, 0, 0, 0, 0));
+        return completedlist;
     }
 }
