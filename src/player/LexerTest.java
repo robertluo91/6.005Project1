@@ -24,7 +24,7 @@ public class LexerTest {
         
 
     }
-    /**
+    
     @Test
   //Test number of lines for header, body, and total
     public void ReaderTest1() {
@@ -47,17 +47,17 @@ public class LexerTest {
         assertEquals(lexer.bodyline, 54);
 
     }
-   */
+   
     @Test
   //Test number of lines for header, body, and total
     public void ReaderTest3() {
         
-        Lexer lexer = new Lexer("sample_abc/fur_elise copy.abc");
+        Lexer lexer = new Lexer("sample_abc/fur_elise.abc");
         assertEquals(lexer.totalnum, 118);
         assertEquals(lexer.headernum, 9);
         assertEquals(lexer.bodyline, 109);
     }
-    /**
+    
     @Test
     //Test number of lines for header, body, and total
     public void ReaderTest4() {
