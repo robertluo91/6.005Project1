@@ -41,9 +41,9 @@ public class Parser {
             //check valid ending
             if (!ValidEnding(a)) throw new RuntimeException("invalid ending type");
             
+            //adjust temporary accidental within measure
             int i=0;
-            while (i<end){
-                //adjust temporary accidental within measure
+            while (i<end){                
                 //by the way we perform before the next loop, we know that the ith token is the first element 
                 //       within its measure
                 //find the index of barline, and apply the change to all index within the measure after i
@@ -59,7 +59,7 @@ public class Parser {
                     throw new RuntimeException("measure cannot be empty");
                 }
                 //the originally accidented pitch should not be affected by earlier temporary accidental
-                //and they should affect the later pitch without original nontrivial accidental
+                //and they should affect the latter pitch without original nontrivial accidental
                 List<Integer> measureaccids = new ArrayList<Integer>();
                 for (int j=i;j<EndofMeasure;j++){
                     if (a.get(j).type== Token.Type.Pitch){
@@ -87,9 +87,9 @@ public class Parser {
                 i = EndofMeasure+1; 
             }
             
+            //adjust accidental according to the key of header
             i=0;
-            while(i<end){
-                //adjust accidental according to the key of header
+            while(i<end){                
                 if ((a.get(i).type == Token.Type.Pitch)&&(a.get(i).isNatural == false)){
                     a.get(i).accid += KeySig.current_signature[a.get(i).basenote];  
                 }

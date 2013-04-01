@@ -29,7 +29,7 @@ public class LexerTest {
   //Test number of lines for header, body, and total
     public void ReaderTest1() {
         
-        Lexer lexer = new Lexer("piece1 copy.abc");
+        Lexer lexer = new Lexer("sample_abc/piece1.abc");
         assertEquals(lexer.totalnum, 8);
         assertEquals(lexer.headernum, 6);
         assertEquals(lexer.bodyline, 2);
@@ -41,7 +41,7 @@ public class LexerTest {
   //Test number of lines for header, body, and total
     public void ReaderTest2() {
         
-        Lexer lexer = new Lexer("invention copy.abc");
+        Lexer lexer = new Lexer("sample_abc/invention.abc");
         assertEquals(lexer.totalnum, 63);
         assertEquals(lexer.headernum, 9);
         assertEquals(lexer.bodyline, 54);
@@ -52,7 +52,7 @@ public class LexerTest {
   //Test number of lines for header, body, and total
     public void ReaderTest3() {
         
-        Lexer lexer = new Lexer("fur_elise copy.abc");
+        Lexer lexer = new Lexer("sample_abc/fur_elise.abc");
         assertEquals(lexer.totalnum, 118);
         assertEquals(lexer.headernum, 9);
         assertEquals(lexer.bodyline, 109);
@@ -62,7 +62,7 @@ public class LexerTest {
     //Test number of lines for header, body, and total
     public void ReaderTest4() {
         
-        Lexer lexer = new Lexer("little_night_music copy.abc");
+        Lexer lexer = new Lexer("sample_abc/little_night_music.abc");
         assertEquals(lexer.totalnum, 24);
         assertEquals(lexer.headernum, 7);
         assertEquals(lexer.bodyline, 17);
@@ -72,7 +72,7 @@ public class LexerTest {
     //Test info in the header with voices
     public void HeaderTest1() {
         
-        Lexer lexer = new Lexer("fur_elise copy.abc");
+        Lexer lexer = new Lexer("sample_abc/fur_elise.abc");
         assertEquals(lexer.MusicBody.size(),2);
         ArrayList<Token> resultTokens = lexer.MusicHeader; 
 
@@ -95,7 +95,7 @@ public class LexerTest {
     //Test the final token ArrayList before dividing into voices in MusicBody 
     public void TokenTest1() {
         
-        Lexer lexer = new Lexer("piece2 copy.abc");
+        Lexer lexer = new Lexer("sample_abc/piece2.abc");
         ArrayList<Token> resultTokens = lexer.token; 
 
         Token[] expected = { new Token(Type.ChordsBegin, "[", 0,0,0, 0,0,0,0),   
@@ -112,7 +112,7 @@ public class LexerTest {
   //Test the token ArrayList backwards for music have more than 1 voice
     public void TokenTest2() {
         
-        Lexer lexer = new Lexer("prelude copy.abc");
+        Lexer lexer = new Lexer("sample_abc/prelude.abc");
         ArrayList<Token> resultTokens = lexer.token; 
         Token[] expected = { new Token(Type.Barline, "|]", 0,0,0, 0,0,0,0),   
                 new Token(Type.Pitch, "C,,16",2,16,1, 16,0,-2,0), new Token(Type.Barline, "|",0,0,0, 0,0,0,0),
@@ -128,7 +128,7 @@ public class LexerTest {
     //Test the token ArrayList forward for music have more than 1 voice
       public void TokenTest3() {
           
-          Lexer lexer = new Lexer("prelude copy.abc");
+          Lexer lexer = new Lexer("sample_abc/prelude.abc");
           ArrayList<Token> resultTokens = lexer.token; 
           Token[] expected = { new Token(Type.V, "V:1", 0,0,0, 0,0,0,0),   
                   new Token(Type.Rest, "z2",7,2,1, 2,0,0,0), new Token(Type.Pitch, "G",6,1,1, 1,0,0,0),
@@ -141,38 +141,38 @@ public class LexerTest {
     @Test
     //Test the voicecounter for music more than 1 voice
       public void voicecounter1() {          
-          Lexer lexer = new Lexer("prelude copy.abc");
+          Lexer lexer = new Lexer("sample_abc/prelude.abc");
           assertEquals(lexer.voicecounter.size(), 3);         
       }
     @Test
     //Test the voicecounter for music with more than 1 voice
       public void voicecounter2() {          
-          Lexer lexer = new Lexer("invention copy.abc");
+          Lexer lexer = new Lexer("sample_abc/invention.abc");
           assertEquals(lexer.voicecounter.size(), 2);         
       }
     @Test
     //Test the voicecounter for music with 1 voice
       public void voicecounter3() {          
-          Lexer lexer = new Lexer("little_night_music copy.abc");
+          Lexer lexer = new Lexer("sample_abc/little_night_music.abc");
           assertEquals(lexer.voicecounter.size(), 0);         
       }
     @Test
     //Test the size of MusicBody ArrayList for music with 1 voice
       public void Musicbody1() {          
-          Lexer lexer = new Lexer("little_night_music copy.abc");
+          Lexer lexer = new Lexer("sample_abc/little_night_music.abc");
           assertEquals(lexer.size, 1);         
       }
     @Test
     //Test the size of MusicBody ArrayList for music with more than 1 voice
       public void Musicbody2() {          
-          Lexer lexer = new Lexer("invention copy.abc");
+          Lexer lexer = new Lexer("sample_abc/invention.abc");
           assertEquals(lexer.size, 2);         
       }
     @Test
     //Test the token voice arraylists in musicbody forward for music with more than 1 voices
       public void MusicBody3() {
           
-          Lexer lexer = new Lexer("prelude copy.abc");
+          Lexer lexer = new Lexer("sample_abc/prelude.abc");
           ArrayList<ArrayList<Token>> result = lexer.MusicBody; 
           Token[] expected1 = {   
                   new Token(Type.Rest, "z2",7,2,1, 2,0,0,0), new Token(Type.Pitch, "G",6,1,1, 1,0,0,0),
@@ -196,7 +196,7 @@ public class LexerTest {
     //Test the token voice arraylists in musicbody backwards for music with more than 1 voices
       public void MusicBody4() {
           
-          Lexer lexer = new Lexer("fur_elise copy.abc");
+          Lexer lexer = new Lexer("sample_abc/fur_elise.abc");
           ArrayList<ArrayList<Token>> result = lexer.MusicBody; 
           Token[] expected1 = {  
                   new Token(Type.Barline, "|]",0,0,0, 0,0,0,0), new Token(Type.ChordsEnd, "]",0,0,0, 0,0,0,0),
@@ -216,7 +216,7 @@ public class LexerTest {
     @Test(expected = RuntimeException.class)
     //the 2nd field of header isn't T
     public void Wrongheader1(){        
-        new Lexer("wrongheader1.abc");
+        new Lexer("sample_abc/wrongheader1.abc");
    
     }
     
