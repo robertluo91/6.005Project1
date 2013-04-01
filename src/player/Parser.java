@@ -40,6 +40,7 @@ public class Parser {
             
             //check valid ending
             if (!ValidEnding(a)) throw new RuntimeException("invalid ending type");
+            
             int i=0;
             while (i<end){
                 //adjust temporary accidental within measure
@@ -61,18 +62,22 @@ public class Parser {
                 //and they should affect the later pitch without original nontrivial accidental
                 List<Integer> measureaccids = new ArrayList<Integer>();
                 for (int j=i;j<EndofMeasure;j++){
-                    if (a.get(j).type== Token.Type.Pitch 
-                            && a.get(j).accid != 0){
-                        measureaccids.add(j); 
+                    if (a.get(j).type== Token.Type.Pitch){
+                        if (a.get(j).accid != 0 || a.get(j).isNatural){
+                            measureaccids.add(j); 
+                        }                        
                     }
                 }
                 for (int j:measureaccids){
-                    for (int k=j+1;k<end; k++){
+                    for (int k=j+1;k<EndofMeasure; k++){
                         if (a.get(k).type== Token.Type.Pitch 
                                 && a.get(k).basenote==a.get(j).basenote
                                 && a.get(k).octave==a.get(j).octave 
                                 && !measureaccids.contains(k)){
-                                a.get(k).accid = a.get(j).accid;                                                               
+                            if (!a.get(j).isNatural){
+                                a.get(k).accid = a.get(j).accid;  
+                            }
+                            else a.get(k).accid = 0;                                                                 
                         }
                         if (a.get(k).accid>2||a.get(k).accid<-2){
                             throw new RuntimeException("invalid use of accid");
@@ -88,7 +93,7 @@ public class Parser {
                 if ((a.get(i).type == Token.Type.Pitch)&&(a.get(i).isNatural == false)){
                     a.get(i).accid += KeySig.current_signature[a.get(i).basenote];  
                 }
-                if (a.get(i).accid>2||a.get(i).accid<-2){
+                if ((a.get(i).accid>2||a.get(i).accid<-2)&&(a.get(i).isNatural == false)){
                     throw new RuntimeException("invalid use of accid");
                 }
                 
@@ -97,6 +102,10 @@ public class Parser {
                     EndIndOfMajorSect.add(i);
                 }
                 i++;
+                //since we make sure the end of the voice list of tokens is "|" 
+                if (!a.get(end-1).string.equals("||")&&!a.get(end-1).string.equals("|]")){
+                    EndIndOfMajorSect.add(end-1);
+                }
             }
             
             TreesCurrentVoice.add(Parse(SubList(a,0,EndIndOfMajorSect.get(0)+1)));
