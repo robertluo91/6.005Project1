@@ -194,6 +194,13 @@ public class Lexer {
                 for (Type t : Type.values()) {
                     Token testToken = new Token(t, "", 0, 0, 0, 0, 0,0,0);                    
                     if (testToken.pattern.matcher(currentString).matches()) {
+                    	if (currentString.equals("||") && string.substring(i,i+1).equals(":")){
+                    		//System.out.println("||: appears!");
+                    		output.add(new Token(Type.Barline, "|", 0,0,0,0,0,0,0));
+                    		output.add(new Token(Type.RepeatBegin, "|:", 0,0,0,0,0,0,0));
+                    		anyMatchSoFar = true;
+                    		current = i+1;
+                    	}else{
                         anyMatchSoFar = true;  
                         current = i;
                         Token T = new Token(t, currentString, 0, 0, 0, 0, 0,0,0);
@@ -212,13 +219,16 @@ public class Lexer {
                         if (c==false){      
                                 throw new RuntimeException("Voice didn't appear in the header");}}
                         }
+                    }
                    }
                 }
+            
             if (!anyMatchSoFar) {
                 //??not necessary? indicates a blank space in the beginning of the string:
                 // skip to the next position
-                current++;
+                throw new RuntimeException("no right token match");
                 }
+                
             }
         }
         
@@ -591,12 +601,12 @@ public class Lexer {
         token = output;
         MusicBody(token, voicecounter);
         
-        /**
+        
         //delete the blow for block after test
         for (int i=0; i<output.size();i++){
         	System.out.println(output.get(i).string + " accid is "+output.get(i).accid+" octave is "+output.get(i).octave);
         }//delete above for block after test
-        */
+        
     }
 
     public void MusicBody(ArrayList<Token> output, ArrayList<Token> voicecounter) {
