@@ -1,13 +1,9 @@
 package player;
-//import javax.sound.midi.InvalidMidiDataException;
-//import javax.sound.midi.MidiUnavailableException;
 
 import java.util.ArrayList;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
-//import java.util.HashMap;
-//import java.util.List;
 
 import sound.Pitch;
 import sound.SequencePlayer;
