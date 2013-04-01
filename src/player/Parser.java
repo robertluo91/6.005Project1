@@ -277,7 +277,10 @@ public class Parser {
             //                then pairs of repeat symbols have no overlap 
             int begincorrection = 0;
             if (omitbegin) begincorrection=1;
-            if (omitend) EndRepeat.add(list.size()); Repeat.add(list.size());
+            if (omitend) {
+                EndRepeat.add(list.size()); 
+                Repeat.add(list.size());
+            }
             if ((BeginRepeat.size()+begincorrection)!=EndRepeat.size()){
                 throw new RuntimeException("invalid repetition type");
             }
@@ -291,30 +294,37 @@ public class Parser {
                     throw new RuntimeException("nested repetition");
                 }
             }
-           
             
-            if (BeginRepeat.get(0)!=0){
-                if (!omitbegin){
-                Parsedlist.addAll(list.subList(0, BeginRepeat.get(0)));
-                Parsedlist.addAll(list.subList(BeginRepeat.get(0)+1, EndRepeat.get(0)));
-                Parsedlist.addAll(list.subList(BeginRepeat.get(0)+1, EndRepeat.get(0)));
-                }
-                else{
-                    Parsedlist.addAll(list.subList(0, EndRepeat.get(0)));
-                    Parsedlist.addAll(list.subList(0, EndRepeat.get(0)));
-                }
-            }        
-            else {
-                Parsedlist.addAll(list.subList(1, EndRepeat.get(0)));
-                Parsedlist.addAll(list.subList(1, EndRepeat.get(0)));
+            if (BeginRepeat.size() == 0){
+                //then list contains exactly one ":|"
+                Parsedlist.addAll(list.subList(0,EndRepeat.get(0)));
+                Parsedlist.addAll(list.subList(0,EndRepeat.get(0)));
+                Parsedlist.addAll(list.subList(EndRepeat.get(0)+1,list.size()));
             }
-            for (int j=1; j<EndRepeat.size();j++){            
-                Parsedlist.addAll(list.subList(EndRepeat.get(j-1)+1, BeginRepeat.get(j-begincorrection)));
-                Parsedlist.addAll(list.subList(BeginRepeat.get(j-begincorrection)+1, EndRepeat.get(j)));
-                Parsedlist.addAll(list.subList(BeginRepeat.get(j-begincorrection)+1, EndRepeat.get(j)));
-            } 
-            if (EndRepeat.get(EndRepeat.size()-1)!=list.size()-1){
-                Parsedlist.addAll(list.subList(EndRepeat.get(EndRepeat.size()-1)+1,list.size()-1));
+            else {
+                if (BeginRepeat.get(0)!=0){
+                    if (!omitbegin){
+                        Parsedlist.addAll(list.subList(0, BeginRepeat.get(0)));
+                        Parsedlist.addAll(list.subList(BeginRepeat.get(0)+1, EndRepeat.get(0)));
+                        Parsedlist.addAll(list.subList(BeginRepeat.get(0)+1, EndRepeat.get(0)));
+                    }
+                    else{
+                        Parsedlist.addAll(list.subList(0, EndRepeat.get(0)));
+                        Parsedlist.addAll(list.subList(0, EndRepeat.get(0)));
+                    }
+                }        
+                else {
+                    Parsedlist.addAll(list.subList(1, EndRepeat.get(0)));
+                    Parsedlist.addAll(list.subList(1, EndRepeat.get(0)));
+                }
+                for (int j=1; j<EndRepeat.size();j++){            
+                    Parsedlist.addAll(list.subList(EndRepeat.get(j-1)+1, BeginRepeat.get(j-begincorrection)));
+                    Parsedlist.addAll(list.subList(BeginRepeat.get(j-begincorrection)+1, EndRepeat.get(j)));
+                    Parsedlist.addAll(list.subList(BeginRepeat.get(j-begincorrection)+1, EndRepeat.get(j)));
+                } 
+                if (EndRepeat.get(EndRepeat.size()-1)!=list.size()-1){
+                    Parsedlist.addAll(list.subList(EndRepeat.get(EndRepeat.size()-1)+1,list.size()-1));
+                }
             }                    
         }
         //remove all symbols except pitch, and rest 
