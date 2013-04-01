@@ -38,19 +38,19 @@ public class Parser {
             List<Integer> EndIndOfMajorSect = new ArrayList<Integer>();
             List<AST> TreesCurrentVoice = new ArrayList<AST>();            
             ArrayList<Token> a = Body.get(voice);
-            int end = a.size();
+            int end = a.size()-1;
             
             //check valid ending
             if (!ValidEnding(a)) throw new RuntimeException("invalid ending type");
             
             //adjust temporary accidental within measure
             int i=0;
-            while (i<end){                
+            while (i<end+1){                
                 //by the way we perform before the next loop, we know that the ith token is the first element 
                 //       within its measure
                 //find the index of barline, and apply the change to all index within the measure after i
                 int EndofMeasure = i;
-                for (int j=i;j<end;j++){
+                for (int j=i;j<end+1;j++){
                     if (a.get(j).type== Token.Type.Barline
                             ||a.get(j).type == Token.Type.RepeatBegin
                             ||a.get(j).type == Token.Type.RepeatEnd){
@@ -93,7 +93,7 @@ public class Parser {
             
             //adjust accidental according to the key of header
             i=0;
-            while(i<end){                
+            while(i<end+1){                
                 if ((a.get(i).type == Token.Type.Pitch)&&(a.get(i).isNatural == false)){
                     a.get(i).accid += KeySig.current_signature[a.get(i).basenote];  
                 }
@@ -106,15 +106,20 @@ public class Parser {
                     EndIndOfMajorSect.add(i);
                 }
                 i++;
-                //since we make sure the end of the voice list of tokens is "|" 
-                if (!a.get(end-1).string.equals("||")&&!a.get(end-1).string.equals("|]")){
-                    EndIndOfMajorSect.add(end-1);
-                }
+                //since we make sure the end of the voice list of tokens is valid 
+            }
+            if (a.get(end).string.equals("|")||a.get(end).string.equals(":|")){
+                EndIndOfMajorSect.add(end);
             }
             
-            TreesCurrentVoice.add(Parse(SubList(a,0,EndIndOfMajorSect.get(0)+1)));
-            for(int j=0;j<EndIndOfMajorSect.size()-1;j++){
-                TreesCurrentVoice.add(Parse(SubList(a,EndIndOfMajorSect.get(j)+1,EndIndOfMajorSect.get(j+1)+1)));
+            if (EndIndOfMajorSect.size()==1){
+                TreesCurrentVoice.add(Parse(a));
+            }            
+            else{
+                TreesCurrentVoice.add(Parse(SubList(a,0,EndIndOfMajorSect.get(0)+1)));
+                for(int j=0;j<EndIndOfMajorSect.size()-1;j++){
+                    TreesCurrentVoice.add(Parse(SubList(a,EndIndOfMajorSect.get(j)+1,EndIndOfMajorSect.get(j+1)+1)));
+                }
             }
             SequenceofVoiceForest.add((ArrayList<AST>) TreesCurrentVoice);             
         }
@@ -336,9 +341,9 @@ public class Parser {
         return returnlist;
     }
     /**
-     * to complete the first variant as a valid piece
-     * @param list
-     * @return
+     * to complete the truncated first variant as a valid piece
+     * @param list, arraylist of token without barline
+     * @return returnlist, complete the list by adding a barline at end
      */
     private ArrayList<Token> Complete(ArrayList<Token> list){
         ArrayList<Token> returnlist = new ArrayList<Token>();
