@@ -68,7 +68,7 @@ public class ASTtoPlayer {
      */
     public void addNotesInNode(ArrayList<Token> node,SequencePlayer sp){
         int i = 0;
-        System.out.println(node);
+        //System.out.println(node);
         while(i < node.size()){
             clock += node.get(i).noteLength;
             //If the note is not a chord, the numNotesInChord should be zero
@@ -77,7 +77,7 @@ public class ASTtoPlayer {
                 Token note = node.get(j);
                 if (note.basenote!=7){
                     Pitch newPitch = new Pitch(intkey[note.basenote]).octaveTranspose(note.octave).transpose(note.accid);
-                    System.out.println(newPitch);
+                    //System.out.println(newPitch);
                     sp.addNote(newPitch.toMidiNote(),
                         clock,(int) note.noteLength);
                 }
