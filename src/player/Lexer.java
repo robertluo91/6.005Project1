@@ -422,7 +422,6 @@ public class Lexer {
                         hatcount -= 1;
                     } else if (str.substring(begin, begin + 1).equals("=")){
                         T.isNatural= true;
-
                     }else if (str.substring(begin, begin + 1).equals("'")) {
                         T.octave = output.get(i).octave + 1;
                     } else if (str.substring(begin, begin + 1).equals(",")) {
@@ -498,25 +497,6 @@ public class Lexer {
                 }
             }
         }
-        /**
-        for (int i=0; i<output.size(); i++){
-        	if (output.get(i).accid!=0){
-        		Token Tok = output.get(i);
-        		for (int a=i+1; a<output.size();a++){
-        			if (output.get(a).basenote==Tok.basenote&&output.get(a).num==Tok.num&&
-        					output.get(a).den==Tok.den&&output.get(a).basenote==Tok.basenote&& output.get(a).accid==0){
-        				output.get(a).accid = Tok.accid;
-        			}else if (output.get(a).basenote==Tok.basenote&&output.get(a).num==Tok.num &&
-        					output.get(a).den==Tok.den&&output.get(a).basenote==Tok.basenote&& output.get(a).accid!=0){
-        				Tok = output.get(a);
-        			}else if (output.get(a).type ==Type.Barline){
-        				i = a+1;
-        				break;
-        			}
-        		}
-        	}
-        }
-        */
         token = output;
         Tupnotelen(output);
       
