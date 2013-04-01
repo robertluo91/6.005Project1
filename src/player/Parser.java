@@ -2,6 +2,8 @@ package player;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import player.Token.Type;
 /**
  * 
  *
@@ -158,7 +160,7 @@ public class Parser {
                 throw new RuntimeException("invalid variant type: no RepeatEnd before second variant");
             }
             return new ParentTree(ParseRepeat(SubList(majorsection,0,indChildOne)),
-                    ParseRepeat(SubList(majorsection,indChildOne+1, indChildTwo-1)), 
+                    ParseRepeat(Complete(SubList(majorsection,indChildOne+1, indChildTwo-1))), 
                     ParseRepeat(SubList(majorsection,indChildTwo+1, majorsection.size())));                          
         }
     }
@@ -206,7 +208,7 @@ public class Parser {
     
     /**
      * Parse a string without variants
-     * @param list, arraylist of tokens without variants "[1,[2" 
+     * @param list, arraylist of tokens without variants "[1,[2", satisfying ValidEnding 
      * @return Parsedlist, arraylist of tokens with only pitch and rest, equivalent to list when playing 
      * @throws RuntimeException when nested repetition
      */
@@ -251,7 +253,7 @@ public class Parser {
             boolean omitend = false;
             //true when there is an omitted RepeatEnd at the end of the major section,
             //only if there there is BeginRepeat symbol
-            if (BeginRepeat.size()>1){
+            if (BeginRepeat.size()>0){
                 int l= BeginRepeat.get(BeginRepeat.size()-1);
                 while (l<list.size()){
                     if (list.get(l).type == Token.Type.RepeatEnd){
@@ -260,7 +262,7 @@ public class Parser {
                     else l++;
                 }
                 
-                if (l==list.size()-1){
+                if (l==list.size()){
                     omitend = true;
                 }
             }            
@@ -331,6 +333,17 @@ public class Parser {
     private ArrayList<Token> SubList(ArrayList<Token> list, int start, int end){
         ArrayList<Token> returnlist = new ArrayList<Token>();
         returnlist.addAll(list.subList(start,end));
+        return returnlist;
+    }
+    /**
+     * to complete the first variant as a valid piece
+     * @param list
+     * @return
+     */
+    private ArrayList<Token> Complete(ArrayList<Token> list){
+        ArrayList<Token> returnlist = new ArrayList<Token>();
+        returnlist.addAll(list);
+        returnlist.add(new Token(Type.Barline, "|", 0, 0, 0, 0, 0, 0, 0));
         return returnlist;
     }
 }
