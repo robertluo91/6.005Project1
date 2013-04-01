@@ -49,13 +49,15 @@ public class Parser {
                 //find the index of barline, and apply the change to all index within the measure after i
                 int EndofMeasure = i;
                 for (int j=i;j<end;j++){
-                    if (a.get(j).type== Token.Type.Barline){
+                    if (a.get(j).type== Token.Type.Barline
+                            ||a.get(j).type == Token.Type.RepeatBegin
+                            ||a.get(j).type == Token.Type.RepeatEnd){
                         EndofMeasure = j;
                         break;
                     }
                 }
                 //by assumption, the first token of a voice is not a barline
-                if (EndofMeasure == i){
+                if (EndofMeasure == i&&a.get(i).type!= Token.Type.RepeatBegin){
                     throw new RuntimeException("measure cannot be empty");
                 }
                 //the originally accidented pitch should not be affected by earlier temporary accidental
@@ -155,9 +157,9 @@ public class Parser {
             if (majorsection.get(indChildTwo-1).type!= Token.Type.RepeatEnd){
                 throw new RuntimeException("invalid variant type: no RepeatEnd before second variant");
             }
-            return new ParentTree(ParseRepeat(majorsection),
-                    ParseRepeat(SubList(majorsection,indChildOne, indChildTwo-1)), 
-                    ParseRepeat(SubList(majorsection,indChildTwo, majorsection.size())));                          
+            return new ParentTree(ParseRepeat(SubList(majorsection,0,indChildOne)),
+                    ParseRepeat(SubList(majorsection,indChildOne+1, indChildTwo-1)), 
+                    ParseRepeat(SubList(majorsection,indChildTwo+1, majorsection.size())));                          
         }
     }
     
@@ -247,18 +249,22 @@ public class Parser {
         
         else {
             boolean omitend = false;
-            //true when there is an omitted RepeatEnd at the end of the major section
-            int l= BeginRepeat.get(BeginRepeat.size()-1);
-            while (l<list.size()){
-                if (list.get(l).type == Token.Type.RepeatEnd){
-                    break;
+            //true when there is an omitted RepeatEnd at the end of the major section,
+            //only if there there is BeginRepeat symbol
+            if (BeginRepeat.size()>1){
+                int l= BeginRepeat.get(BeginRepeat.size()-1);
+                while (l<list.size()){
+                    if (list.get(l).type == Token.Type.RepeatEnd){
+                        break;
+                    }
+                    else l++;
                 }
-                else l++;
-            }
+                
+                if (l==list.size()-1){
+                    omitend = true;
+                }
+            }            
             
-            if (l==list.size()-1){
-                omitend = true;
-            }
             
             //checked nested; when there is no nested repetition, and the repeat symbol completed,
             //                then pairs of repeat symbols have no overlap 
