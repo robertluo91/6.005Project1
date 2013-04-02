@@ -472,13 +472,13 @@ public class Lexer {
                         }
                         if (chord) {
                             if (output.get(start).type == Type.Pitch || output.get(start).type == Type.Rest) {                                
-                                output.get(start).num = output.get(start).num* (tup - 1);
-                                output.get(start).den = output.get(start).den* tup;
+                                output.get(start).num *= Numfactor(tup);
+                                output.get(start).den *= tup;
                             }
                         } else {
                             if (output.get(start).type == Type.Pitch || output.get(start).type == Type.Rest) {                                
-                                output.get(start).num = output.get(start).num* (tup - 1);
-                                output.get(start).den = output.get(start).den* tup;
+                                output.get(start).num *= Numfactor(tup);
+                                output.get(start).den *= tup;
                                 k++;
                             } 
                             else if (output.get(start).type != Type.ChordsEnd) {
@@ -631,7 +631,6 @@ public class Lexer {
 
     /**
      * peek at the first token in the token list
-     * 
      * @return the current first token in the token list
      */
     public Token peek() {
@@ -641,12 +640,21 @@ public class Lexer {
 
     /**
      * get the token next to the current index
-     * 
      * @return the next token to the current index
      * @throws Exception
      */
     public Token next() throws Exception {
         if (parserPeekIndex >= token.size()) throw new Exception("Internal parser error");
         return token.get(parserPeekIndex++);
-    }  
+    }
+    /**
+     * get the correct factor for the numerator of notes in tuplets 
+     * @param tup
+     * @return
+     */
+    private static int Numfactor(int tup){
+        if (tup==2) return 3;
+        if (tup==3||tup==4) return tup-1;
+        else return 0;
+    }
 }

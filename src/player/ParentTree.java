@@ -1,7 +1,7 @@
 package player;
 
 import java.util.ArrayList;
-
+//stored the common part as root, the first variant as leftChild, the second as rightChild
 public class ParentTree implements AST{
     final ArrayList<Token> root;
     final ArrayList<Token> leftChild;
