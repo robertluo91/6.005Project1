@@ -216,7 +216,7 @@ public class LexerTest {
     @Test(expected = RuntimeException.class)
     //the 2nd field of header isn't T
     public void Wrongheader1(){        
-        new Lexer("sample_abc/wrongheader1.abc");
+        new Lexer("our_test/wrongheader1.abc");
    
     }
     
