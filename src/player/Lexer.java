@@ -14,8 +14,8 @@ import java.util.Map;
 import java.util.HashMap;
 
 /**
- * A lexer takes a string and splits it into tokens that are meaningful to a
- * parser. For detailed description of token types, see Token.java
+ * Tokenize an abc file and stores the tokens in the music head and music body into 
+ * 2 datastructures. 
  */
 public class Lexer {    
 
@@ -50,8 +50,13 @@ public class Lexer {
         put('G',6); put('Z',7);
     }};
 
-    //constructor takes in the name of the file, and BufferedReader reads the
-    //content in the abc file, and store it into br? 
+    
+    /**
+     * Read the abc file, count the total line number, and catches checked errors
+     *  
+     * @param filename the name of the abc file to be analyzed in the lexer
+     * @throws IOException???
+     */
     public Lexer(String filename) {
          this.filename = filename;
          fstream = null;
@@ -77,7 +82,12 @@ public class Lexer {
          }
          
      } 
-    //creates the header token arraylist and music body in string
+    /**
+     * tokenizes the music header string into tokens. 
+     * @throws IOException when the 1st field of header isn't X, the 2nd field of header isn't T,
+     * 		   K is not that last field of the header, repeated X or T type, repeated C,L,Q,M,Vi types,
+     * 		   Header information appears in the body
+     */
     public void processNextLine() throws IOException {         
         String str; 
         String str1;
@@ -133,7 +143,7 @@ public class Lexer {
             str1 = br.readLine();
             if (str1.startsWith("X:")||str1.startsWith("C:")||str1.startsWith("L:")||str1.startsWith("Q:")||
                     str1.startsWith("M:")||str1.startsWith("T:")||(str1.startsWith("K:"))){                
-                throw new IOException("headerinfo appeared in the body");                    
+                throw new IOException("headerinfo appears in the body");                    
                 }
             else{                
                 bodystring.add(str1);               
@@ -149,10 +159,11 @@ public class Lexer {
          
     } 
     /**
-     * Creates the lexer over the passed string.
+     *Tokenize music body string into tokens. 
      * 
-     * @param string
-     *            : The string to tokenize.
+     * @param body string: The music body string to tokenize.
+     * @throws RuntimeException when there is emptylines in music body, voice in the music body which didn't appear in the header,
+     * 		   string fail to match any token types.
      */
     public void BodyTokenize(ArrayList<String> bodystring){
         ArrayList<Token> output = new ArrayList<Token>();
@@ -208,9 +219,14 @@ public class Lexer {
         Chordcheck(output);
 
     }
-
-    //check if the chords are valid, also stores the # of pitches/rests in chords into the 
+   /**
     //chord parameter of the 1st pitch/rest after chordsbegin
+     * check if the chords are valid. 
+     * @param output: the stream of tokens of music body
+     * @throws RuntimeException if there are 2 or more consecutive "[", or if number of "[" not equal to the number of "]",
+     *         or if there are token types other than pitch or rest within chord
+     */
+    
     public void Chordcheck(ArrayList<Token> output) {
         int diff = 0; // check if output tokens have equal chordsbegin and chordsend
         for (int i = 0; i < output.size(); i++) {
@@ -247,7 +263,10 @@ public class Lexer {
         }
         NoteLength(output);
     }
-    
+    /**
+     * stores Tempo, NoteLength, Keymeasure, meter information 
+     * @param Headers: arraylist of tokens for the music header 
+     */
     //get the Tempo and Key of the music from header and get all the voices into voicecounter
     public void KeyTempo(ArrayList<Token> Headers) {
         ArrayList<Token> voicecounter = new ArrayList<Token>();
@@ -312,6 +331,12 @@ public class Lexer {
 
     // NoteLength method updates all the note-lengths for pitch and rest tokens
     // also changes basenote, octave, accid fields for Rest, Pitch types
+    /**
+     * Store each Pitch and Rest's note-length, basenote, accidental, octave information in that specific token
+     * @param output: ArrayList of tokens for the music body
+     * @throws RuntimeException when the numerator or the denominator of the note-length is 0, or when the note-length
+     *         for a pitch or a rest is noted as 0.  examples: "C0/4", "D2/0", "e0"
+     */
     public void NoteLength(ArrayList<Token> output) {
         for (int i = 0; i < output.size(); i++) {
         	Token T = output.get(i);
@@ -443,8 +468,11 @@ public class Lexer {
         Tupnotelen(output);
     }
 
-    // updates notelength for all pitches and rests under chords and tuplets,
-    // return exception if there are types other than Pitch, Rest, or 'chord' in tuplets
+    /**
+     * update and store the note-length in pitch and rest which are in tuplets and in chords
+     * @param output: ArrayList of tokens for the music body
+     * @throws RuntimeException when there are other elements other than pitch, rest, or chords in tuplets
+     */
     public void Tupnotelen(ArrayList<Token> output) {
         for (int i = 0; i < output.size(); i++) {
             if (output.get(i).type == Type.Tuplets) {
@@ -485,8 +513,10 @@ public class Lexer {
         token = output;
     }
 
-    // have an arraylist of all the denominators for the
-    // note length for pitch, rest
+    /**
+     * Stores all the denominator of the notelengths for pitches and rests into a list
+     * @param output: ArrayList of tokens for the music body
+     */
     public void LCM(ArrayList<Token> output) {
         ArrayList<Integer> Denom = new ArrayList<Integer>();
         for (int i = 0; i < output.size(); i++) {
@@ -497,7 +527,10 @@ public class Lexer {
         Ticker(output, Denom);
     }
 
-    // Ticker method changes all the note-length into the actual tick time.
+    /**
+     * Update note-length for pitches and rests to be TicksperQuaternote 
+     * @param output: ArrayList of tokens for the music body
+     */
     public void Ticker(ArrayList<Token> output, ArrayList<Integer> Denom) {
         int Tick = lcmlist(Denom);
         for (int i = 0; i < output.size(); i++) {
@@ -510,8 +543,11 @@ public class Lexer {
         this.Tick = Tick;
         WCDelete(token);
     }
-    
-    //delete all the whitespace type and comment type in token
+   
+    /**
+     * Delete all the whitespace type and comment type in token
+     * @param output: ArrayList of tokens for the music body
+     */
     public void WCDelete(ArrayList<Token> output) {
         for (int i= 0; i<output.size(); i++){
             if (output.get(i).type==Type.Whitespace ||output.get(i).type==Type.Comment){
@@ -521,7 +557,12 @@ public class Lexer {
         token = output;
         MusicBody(token, voicecounter);
     }
-
+    /**
+     * Separate the music body tokens into arraylists each representing a different voice.
+     * @param output: ArrayList of tokens for the music body
+     * @param voicecounter: ArrayList of tokens of different voice type.
+     * @throws RuntimeException when the ending of any voice isn't marked with |, |], :|, or || 
+     */
     public void MusicBody(ArrayList<Token> output, ArrayList<Token> voicecounter) {
         ArrayList<ArrayList<Token>> Body = new ArrayList<ArrayList<Token>>();
         if (voicecounter.size() == 0) { // only has 1 voice
@@ -561,17 +602,27 @@ public class Lexer {
         this.size= Body.size();
     }
 
-    //converts a letter in string format into an int [0-7]
+    /**
+     * Converts a letter to an integer.
+     * @param str: a letter within the range of A-G or Z in string format
+     */
     public int stringToNumber(String str) {
         return stringNumMap.get(str.charAt(0));
     }
-
+    /**
+     * Calculate the least common multiple of 2 numbers
+     * @param a: an integer
+     * @param b: an integer
+     */
     private static int lcm(int a, int b) {
         long A = a;
         long B = b;
         return (int) (A * (B / gcd(A, B)));
     }
-
+    /**
+     * Calculate the least common multiple of a list of integers
+     * @param input: a list of integers
+     */
     private static int lcmlist(List<Integer> input) {
         int current = input.get(0);
         for (int i = 1; i < input.size(); i++)
@@ -579,8 +630,11 @@ public class Lexer {
         return (int) current;
     }
 
-    // since we are dealing with positive integers (the denominators of the a
-    // notelength is positive)
+    /**
+     * Calculate the greatest common divisor for 2 longs
+     * @param a: a number in long format
+     * @param b: a number in long format
+     */
     private static long gcd(long a, long b) {
         while (b > 0) {
             long exchange = b;
@@ -590,7 +644,6 @@ public class Lexer {
         return a;
     }
 
-    // helper methods for test
     /**
      * peek at the first token in the token list
      * 
