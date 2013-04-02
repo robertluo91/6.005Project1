@@ -263,10 +263,10 @@ public class Lexer {
      */
     public void KeyTempo(ArrayList<Token> Headers) {
         ArrayList<Token> voicecounter = new ArrayList<Token>();
+        int Tempochecker = 0;
+        int nolenchecker = 0;
+        int meterchecker = 0;
         for (int i = 0; i < Headers.size(); i++) {
-            int Tempochecker = 0;
-            int nolenchecker = 0;
-            int meterchecker = 0;
             String str = Headers.get(i).string;
             if (str.startsWith("V:")) voicecounter.add(Headers.get(i));          
             else if (str.startsWith("K:")) {
@@ -275,7 +275,7 @@ public class Lexer {
                 this.Key = str;
             }
             else if (str.startsWith("Q:")) {
-                Tempochecker = 1;
+                Tempochecker = 1;            
                 str = str.substring(2);
                 if (str.startsWith(" ")) str = str.substring(1);
                 this.Tempo = Integer.parseInt(str);
@@ -292,7 +292,9 @@ public class Lexer {
                 if (str.startsWith(" ")) str = str.substring(1);
                 this.M = str;
             }
+        }
             if (Tempochecker == 0) {
+            	System.out.println("tempochecker=0");
                 this.Tempo = 100; // default Tempo
                 Tempochecker = 1;
             }
@@ -304,11 +306,12 @@ public class Lexer {
                 this.M = "4/4"; // default M
                 meterchecker = 1;
             }
-        }
+        
         
         int num = Integer.parseInt(this.L.substring(0, this.L.indexOf("/")));
         int denom = Integer.parseInt(this.L.substring(this.L.indexOf("/") + 1));
-        this.Tempo = this.Tempo/4*(denom/num);
+        System.out.println("num "+num + " denom "+ denom);
+        this.Tempo = this.Tempo/4*(denom/num); 
         this.voicecounter = voicecounter; 
     }
 

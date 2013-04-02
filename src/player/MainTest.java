@@ -10,7 +10,7 @@ public class MainTest {
     @Test
     public void fur_elise() { 
         Main.play("sample_abc/fur_elise.abc"); 
-    }
+    } 
     
     //complicatedtest2, one voice
     @Test
