@@ -87,10 +87,12 @@ public class Lexer {
         String str1;
         ArrayList<Token> headerinfo = new ArrayList<Token>();
         str = br.readLine();
+        
         if (str.startsWith("X:")){
             headerinfo.add(new Token(Type.X, str, 0, 0, 0, 0,0,0,0));
             headernum++;
             str = br.readLine();
+          
             checkerline -=1;
         }
         else throw new IOException("the 1st field of header isn't X");
@@ -99,35 +101,49 @@ public class Lexer {
             headerinfo.add(new Token(Type.T, str, 0, 0, 0, 0,0,0,0));
             headernum++;
             str = br.readLine();
+          
             checkerline -=1;
         }
         else throw new IOException("the 2nd field of header isn't T");
         
         boolean headercheck = true;
         while (headercheck==true){
-            if (str.startsWith("X:")||str.startsWith("T:")) throw new IOException("repeated X or T type");            
+            if (str.startsWith("X:")||str.startsWith("T:")) {throw new IOException("repeated X or T type");         }   
             else if (str.startsWith("C:")||str.startsWith("L:")||str.startsWith("Q:")||
-                    str.startsWith("M:")||str.startsWith("V:")){
-                for (int i =0; i<headerinfo.size(); i++){
-                    if (headerinfo.get(i).string == str) throw new IOException("repeated C,L,Q,M,Vi types");
+                    str.startsWith("M:")){
+                for (int i =0; i<headerinfo.size(); i++){                	
+                    if (headerinfo.get(i).string.substring(0,1).equals(str.substring(0,1))){ throw new IOException("repeated C,L,Q,M types");}
                 }  
                 for (Type t : Type.values()) {
                     Token testToken = new Token(t, "", 0, 0, 0, 0,0,0,0);                    
                     if (testToken.pattern.matcher(str).matches()) {
                         headerinfo.add(new Token(t, str, 0, 0, 0, 0,0,0,0)); 
-                        headernum++;
+                        headernum++;                        
                         str = br.readLine();
                         checkerline -=1;
+                        break;
                     }
                 }
+            }
+            else if (str.startsWith("V:")){
+            	for (int i =0; i<headerinfo.size(); i++){
+            		if (headerinfo.get(i).string.equals(str)) throw new IOException("repeated Vi types");
+            	}
+            	headerinfo.add(new Token(Type.V, str, 0, 0, 0, 0,0,0,0)); 
+            	headernum++;
+            	str = br.readLine();
+            	checkerline -=1;
             }
             else if (str.startsWith("K:")){
                 headerinfo.add(new Token(Type.K, str, 0, 0, 0, 0,0,0,0));
                 headernum++;                
                 headercheck = false;
                 checkerline -=1;
+                break;
             }
-            else throw new IOException("K is not that last field of the header");            
+            else {
+            	throw new IOException("K is not that last field of the header");            
+            }
         }
         bodystring = new ArrayList<String>();
         while (checkerline >0){         
