@@ -104,6 +104,9 @@ public class Parser {
                 if (a.get(i).string.equals("||")||a.get(i).string.equals("|]")){
                     EndIndOfMajorSect.add(i);
                 }
+                if (BeginRepeatOfParentTree(a,i)){                   
+                    EndIndOfMajorSect.add(i);
+                }
                 i++;
                 //since we make sure the end of the voice list of tokens is valid 
             }
@@ -130,7 +133,7 @@ public class Parser {
     
    /**
     * Given an arraylist of tokens, construct an AST equivalent to the list 
-    * @param majorsection arraylist of tokens possibly with variants and repetition
+    * @param majorsection ArrayList<Token> possibly with variants and (non-directly-nested) repetition
     * @return AST
     * @throws RuntimeException if have only one of [1,[2; and if [2 appears before [1 
     */
@@ -145,8 +148,8 @@ public class Parser {
         else {
             int indChildOne = 0;
             int indChildTwo = 0;
-            for (int j=0; j<majorsection.size();j++){
-                if(majorsection.get(j).type== Token.Type.Repeat_first){
+            for (int j=1; j<majorsection.size();j++){
+                if (majorsection.get(j).type== Token.Type.Repeat_first){
                     indChildOne = j;
                     break;
                 }                
@@ -167,15 +170,20 @@ public class Parser {
             if (majorsection.get(indChildTwo-1).type!= Token.Type.RepeatEnd){
                 throw new RuntimeException("invalid variant type: no RepeatEnd before second variant");
             }
-            return new ParentTree(ParseRepeat(SubList(majorsection,0,indChildOne)),
+            if (majorsection.get(0).type!= Token.Type.RepeatBegin){
+                return new ParentTree(ParseRepeat(SubList(majorsection,0,indChildOne)),
+                        ParseRepeat(Complete(SubList(majorsection,indChildOne+1, indChildTwo-1))), 
+                        ParseRepeat(SubList(majorsection,indChildTwo+1, majorsection.size()))); 
+            }
+            else return new ParentTree(ParseRepeat(SubList(majorsection,1,indChildOne)),
                     ParseRepeat(Complete(SubList(majorsection,indChildOne+1, indChildTwo-1))), 
-                    ParseRepeat(SubList(majorsection,indChildTwo+1, majorsection.size())));                          
+                    ParseRepeat(SubList(majorsection,indChildTwo+1, majorsection.size()))); 
         }
     }
     
     /**
      * Check if an arraylist of token (in our case, a major section) has a first variant
-     * @param list ArrayList of token
+     * @param list ArrayList<Token>
      * @return NoFirstChild boolean showing that if it has no first variant
      */
     private boolean NoFirstChild(ArrayList<Token> list){
@@ -187,7 +195,7 @@ public class Parser {
     
     /**
      * Check if an arraylist of token (in our case, a major section) has a second variant
-     * @param list ArrayList of token
+     * @param list ArrayList<Token>
      * @return NoFirstChild boolean showing that if it has no second variant
      */
     private boolean NoSecondChildren(ArrayList<Token> list){
@@ -199,7 +207,7 @@ public class Parser {
     
     /**
      * Check if an arraylist of token (in our case, a major section) has a valid ending
-     * @param list ArrayList of token
+     * @param list ArrayList<Token>
      * @return ValidEnding boolean showing that if it has valid ending pattern 
      */
     private boolean ValidEnding(ArrayList<Token> list){
@@ -214,8 +222,8 @@ public class Parser {
     
     /**
      * Parse a string without variants
-     * @param list, arraylist of tokens without variants "[1,[2", satisfying ValidEnding 
-     * @return Parsedlist, arraylist of tokens with only pitch and rest, equivalent to list when playing 
+     * @param list, ArrayList<Token> without variants "[1,[2", satisfying ValidEnding 
+     * @return Parsedlist, ArrayList<Token> with only pitch and rest, equivalent to list when playing 
      * @throws RuntimeException when nested repetition
      */
     private ArrayList<Token> ParseRepeat(ArrayList<Token> list){
@@ -331,7 +339,7 @@ public class Parser {
     
     /**
      * Take a sub-arraylist
-     * @param list an arraylist of tokens 
+     * @param list ArrayList<Token>
      * @param start starting index of the sublist
      * @param end ending index of the sublist
      * @return sublist an arraylist inside list, starting at start, ending at end
@@ -344,7 +352,7 @@ public class Parser {
     
     /**
      * Complete a truncated section (arraylist of token e.g.first variant) as a valid piece
-     * @param list, arraylist of token without barline
+     * @param list, ArrayList<Token> without barline
      * @return completedlist, list completed by adding a barline at end
      */
     private ArrayList<Token> Complete(ArrayList<Token> list){
@@ -352,5 +360,30 @@ public class Parser {
         completedlist.addAll(list);
         completedlist.add(new Token(Type.Barline, "|", 0, 0, 0, 0, 0, 0, 0));
         return completedlist;
+    }
+    
+    /**
+     * Show that if i+1 is the BeginRepeat symbol for a ParentTree
+     * @param list ArrayList<Token> of size
+     * @param i int 
+     * @return BeginRepeatOfParentTree boolean
+     */
+    private boolean BeginRepeatOfParentTree(ArrayList<Token> list, int i){
+        if (i< list.size()-2&& list.get(i+1).string.equals("|:")){
+            int rep1 = i+2;
+            for (rep1= i+2;rep1<list.size();rep1++){
+                if (list.get(rep1).type== Token.Type.Repeat_first) break;
+            }
+            int diff = 0;
+            for (int j=i+2;j<rep1;j++){
+                if (list.get(j).type== Token.Type.RepeatBegin) diff++;
+                if (list.get(j).type== Token.Type.RepeatEnd) diff--;
+            }
+            if (diff == 0) {
+                return true;
+            }
+            return false;
+        }
+        return false;
     }
 }
