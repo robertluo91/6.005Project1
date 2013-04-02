@@ -9,6 +9,10 @@ import org.junit.Test;
 
 import player.Token.Type;
 
+/**
+ * Test some complicated stuff
+ * @category no_didit
+ */
 public class ParserTest {    
     @Test
     public void TokeninTreeTest1() {

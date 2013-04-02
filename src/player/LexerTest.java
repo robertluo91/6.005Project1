@@ -1,12 +1,16 @@
 package player;
 
 import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import player.Lexer;
 import player.Token;
 import player.Token.Type;
+
+/**
+ * Test some complicated stuff
+ * @category no_didit
+ */
 public class LexerTest {
     
 	// step0: define token equality: both type and string must match
