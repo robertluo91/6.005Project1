@@ -8,17 +8,13 @@ import javax.sound.midi.MidiUnavailableException;
 import sound.Pitch;
 import sound.SequencePlayer;
 
-/**
- * 
- *
- */
-public class ASTtoPlayer {
-    
+public class ASTtoPlayer {    
     private int beatsPerMinute;
     private int ticksPerBeat;
     private int clock;
+    
     /**
-     * 
+     * play music passed from parser
      * @param parser
      */
     public ASTtoPlayer(Parser parser){
@@ -41,9 +37,9 @@ public class ASTtoPlayer {
     }  
     
     /**
-     * 
-     * @param VoiceForest
-     * @param sp
+     * traverse the arraylist of ASTs using sp tree by tree
+     * @param VoiceForest an arraylist of AST
+     * @param sp SequencePlayer
      */
     public void traverse(ArrayList<AST> VoiceForest,SequencePlayer sp){
         clock = 0;
@@ -53,18 +49,18 @@ public class ASTtoPlayer {
     }
     
     /**
-     * 
-     * @param t
-     * @param sp
+     * traverse an AST by traversing its expanding arraylist
+     * @param t an AST
+     * @param sp SequencePlayer
      */
     public void traverse(AST t, SequencePlayer sp){
         addNotesInNode(t.toArrayList(),sp);
     }
     
     /**
-     * 
-     * @param node
-     * @param sp
+     * traverse an arraylist of token, adding notes to play
+     * @param node an arraylist of token
+     * @param sp SequencePlayer
      */
     public void addNotesInNode(ArrayList<Token> node,SequencePlayer sp){
         int i = 0;
@@ -75,19 +71,16 @@ public class ASTtoPlayer {
             int j;
             for(j=i; j < i+node.get(i).chord+1 && j < node.size(); j++){
                 Token note = node.get(j);
+                //skip "rest"
                 if (note.basenote!=7){
                     Pitch newPitch = new Pitch(intkey[note.basenote]).octaveTranspose(note.octave).transpose(note.accid);
-                    //System.out.println(newPitch);
-                    sp.addNote(newPitch.toMidiNote(),
-                        clock,(int) note.noteLength);
+                    sp.addNote(newPitch.toMidiNote(),clock,(int) note.noteLength);
                 }
             }
             i=j;
         }
-        
-
     }
-
-    public static final char[] intkey = {'A','B','C','D','E','F','G','z'};
-        
+    
+    //map between 0-7 and basenote (rest included) 
+    public static final char[] intkey = {'A','B','C','D','E','F','G','z'};       
 }
