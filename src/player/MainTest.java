@@ -9,7 +9,7 @@ public class MainTest {
 
         Main.play("sample_abc/fur_elise.abc"); 
     } 
-    
+    /**
     @Test
     public void invention(){ 
         Main.play("sample_abc/invention.abc"); 
@@ -44,5 +44,5 @@ public class MainTest {
         Main.play("our_test/les_3_marins_de_groix.abc"); 
     }
     
-   
+   */
 }
