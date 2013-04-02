@@ -91,8 +91,7 @@ public class Lexer {
         if (str.startsWith("X:")){
             headerinfo.add(new Token(Type.X, str, 0, 0, 0, 0,0,0,0));
             headernum++;
-            str = br.readLine();
-          
+            str = br.readLine();          
             checkerline -=1;
         }
         else throw new IOException("the 1st field of header isn't X");
@@ -100,8 +99,7 @@ public class Lexer {
         if (str.startsWith("T:")){
             headerinfo.add(new Token(Type.T, str, 0, 0, 0, 0,0,0,0));
             headernum++;
-            str = br.readLine();
-          
+            str = br.readLine();          
             checkerline -=1;
         }
         else throw new IOException("the 2nd field of header isn't T");
@@ -184,8 +182,7 @@ public class Lexer {
             current = 0;
             while (current <length) {
                 boolean anyMatchSoFar = false;            
-                for (int i = length; i >current; i--) {
-                   
+                for (int i = length; i >current; i--) {                   
                     String currentString = string.substring(current, i);                
                     for (Type t : Type.values()) {
                         Token testToken = new Token(t, "", 0, 0, 0, 0, 0,0,0);                    

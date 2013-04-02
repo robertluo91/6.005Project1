@@ -4,8 +4,7 @@ import java.util.HashMap;
   
 public class KeySignature { 
     // hash map mapping string key signature to int[]   
-    HashMap<String, int[]> key_signatures = new HashMap<String, int[]>(); 
-  
+    HashMap<String, int[]> key_signatures = new HashMap<String, int[]>();   
     int[] current_signature; 
     
     /**
@@ -17,10 +16,11 @@ public class KeySignature {
         current_signature = key_signatures.get(key); 
     }
     
-    // hash map
-    // key signatures to the respective signature.
+    // for details, see http://en.wikipedia.org/wiki/Key_signature
+    // function as hash map, key signatures to the respective signature.
     // integer array [A, B, C, D, E, F, G, z] 
-    // 0 is neutral, 1 is sharp, -1 is flat    
+    // 0 is neutral, 1 is sharp, -1 is flat
+    // scales with sharp key signatures
     int[] C = { 0, 0, 0, 0, 0, 0, 0, 0}; 
     int[] G = { 0, 0, 0, 0, 0, 1, 0, 0}; 
     int[] D = { 0, 0, 1, 0, 0, 1, 0, 0}; 
@@ -29,7 +29,8 @@ public class KeySignature {
     int[] B = { 1, 0, 1, 1, 0, 1, 1, 0}; 
     int[] Fsharp = { 1, 0, 1, 1, 1, 1, 1, 0}; 
     int[] Csharp = { 1, 1, 1, 1, 1, 1, 1, 0}; 
-  
+
+    // scales with flat key signatures
     int[] F = { 0, -1, 0, 0, 0, 0, 0, 0}; 
     int[] Bflat = { 0, -1, 0, 0, -1, 0, 0, 0}; 
     int[] Eflat = { -1, -1, 0, 0, -1, 0, 0, 0}; 
@@ -37,12 +38,10 @@ public class KeySignature {
     int[] Dflat = { -1, -1, 0, -1, -1, 0, -1, 0}; 
     int[] Gflat = { -1, -1, -1, -1, -1, 0, -1, 0}; 
     int[] Cflat = { -1, -1, -1, -1, -1, -1, -1, 0}; 
-    
-    /**
-     * map from key to its equivalence key class (key signature)
-     */
+        
+    //map from key to its equivalence key class (key signature)    
     private void assignKeySignatures() { 
-        // sharp signatures 
+        //sharp signatures 
         key_signatures.put("C", C); 
         key_signatures.put("Am", C); 
         key_signatures.put("G", G); 
@@ -58,7 +57,7 @@ public class KeySignature {
         key_signatures.put("^F", Fsharp); 
         key_signatures.put("^Dm", Fsharp); 
   
-        // flat signatures 
+        //flat signatures 
         key_signatures.put("F", F); 
         key_signatures.put("Dm", F); 
         key_signatures.put("_B", Bflat); 
@@ -71,8 +70,6 @@ public class KeySignature {
         key_signatures.put("_Bm", Dflat); 
         key_signatures.put("_G", Gflat); 
         key_signatures.put("_Em", Gflat); 
-        key_signatures.put("_C", Cflat); 
-  
-    } 
-  
+        key_signatures.put("_C", Cflat);   
+    }   
 }
