@@ -1,12 +1,13 @@
 package player;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import player.Token.Type;
 
 public class Parser {
-    public final ArrayList<ArrayList<AST>> SequenceofVoiceForest  = new ArrayList<ArrayList<AST>>();
+    public List<List<AST>> SequenceofVoiceForest  = new ArrayList<List<AST>>();
     public final int tpb;
     public final int tempo;
     public final int size;
@@ -23,6 +24,7 @@ public class Parser {
         tempo = lexer.Tempo;
         tpb = lexer.Tick; 
         KeySignature KeySig = new KeySignature(key);
+        ArrayList<ArrayList<AST>> seqVoiceForest= new ArrayList<ArrayList<AST>>(); 
         
         //Weixin: we deal with cases where there are either no "[1,[2" or both "[1,[2" exist; if both exist, 
         //        each variant can contain repetitions
@@ -36,7 +38,7 @@ public class Parser {
             ArrayList<Token> a = Body.get(voice);
             int end = a.size()-1;
             
-            //check valid ending
+            //check valid ending, Rep invariant for the imaginary data type Voicelist
             if (!ValidEnding(a)) throw new RuntimeException("invalid ending type");
             
             //adjust temporary accidental within measure
@@ -55,6 +57,7 @@ public class Parser {
                     }
                 }
                 //by assumption, the first token of a voice is not a barline
+                //Rep invariant for the imaginary data type measure
                 if (EndofMeasure == i&&a.get(i).type!= Token.Type.RepeatBegin){
                     throw new RuntimeException("measure cannot be empty");
                 }
@@ -79,6 +82,7 @@ public class Parser {
                             }
                             else a.get(k).accid = 0;                                                                 
                         }
+                        //Rep invariant of token
                         if (a.get(k).accid>2||a.get(k).accid<-2){
                             throw new RuntimeException("invalid use of accid");
                         }
@@ -115,8 +119,13 @@ public class Parser {
                     TreesCurrentVoice.add(Parse(SubList(a,EndIndOfMajorSect.get(j)+1,EndIndOfMajorSect.get(j+1)+1)));
                 }
             }
-            SequenceofVoiceForest.add((ArrayList<AST>) TreesCurrentVoice);             
+            seqVoiceForest.add((ArrayList<AST>) TreesCurrentVoice);             
         }
+        List<List<AST>> temp = new ArrayList<List<AST>>();
+        for (ArrayList<AST> list : seqVoiceForest) {
+            temp.add(Collections.unmodifiableList(list));
+        }
+        SequenceofVoiceForest = Collections.unmodifiableList(temp);   
     }
     
    /**

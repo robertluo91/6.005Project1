@@ -1,6 +1,7 @@
 package player;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
@@ -18,7 +19,7 @@ public class ASTtoPlayer {
      * @param parser
      */
     public ASTtoPlayer(Parser parser){
-        ArrayList<ArrayList<AST>> SequenceofVoiceForest = parser.SequenceofVoiceForest;
+        List<List<AST>> SequenceofVoiceForest = parser.SequenceofVoiceForest;
         ticksPerBeat = parser.tpb;
         beatsPerMinute = parser.tempo;
         SequencePlayer sp;
@@ -41,7 +42,7 @@ public class ASTtoPlayer {
      * @param VoiceForest an arraylist of AST
      * @param sp SequencePlayer
      */
-    public void traverse(ArrayList<AST> VoiceForest,SequencePlayer sp){
+    public void traverse(List<AST> VoiceForest,SequencePlayer sp){
         clock = 0;
         for (int index=0; index<VoiceForest.size();index++){
             traverse(VoiceForest.get(index), sp);
