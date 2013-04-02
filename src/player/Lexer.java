@@ -294,7 +294,6 @@ public class Lexer {
             }
         }
             if (Tempochecker == 0) {
-            	System.out.println("tempochecker=0");
                 this.Tempo = 100; // default Tempo
                 Tempochecker = 1;
             }
@@ -307,11 +306,6 @@ public class Lexer {
                 meterchecker = 1;
             }
         
-        
-        int num = Integer.parseInt(this.L.substring(0, this.L.indexOf("/")));
-        int denom = Integer.parseInt(this.L.substring(this.L.indexOf("/") + 1));
-        System.out.println("num "+num + " denom "+ denom);
-        this.Tempo = this.Tempo/4*(denom/num); 
         this.voicecounter = voicecounter; 
     }
 

@@ -12,13 +12,13 @@ public class KeySignature {
      * @param key String in K field in header
      */
     public KeySignature(String key) { 
+        key = key.trim(); //"F#m" might have been written as "F# m"
         assignKeySignatures(); 
         current_signature = key_signatures.get(key); 
     }
     
     // for details, see http://en.wikipedia.org/wiki/Key_signature
-    // function as hash map, key signatures to the respective signature.
-    // integer array [A, B, C, D, E, F, G, z] 
+    // integer array resp. [A, B, C, D, E, F, G, z] 
     // 0 is neutral, 1 is sharp, -1 is flat
     // scales with sharp key signatures
     int[] C = { 0, 0, 0, 0, 0, 0, 0, 0}; 
@@ -49,27 +49,27 @@ public class KeySignature {
         key_signatures.put("D", D); 
         key_signatures.put("Bm", D); 
         key_signatures.put("A", A); 
-        key_signatures.put("^Fm", A); 
+        key_signatures.put("F#m", A); 
         key_signatures.put("E", E); 
-        key_signatures.put("^Cm", E); 
+        key_signatures.put("C#m", E); 
         key_signatures.put("B", B); 
-        key_signatures.put("^Gm", B); 
-        key_signatures.put("^F", Fsharp); 
-        key_signatures.put("^Dm", Fsharp); 
+        key_signatures.put("G#m", B); 
+        key_signatures.put("F#", Fsharp); 
+        key_signatures.put("D#m", Fsharp); 
   
         //flat signatures 
         key_signatures.put("F", F); 
         key_signatures.put("Dm", F); 
-        key_signatures.put("_B", Bflat); 
+        key_signatures.put("Bb", Bflat); 
         key_signatures.put("Gm", Bflat); 
-        key_signatures.put("_E", Eflat); 
+        key_signatures.put("Eb", Eflat); 
         key_signatures.put("Cm", Eflat); 
-        key_signatures.put("_A", Aflat); 
+        key_signatures.put("Ab", Aflat); 
         key_signatures.put("Fm", Aflat); 
-        key_signatures.put("_D", Dflat); 
-        key_signatures.put("_Bm", Dflat); 
-        key_signatures.put("_G", Gflat); 
-        key_signatures.put("_Em", Gflat); 
-        key_signatures.put("_C", Cflat);   
+        key_signatures.put("Db", Dflat); 
+        key_signatures.put("Bbm", Dflat); 
+        key_signatures.put("Gb", Gflat); 
+        key_signatures.put("Ebm", Gflat); 
+        key_signatures.put("Cb", Cflat);   
     }   
 }
