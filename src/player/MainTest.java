@@ -3,7 +3,7 @@ package player;
 import org.junit.Test;
 
 public class MainTest {
-	/**
+
     @Test
     public void fur_elise() { 
 
@@ -38,7 +38,7 @@ public class MainTest {
     public void scale(){ 
         Main.play("sample_abc/scale.abc"); 
     }
-    */
+    
     @Test
     public void les_3_marins_de_groix(){ 
         Main.play("our_test/les_3_marins_de_groix.abc"); 
