@@ -18,7 +18,7 @@ import java.util.HashMap;
  * parser. For detailed description of token types, see Token.java
  */
 public class Lexer {    
-
+    
     ArrayList<ArrayList<Token>> MusicBody;
     ArrayList<Token> MusicHeader; 
     String Key;
@@ -60,11 +60,8 @@ public class Lexer {
          bodyline =0;
          try { 
              fstream = new FileInputStream(filename);
-             
              FileInputStream fstream1 = new FileInputStream(filename); 
-             
              br = new BufferedReader(new InputStreamReader(fstream));
-
              cr = new BufferedReader(new InputStreamReader(fstream1));
              while ((cr.readLine())!=null){
                  checkerline +=1;
@@ -73,9 +70,7 @@ public class Lexer {
          } catch (IOException e) { 
              e.printStackTrace(); 
              throw new RuntimeException(e.getMessage()); 
-             
          }
-         
      } 
     //creates the header token arraylist and music body in string
     public void processNextLine() throws IOException {         
@@ -88,53 +83,50 @@ public class Lexer {
             headernum++;
             str = br.readLine();
             checkerline -=1;
-        }else{
-            throw new IOException("the 1st field of header isn't X");
         }
+        else throw new IOException("the 1st field of header isn't X");
+        
         if (str.startsWith("T:")){
             headerinfo.add(new Token(Type.T, str, 0, 0, 0, 0,0,0,0));
             headernum++;
             str = br.readLine();
             checkerline -=1;
-        }else{
-            throw new IOException("the 2nd field of header isn't T");
         }
+        else throw new IOException("the 2nd field of header isn't T");
+        
         boolean headercheck = true;
         while (headercheck==true){
-            if (str.startsWith("X:")||str.startsWith("T:")){
-                throw new IOException("repeated X or T type");
-        }
+            if (str.startsWith("X:")||str.startsWith("T:")) throw new IOException("repeated X or T type");            
             else if (str.startsWith("C:")||str.startsWith("L:")||str.startsWith("Q:")||
                     str.startsWith("M:")||str.startsWith("V:")){
                 for (int i =0; i<headerinfo.size(); i++){
-                    if (headerinfo.get(i).string == str){
-                        throw new IOException("repeated C,L,Q,M,Vi types");}}  
+                    if (headerinfo.get(i).string == str) throw new IOException("repeated C,L,Q,M,Vi types");
+                }  
                 for (Type t : Type.values()) {
                     Token testToken = new Token(t, "", 0, 0, 0, 0,0,0,0);                    
-                    if (testToken.pattern.matcher(str).matches()) {                        
+                    if (testToken.pattern.matcher(str).matches()) {
                         headerinfo.add(new Token(t, str, 0, 0, 0, 0,0,0,0)); 
                         headernum++;
                         str = br.readLine();
-                        checkerline -=1;}
+                        checkerline -=1;
                     }
+                }
             }
             else if (str.startsWith("K:")){
                 headerinfo.add(new Token(Type.K, str, 0, 0, 0, 0,0,0,0));
                 headernum++;                
                 headercheck = false;
                 checkerline -=1;
-                }
-            else{
-                throw new IOException("K is not that last field of the header"); 
             }
+            else throw new IOException("K is not that last field of the header");            
         }
         bodystring = new ArrayList<String>();
         while (checkerline >0){         
             str1 = br.readLine();
             if (str1.startsWith("X:")||str1.startsWith("C:")||str1.startsWith("L:")||str1.startsWith("Q:")||
-                    str1.startsWith("M:")||str1.startsWith("T:")||(str1.startsWith("K:"))){                
-                throw new IOException("headerinfo appeared in the body");                    
-                }
+                    str1.startsWith("M:")||str1.startsWith("T:")||(str1.startsWith("K:"))){
+                throw new IOException("headerinfo appeared in the body");       
+            }
             else{                
                 bodystring.add(str1);               
                 bodyline +=1;               
@@ -145,9 +137,9 @@ public class Lexer {
         this.totalnum = headernum + bodyline;
         this.MusicHeader= headerinfo;
         KeyTempo(MusicHeader);
-        BodyTokenize(bodystring);
-         
-    } 
+        BodyTokenize(bodystring);    
+    }
+    
     /**
      * Creates the lexer over the passed string.
      * 
@@ -160,53 +152,47 @@ public class Lexer {
         for (int a=0; a<bodystring.size(); a++){
             String string= bodystring.get(a);
             int length = string.length();
-            if (length ==0){
-                throw new RuntimeException("Emptyline in music body");
-            }
-
-        current = 0;
-        while (current <length) {
-            boolean anyMatchSoFar = false;            
-            for (int i = length; i >current; i--) {
-                //find the longeset possible valid token
-                String currentString = string.substring(current, i);                
-                for (Type t : Type.values()) {
-                    Token testToken = new Token(t, "", 0, 0, 0, 0, 0,0,0);                    
-                    if (testToken.pattern.matcher(currentString).matches()) {
-                    	if (currentString.equals("||") && string.substring(i,i+1).equals(":")){
-                    		output.add(new Token(Type.Barline, "|", 0,0,0,0,0,0,0));
-                    		output.add(new Token(Type.RepeatBegin, "|:", 0,0,0,0,0,0,0));
-                    		anyMatchSoFar = true;
-                    		current = i+1;
-                    	}else{
-                        anyMatchSoFar = true;  
-                        current = i;
-                        Token T = new Token(t, currentString, 0, 0, 0, 0, 0,0,0);
-                        output.add(T);
-                        if (t==Type.V){
-                            boolean c = false;
-                            //string is immutable type!!!!!                            
-                        for (int b =0; b<MusicHeader.size(); b++){
-                            if (MusicHeader.get(b).string.equals(currentString)){                                   
-                                c= true;
-                                break;
+            if (length ==0) throw new RuntimeException("Emptyline in music body");
+        
+            current = 0;
+            while (current <length) {
+                boolean anyMatchSoFar = false;            
+                for (int i = length; i >current; i--) {
+                    //find the longeset possible valid token
+                    String currentString = string.substring(current, i);                
+                    for (Type t : Type.values()) {
+                        Token testToken = new Token(t, "", 0, 0, 0, 0, 0,0,0);                    
+                        if (testToken.pattern.matcher(currentString).matches()) {
+                            if (currentString.equals("||") && string.substring(i,i+1).equals(":")){
+                                output.add(new Token(Type.Barline, "|", 0,0,0,0,0,0,0));
+                                output.add(new Token(Type.RepeatBegin, "|:", 0,0,0,0,0,0,0));
+                                anyMatchSoFar = true;
+                                current = i+1;
+                            }
+                            else {
+                                anyMatchSoFar = true;  
+                                current = i;
+                                Token T = new Token(t, currentString, 0, 0, 0, 0, 0,0,0);
+                                output.add(T);
+                                if (t==Type.V){
+                                    boolean c = false;
+                                    //string is immutable type!!!!!                            
+                                    for (int b =0; b<MusicHeader.size(); b++){
+                                        if (MusicHeader.get(b).string.equals(currentString)){                                   
+                                            c= true;
+                                            break;
+                                        }
+                                    }
+                                    if (c==false) throw new RuntimeException("Voice didn't appear in the header");
+                                }
                             }
                         }
-                        if (c==false){      
-                                throw new RuntimeException("Voice didn't appear in the header");}}
-                        }
-                    }
-                   }
-                }
-            
-            if (!anyMatchSoFar) {
-                throw new RuntimeException("no right token match");
-                }                
-            }
+                    }                
+                }            
+                if (!anyMatchSoFar) throw new RuntimeException("no right token match");
+            }    
         }
-        
         Chordcheck(output);
-
     }
 
     //check if the chords are valid, also stores the # of pitches/rests in chords into the 
@@ -214,18 +200,13 @@ public class Lexer {
     public void Chordcheck(ArrayList<Token> output) {
         int diff = 0; // check if output tokens have equal chordsbegin and chordsend
         for (int i = 0; i < output.size(); i++) {
-            if (output.get(i).type == Type.ChordsBegin)
-                diff++;
-            else if (output.get(i).type == Type.ChordsEnd)
-                diff--;
-            if (diff > 1)
-                throw new RuntimeException("2 or more consecutive chordbegin");
-            else if (diff < 0)
-                throw new RuntimeException("chordend more than chordbegin");
+            if (output.get(i).type == Type.ChordsBegin) diff++;
+            else if (output.get(i).type == Type.ChordsEnd) diff--;
+            
+            if (diff > 1) throw new RuntimeException("2 or more consecutive chordbegin");
+            else if (diff < 0) throw new RuntimeException("chordend more than chordbegin");
         }
-        if (diff != 0){
-            throw new RuntimeException(
-                    "invalid input pattern: should have equal number of chordbegin and chordend");}
+        if (diff != 0) throw new RuntimeException("invalid input pattern: should have equal number of chordbegin and chordend");
         for (int i = 0; i < output.size(); i++) { // checks if output tokens have types other than          
                                                     // pitch and rest within chords
             if (output.get(i).type == Type.ChordsBegin) {
@@ -234,8 +215,8 @@ public class Lexer {
                     if (output.get(a).type == Type.Pitch|| output.get(a).type == Type.Rest) {
                         k +=1;
                     }
-                    else if (output.get(i).type != Type.Pitch
-                        && output.get(i).type != Type.Rest && output.get(a).type != Type.ChordsEnd){
+                    else if (output.get(i).type != Type.Pitch 
+                            && output.get(i).type != Type.Rest && output.get(a).type != Type.ChordsEnd){
                         throw new RuntimeException("there are types other than pitch and rest in chord");
                     }
                     else if (output.get(a).type == Type.ChordsEnd){
@@ -256,38 +237,28 @@ public class Lexer {
             int nolenchecker = 0;
             int meterchecker = 0;
             String str = Headers.get(i).string;
-            if (str.startsWith("V:")) {
-                voicecounter.add(Headers.get(i));
-            }
+            if (str.startsWith("V:")) voicecounter.add(Headers.get(i));          
             else if (str.startsWith("K:")) {
                 str = str.substring(2);
-                if (str.startsWith(" ")) {
-                    str = str.substring(1);
-                }
+                if (str.startsWith(" ")) str = str.substring(1);                
                 this.Key = str;
             }
             else if (str.startsWith("Q:")) {
                 Tempochecker = 1;
                 str = str.substring(2);
-                if (str.startsWith(" ")) {
-                    str = str.substring(1);
-                }
+                if (str.startsWith(" ")) str = str.substring(1);
                 this.Tempo = Integer.parseInt(str);
             }
             else if (str.startsWith("L:")) {
                 nolenchecker = 1;
                 str = str.substring(2);
-                if (str.startsWith(" ")) {
-                    str = str.substring(1);
-                }
+                if (str.startsWith(" ")) str = str.substring(1);
                 this.L = str;
             }
             else if (str.startsWith("M:")) {
                 meterchecker = 1;
                 str = str.substring(2);
-                if (str.startsWith(" ")) {
-                    str = str.substring(1);
-                }
+                if (str.startsWith(" ")) str = str.substring(1);
                 this.M = str;
             }
             if (Tempochecker == 0) {
@@ -302,8 +273,8 @@ public class Lexer {
                 this.M = "4/4"; // default M
                 meterchecker = 1;
             }
-
         }
+        
         int num = Integer.parseInt(this.L.substring(0, this.L.indexOf("/")));
         int denom = Integer.parseInt(this.L.substring(this.L.indexOf("/") + 1));
         this.Tempo = this.Tempo/4*(denom/num);
@@ -332,31 +303,29 @@ public class Lexer {
                     T.basenote = 7;
                     T.num = 1;
                     T.den = denom;
-                }  else if (str.matches("z[0-9]+/")) {                   
+                } else if (str.matches("z[0-9]+/")) {                   
                     int nom = Integer.parseInt(str.substring(1,str.length()-1));
                     if (nom ==0) throw new RuntimeException("Invalid input: num of rest length can't be 0");
                     T.basenote = 7;
                     T.num = nom;
                     T.den = 2;
-                }   else if (str.matches("z[0-9]+")) {                    
+                } else if (str.matches("z[0-9]+")) {                    
                     int num = Integer.parseInt(str.substring(1));
                     if (num ==0) throw new RuntimeException("Invalid input: rest length can't be 0");
                     T.basenote = 7;
                     T.num = num;
                     T.den = 1;
-                }else if (str.matches("z[0-9]+/[0-9]+")) {
+                } else if (str.matches("z[0-9]+/[0-9]+")) {
                     for (int begin = 0; begin < str.length(); begin++) {
                         String substring = str.substring(begin);
                         if (substring.matches("[0-9]+/[0-9]+")) {
                             int num = Integer.parseInt(substring.substring(0,substring.indexOf("/")));
-                            int denom = Integer.parseInt(substring
-                                    .substring(substring.indexOf("/") + 1));
+                            int denom = Integer.parseInt(substring.substring(substring.indexOf("/") + 1));
                             if (num ==0 || denom==0) throw new RuntimeException("Invalid input: num or denom of rest length can't be 0");
                             long gcd = gcd((long) num, (long) denom);
                             num = num / (int) gcd;
                             denom = denom / (int) gcd;
-                            str.replaceAll("d+/d+", Integer.toString(num) + "/"
-                                    + Integer.toString(denom));
+                            str.replaceAll("d+/d+", Integer.toString(num) + "/" + Integer.toString(denom));
                             T.basenote = 7;
                             T.num = num;
                             T.den = denom;
@@ -379,7 +348,7 @@ public class Lexer {
                         hatcount -= 1;
                     } else if (str.substring(begin, begin + 1).equals("=")){
                         T.isNatural= true;
-                    }else if (str.substring(begin, begin + 1).equals("'")) {
+                    } else if (str.substring(begin, begin + 1).equals("'")) {
                         T.octave = output.get(i).octave + 1;
                     } else if (str.substring(begin, begin + 1).equals(",")) {
                         output.get(i).octave = output.get(i).octave - 1;
@@ -394,8 +363,7 @@ public class Lexer {
                     T.num = 1;
                     T.den = 2;
                 } else if (str.matches("(((\\^){1,2})|((\\_){1,2})|(\\=))?[A-Ga-g]((,+)|('+))?/[0-9]+")) {                    
-                    int denom = Integer
-                            .parseInt(str.substring(str.indexOf("/") + 1));
+                    int denom = Integer.parseInt(str.substring(str.indexOf("/") + 1));
                     if (denom ==0) throw new RuntimeException("Invalid input: denominator of notelength can't be 0");
                     T.num = 1;
                     T.den = denom;
@@ -409,7 +377,7 @@ public class Lexer {
                             T.den = 2;
                             break;}
                         }
-                }else if (str.matches("(((\\^){1,2})|((\\_){1,2})|(\\=))?[A-Ga-g]((,+)|('+))?[0-9]+")) {
+                } else if (str.matches("(((\\^){1,2})|((\\_){1,2})|(\\=))?[A-Ga-g]((,+)|('+))?[0-9]+")) {
                     for (int begin = 0; begin < str.length(); begin++) {
                         String substring = str.substring(begin);
                         if (substring.matches("[0-9]+")) {
@@ -419,7 +387,7 @@ public class Lexer {
                             T.den = 1;
                             break;}
                     }
-                }else if (str.matches("(((\\^){1,2})|((\\_){1,2})|(\\=))?[A-Ga-g]((,+)|('+))?")) {                    
+                } else if (str.matches("(((\\^){1,2})|((\\_){1,2})|(\\=))?[A-Ga-g]((,+)|('+))?")) {                    
                     T.num = 1;
                     T.den = 1;
                 } else if (str.matches("(((\\^){1,2})|((\\_){1,2})|(\\=))?[A-Ga-g]((,+)|('+))?([0-9]+/[0-9]+)")) {
@@ -453,9 +421,7 @@ public class Lexer {
                 boolean chord = false;
                 for (int start = i + 1; start < output.size(); start++) {
                     if (k < tup) {
-                        if (output.get(start).type == Type.ChordsBegin) {
-                            chord = true;
-                        }
+                        if (output.get(start).type == Type.ChordsBegin) chord = true;                        
                         else if (output.get(start).type == Type.ChordsEnd) {
                             chord = false;
                             k++;
@@ -475,9 +441,7 @@ public class Lexer {
                                 throw new RuntimeException("other types other than Pitch, Rest, or 'chord' in tuplets");
                             }
                         }
-                    } else if (k == tup) {
-                        break;
-                    }
+                    } else if (k == tup) break;
                 }
             }
         }
@@ -490,9 +454,9 @@ public class Lexer {
     public void LCM(ArrayList<Token> output) {
         ArrayList<Integer> Denom = new ArrayList<Integer>();
         for (int i = 0; i < output.size(); i++) {
-            if (output.get(i).type == Type.Pitch
-                    || output.get(i).type == Type.Rest) {                
-                    Denom.add(output.get(i).den);}            
+            if (output.get(i).type == Type.Pitch||output.get(i).type == Type.Rest) {                
+                    Denom.add(output.get(i).den);
+            }            
         }
         Ticker(output, Denom);
     }
@@ -501,8 +465,7 @@ public class Lexer {
     public void Ticker(ArrayList<Token> output, ArrayList<Integer> Denom) {
         int Tick = lcmlist(Denom);
         for (int i = 0; i < output.size(); i++) {
-            if (output.get(i).type == Type.Pitch
-                    || output.get(i).type == Type.Rest) {
+            if (output.get(i).type == Type.Pitch||output.get(i).type == Type.Rest) {
                 output.get(i).noteLength = output.get(i).num * Tick/output.get(i).den;
             }
         }
@@ -565,13 +528,24 @@ public class Lexer {
     public int stringToNumber(String str) {
         return stringNumMap.get(str.charAt(0));
     }
-
+    
+    /**
+     * 
+     * @param a
+     * @param b
+     * @return
+     */
     private static int lcm(int a, int b) {
         long A = a;
         long B = b;
         return (int) (A * (B / gcd(A, B)));
     }
-
+    
+    /**
+     * 
+     * @param input
+     * @return
+     */
     private static int lcmlist(List<Integer> input) {
         int current = input.get(0);
         for (int i = 1; i < input.size(); i++)
@@ -581,6 +555,12 @@ public class Lexer {
 
     // since we are dealing with positive integers (the denominators of the a
     // notelength is positive)
+    /**
+     * 
+     * @param a
+     * @param b
+     * @return
+     */
     private static long gcd(long a, long b) {
         while (b > 0) {
             long exchange = b;
@@ -597,9 +577,7 @@ public class Lexer {
      * @return the current first token in the token list
      */
     public Token peek() {
-        if (parserPeekIndex >= token.size()) {
-            return null;
-        }
+        if (parserPeekIndex >= token.size()) return null;
         return token.get(parserPeekIndex);
     }
 
@@ -610,9 +588,7 @@ public class Lexer {
      * @throws Exception
      */
     public Token next() throws Exception {
-        if (parserPeekIndex >= token.size()) {
-            throw new Exception("Internal parser error");
-        }
+        if (parserPeekIndex >= token.size()) throw new Exception("Internal parser error");
         return token.get(parserPeekIndex++);
     }  
 }

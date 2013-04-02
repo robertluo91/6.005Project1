@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import player.Token.Type;
-/**
- * 
- *
- */
+
 public class Parser {
     public final ArrayList<ArrayList<AST>> SequenceofVoiceForest  = new ArrayList<ArrayList<AST>>();
     public final int tpb;
@@ -16,7 +13,7 @@ public class Parser {
     
     /**
      * @param lexer arraylist of voice_list, where voice_list is an arraylist of tokens for a particular voice
-     * @throws RuntimeException when invalid ending, empty measure, wrong pattern of accid, confusion caused by pure nested repetition
+     * @throws RuntimeException: invalid ending, empty measure, wrong pattern of accid, confusion caused by pure nested repetition
      *         and when there is "[1" but no "[2" or the reverse, and if "[2" before "[1" in a major section 
      */
     public Parser(Lexer lexer) throws RuntimeException{                
@@ -31,8 +28,7 @@ public class Parser {
         //        each variant can contain repetitions
         //we don't deal with nested repetition
         //since repetition cannot be made across major section, if an already started repeating stream meets "||", 
-        //then it halts, and becomes a complete repeated piece    
-   
+        //then it halts, and becomes a complete repeated piece   
         for (int voice=0; voice< size; voice++){
             //need to know the end of major section in order to deal with repetition
             List<Integer> EndIndOfMajorSect = new ArrayList<Integer>();
@@ -100,7 +96,6 @@ public class Parser {
                 if ((a.get(i).accid>2||a.get(i).accid<-2)&&(a.get(i).isNatural == false)){
                     throw new RuntimeException("invalid use of accid");
                 }
-                
                 //find the major sections ending index
                 if (a.get(i).string.equals("||")||a.get(i).string.equals("|]")){
                     EndIndOfMajorSect.add(i);
@@ -111,7 +106,6 @@ public class Parser {
             if (a.get(end).string.equals("|")||a.get(end).string.equals(":|")){
                 EndIndOfMajorSect.add(end);
             }
-            
             if (EndIndOfMajorSect.size()==1){
                 TreesCurrentVoice.add(Parse(a));
             }            
@@ -126,9 +120,9 @@ public class Parser {
     }
     
    /**
-    * Given an arraylist of tokens possibly with variants and repetition, construct an AST equivalent to the list 
-    * @param majorsection arraylist of tokens
-    * @return AST equivalent to the list
+    * Given an arraylist of tokens, construct an AST equivalent to the list 
+    * @param majorsection arraylist of tokens possibly with variants and repetition
+    * @return AST
     * @throws RuntimeException if have only one of [1,[2; and if [2 appears before [1 
     */
     private AST Parse(ArrayList<Token> majorsection){        
@@ -139,7 +133,6 @@ public class Parser {
             ArrayList<Token> repeat = ParseRepeat(majorsection);  
             return new NodeTree(repeat);
         }
-            
         else {
             int indChildOne = 0;
             int indChildTwo = 0;
@@ -178,9 +171,7 @@ public class Parser {
      */
     private boolean NoFirstChild(ArrayList<Token> list){
         for (int i=0;i<list.size();i++){
-            if (list.get(i).type== Token.Type.Repeat_first){
-                return false;    
-            }
+            if (list.get(i).type== Token.Type.Repeat_first) return false;    
         }
         return true;
     }
@@ -192,9 +183,7 @@ public class Parser {
      */
     private boolean NoSecondChildren(ArrayList<Token> list){
         for (int i=0;i<list.size();i++){
-            if (list.get(i).type== Token.Type.Repeat_second){
-                return false;    
-            }
+            if (list.get(i).type== Token.Type.Repeat_second) return false;    
         }
         return true;
     }
@@ -209,7 +198,8 @@ public class Parser {
         if (list.get(end).string.equals("|")
                 ||list.get(end).string.equals("||")
                 ||list.get(end).string.equals("|]")
-                ||list.get(end).string.equals(":|")) { return true; }
+                ||list.get(end).string.equals(":|"))  
+            return true; 
         else return false;
     }
     
@@ -230,16 +220,13 @@ public class Parser {
         boolean omitbegin = false;
        //true when there is an omitted RepeatBegin at the beginning of the major section 
         while (firstsymbol<list.size()){
-            if (list.get(firstsymbol).type== Token.Type.RepeatBegin){
-                break;
-            }
+            if (list.get(firstsymbol).type== Token.Type.RepeatBegin) break;
             else if(list.get(firstsymbol).type== Token.Type.RepeatEnd){
                 omitbegin = true;
                 break;
             }
             else firstsymbol++;
-        }
-               
+        }               
         
         for (int j=0;j<list.size();j++){
             if (list.get(j).type== Token.Type.RepeatBegin){
@@ -255,7 +242,6 @@ public class Parser {
         if (Repeat.size()==0){
             Parsedlist = list;
         }
-        
         else {
             boolean omitend = false;
             //true when there is an omitted RepeatEnd at the end of the major section,
@@ -263,15 +249,10 @@ public class Parser {
             if (BeginRepeat.size()>0){
                 int l= BeginRepeat.get(BeginRepeat.size()-1);
                 while (l<list.size()){
-                    if (list.get(l).type == Token.Type.RepeatEnd){
-                        break;
-                    }
+                    if (list.get(l).type == Token.Type.RepeatEnd) break;
                     else l++;
                 }
-                
-                if (l==list.size()){
-                    omitend = true;
-                }
+                if (l==list.size()) omitend = true;
             }            
                        
             //checked nested; when there is no nested repetition, and the repeat symbol completed,

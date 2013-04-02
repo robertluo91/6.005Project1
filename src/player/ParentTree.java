@@ -1,16 +1,14 @@
 package player;
 
 import java.util.ArrayList;
-/**
- * 
- *
- */
+
 public class ParentTree implements AST{
     final ArrayList<Token> root;
     final ArrayList<Token> leftChild;
     final ArrayList<Token> rightChild;
+    
     /**
-     * 
+     * get the stored info
      * @param root
      * @param leftChild
      * @param rightChild

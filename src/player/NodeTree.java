@@ -1,15 +1,13 @@
 package player;
 
 import java.util.ArrayList;
-/**
- * 
- *
- */
+
 public class NodeTree implements AST{
     final ArrayList<Token> node;
+    
     /**
-     * 
-     * @param node
+     * get the stored info
+     * @param node the arraylist of token
      */
     public NodeTree(ArrayList<Token> node){
         this.node = node;
