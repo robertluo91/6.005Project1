@@ -5,7 +5,6 @@ import org.junit.Test;
 public class MainTest {
     @Test
     public void fur_elise() { 
-
         Main.play("sample_abc/fur_elise.abc"); 
     } 
     @Test
