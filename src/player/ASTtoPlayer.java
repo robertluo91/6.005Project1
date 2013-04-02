@@ -28,7 +28,7 @@ public class ASTtoPlayer {
                 traverse(SequenceofVoiceForest.get(voice),sp);
             }
             sp.play();
-            //System.out.println(sp);
+            
         } catch (MidiUnavailableException e) {
             e.printStackTrace();
         } catch (InvalidMidiDataException e) {
