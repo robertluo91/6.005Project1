@@ -315,6 +315,7 @@ public class Lexer {
         int denom = Integer.parseInt(this.L.substring(this.L.indexOf("/") + 1));
         System.out.println("num "+num + " denom "+ denom);
         this.Tempo = this.Tempo/4*(denom/num); 
+        System.out.println(this.Tempo);
         this.voicecounter = voicecounter; 
     }
 

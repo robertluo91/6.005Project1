@@ -7,11 +7,11 @@ import org.junit.Test;
  */
 public class MainTest {
     //complicatedtest1, two voices
+	/**
     @Test
     public void fur_elise() { 
         Main.play("sample_abc/fur_elise.abc"); 
     } 
-    
     //complicatedtest2, one voice
     @Test
     public void invention(){ 
@@ -29,7 +29,7 @@ public class MainTest {
     public void paddy(){ 
         Main.play("sample_abc/paddy.abc"); 
     } 
-    
+    */
     //easypiece1, without repeat, chord, or rest, with no voice input
     @Test
     public void piece1(){ 
@@ -41,7 +41,7 @@ public class MainTest {
     public void piece2(){ 
         Main.play("sample_abc/piece2.abc"); 
     }     
-    
+    /**
     //more than two voices
     @Test
     public void prelude(){ 
@@ -60,5 +60,5 @@ public class MainTest {
         Main.play("our_test/les_3_marins_de_groix.abc"); 
     }
     
-   
+   */
 }
