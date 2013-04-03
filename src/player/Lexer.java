@@ -106,7 +106,7 @@ public class Lexer {
         
         boolean headercheck = true;
         while (headercheck==true){
-            if (str.startsWith("X:")||str.startsWith("T:")) {throw new IOException("repeated X or T type");         }   
+            if (str.startsWith("X:")||str.startsWith("T:")) throw new IOException("repeated X or T type"); 
             else if (str.startsWith("C:")||str.startsWith("L:")||str.startsWith("Q:")||
                     str.startsWith("M:")){
                 for (int i =0; i<headerinfo.size(); i++){                	
@@ -187,7 +187,7 @@ public class Lexer {
                     for (Type t : Type.values()) {
                         Token testToken = new Token(t, "", 0, 0, 0, 0, 0,0,0);                    
                         if (testToken.pattern.matcher(currentString).matches()) {
-                            if (currentString.equals("||") && string.substring(i,i+1).equals(":")){
+                            if (i< length-2&& currentString.equals("||") && string.substring(i+1,i+2).equals(":")){
                                 output.add(new Token(Type.Barline, "|", 0,0,0,0,0,0,0));
                                 output.add(new Token(Type.RepeatBegin, "|:", 0,0,0,0,0,0,0));
                                 anyMatchSoFar = true;
