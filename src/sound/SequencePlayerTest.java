@@ -5,8 +5,11 @@ import javax.sound.midi.MidiUnavailableException;
 
 import org.junit.Test;
 
+/**
+ * Test some super complicated stuff.
+ * @category no_didit
+ */
 public class SequencePlayerTest {
-
     @Test
     public void testPiece1(){
         try {
@@ -52,6 +55,7 @@ public class SequencePlayerTest {
         }
         
     }
+
     @Test
     public void testPiece2(){
         try {
