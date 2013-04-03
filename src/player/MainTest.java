@@ -7,6 +7,7 @@ import org.junit.Test;
  */
 public class MainTest {
     //complicatedtest1, two voices
+	  /**
     @Test
     public void fur_elise() { 
         Main.play("sample_abc/fur_elise.abc"); 
@@ -35,7 +36,6 @@ public class MainTest {
     public void lilly(){ 
         Main.play("our_test/lilli.abc"); 
     } 
-    
     //easypiece1, without repeat, chord, or rest, with no voice input
     @Test
     public void piece1(){ 
@@ -83,10 +83,11 @@ public class MainTest {
     public void amazing_grace(){ 
         Main.play("our_test/amazing_grace.abc"); 
     }
-    
+    */
     //random piece test, voice message cluster
     @Test
     public void duke_of_york_new_march(){ 
         Main.play("our_test/duke_of_york's_new_march.abc"); 
     }
+   
 }
