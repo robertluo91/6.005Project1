@@ -10,7 +10,6 @@ import org.junit.Test;
  * @category no_didit
  */
 public class SequencePlayerTest {
-
     @Test
     public void testPiece1(){
         try {
