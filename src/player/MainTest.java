@@ -36,6 +36,7 @@ public class MainTest {
     public void lilly(){ 
         Main.play("our_test/lilli.abc"); 
     } 
+    
     //easypiece1, without repeat, chord, or rest, with no voice input
     @Test
     public void piece1(){ 
