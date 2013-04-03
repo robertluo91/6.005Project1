@@ -280,25 +280,25 @@ public class Lexer {
             else if (str.startsWith("K:")) {
                 str = str.substring(2);
                 if (str.startsWith(" ")) str = str.substring(1);                
-                this.Key = str;
+                this.Key = str.trim();
             }
             else if (str.startsWith("Q:")) {
                 Tempochecker = 1;            
                 str = str.substring(2);
                 if (str.startsWith(" ")) str = str.substring(1);
-                this.Tempo = Integer.parseInt(str);
+                this.Tempo = Integer.parseInt(str.trim());
             }
             else if (str.startsWith("L:")) {
                 nolenchecker = 1;
                 str = str.substring(2);
                 if (str.startsWith(" ")) str = str.substring(1);
-                this.L = str;
+                this.L = str.trim();
             }
             else if (str.startsWith("M:")) {
                 meterchecker = 1;
                 str = str.substring(2);
                 if (str.startsWith(" ")) str = str.substring(1);
-                this.M = str;
+                this.M = str.trim();
             }
         }
             if (Tempochecker == 0) {
