@@ -88,11 +88,50 @@ public class ParserTest {
         //hence multiplying with tpb, it is tick = tpb 
         Token testtoken1 = new Token (Type.Rest, "z",7,0,0,tick/2,0,0,0);
         Token testtoken2 = new Token (Type.Rest, "z",7,0,0,tick/2,0,0,0);
-        System.out.println(tokens.get(4).basenote);
         assertTokenEquals(testtoken1, tokens.get(4));
         assertTokenEquals(testtoken2, tokens.get(7));  
     }
     
+    public void assertEqualsTree(){
+        
+    }
+    
+    @Test
+    // check if a file without repetition can correctly build a AST without children
+    public void TokeninTree5(){
+        Lexer lexer = new Lexer("sample_abc/piece1.abc");
+        Parser parser = new Parser(lexer);
+        List<AST> Voice = parser.SequenceofVoiceForest.get(0);
+        AST Tree = (NodeTree) Voice.get(0);
+        //ArrayList<Token> t = Tree.root;
+        assertEquals(Tree.leftChild,null);
+        assertEquals(Tree.rightChild,null);
+        }
+    
+    @Test
+    // check if a file with a regular (single-ending) repetition can correctly build a AST without children
+    // since the repeated part should be add-on to the root of AST.
+    public void TokeninTree6(){
+        Lexer lexer = new Lexer("our_test/repeattest.abc");
+        Parser parser = new Parser(lexer);
+        List<AST> Voice = parser.SequenceofVoiceForest.get(0);
+        AST Tree = (NodeTree) Voice.get(0);
+        assertEquals(Tree.leftChild,null);
+        assertEquals(Tree.rightChild,null);
+        }
+    
+    //@Test
+    // check if a file with a two-ending repetition can correctly build a AST with both left and right children
+    public void TokeninTree7(){
+        Lexer lexer = new Lexer("our_test/repeattest2.abc");
+        Parser parser = new Parser(lexer);
+        List<AST> Voice = parser.SequenceofVoiceForest.get(0);
+        AST Tree = (NodeTree) Voice.get(0);
+        assertEquals((Tree.leftChild == null),false);
+        assertEquals((Tree.rightChild == null),false);
+        }
+    
+   
     
 }
 
