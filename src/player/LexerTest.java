@@ -12,7 +12,7 @@ import player.Token.Type;
  * @category no_didit
  */
 public class LexerTest {    
-	// step0: define token equality: both type and string must match
+	//define token equality: both type and string must match
     public static void assertTokenEquals(Token x, Token y) {    	
         assertEquals(x.type, y.type);
         assertEquals(x.string, y.string);
@@ -205,6 +205,23 @@ public class LexerTest {
         		  assertTokenEquals(result.get(i).get(result.get(i).size()-1-a), expected[i][a]);}
           	}
       }
+   
+    @Test
+    //Test if the lexer is able to default Q=100, L=1/8, M=4/4 when these fields are absent 
+    public void Defaultest(){        
+        Lexer lexer = new Lexer("our_test/lilli2.abc");   
+        assertEquals(lexer.L, "1/8");
+        assertEquals(lexer.Tempo, 100);
+        assertEquals(lexer.M, "4/4");
+    }
+    @Test
+    //Test if the lexer is able to default Q=100, L=1/8, M=4/4 when these fields are absent 
+    public void Defaultest2(){        
+        Lexer lexer = new Lexer("our_test/amazing_grace2.abc");   
+        assertEquals(lexer.L, "1/8");
+        assertEquals(lexer.Tempo, 100);
+        assertEquals(lexer.M, "4/4");
+    }
     
     @Test(expected = RuntimeException.class)
     //the 2nd field of header isn't T
@@ -247,7 +264,7 @@ public class LexerTest {
         new Lexer("our_test/wrongbody3.abc");   
     }
     @Test(expected = RuntimeException.class)
-    //"invalid input pattern: should have equal number of chordbegin and chordend"
+    //different numbers of chordbegin and chordend
     public void Wrongbody4(){        
         new Lexer("our_test/wrongbody4.abc");   
     }
@@ -266,44 +283,10 @@ public class LexerTest {
     public void Wrongbody7(){        
         new Lexer("our_test/wrongnote.abc");   
     }
- 
-    
-    /**
-    /*TODO TASK:1. right now it's only able to tell you if there is RuntimeException without showing
-     * what exactly is the exception. 
-     * 
-     * FOUR different Header exceptions: 
-     * 1."the 1st field of header isn't X"
-     * 2."the 2nd field of header isn't T"
-     * 3."K is not that last field of the header"
-     * 4."headerinfo appeared in the body"
-     * 
-     * SEVEN different Body exceptions: 
-     * 1."Emptyline in music body"
-     * 2."Voice didn't appear in the header"
-     * 3."2 or more consecutive chordbegin"
-     * 4. "chordend more than chordbegin"
-     * 5. "invalid input pattern: should have equal number of chordbegin and chordend"
-     * 6. "there are types other than pitch and rest in chord"
-     * 7. "other types other than Pitch, Rest, or 'chord' in tuplets"
-     * 
-     * it would be nice to have a test for each of the exception above and show that it's that 
-     * specific exception we are expecting. I wrote a sample below, but it doesn't work...
-     * you get the idea
-     * 
-     * TODO TASK 2: write couple more tests to check if specific things work. 
-     * Here are the things I can think of: 
-     * Conduct another 3 header tests to see if lexer is able to correctly generate 
-     * Q=100, L="1/8", M="4/4" fields as required
-     */
-    /**
     @Test(expected = RuntimeException.class)
-    //Test repeated info in the header
-    public void Wrongheader2(){        
-        Lexer lexer = new Lexer("wrongheader1.abc");
-        String a= "the 2nd field of header isn't T";
-        AssertEquals(xx.getMessage(), a);
-        throw new RuntimeException(e.getMessage()); 
+    //"The ending of the voice isn't marked with |, |], :|, or ||"
+    public void Wrongbody8(){        
+        new Lexer("our_test/wrongbody6.abc");   
     }
-    */
+
 }

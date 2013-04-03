@@ -321,10 +321,6 @@ public class Lexer {
                 meterchecker = 1;
             }
         
-        
-        int num = Integer.parseInt(this.L.substring(0, this.L.indexOf("/")));
-        int denom = Integer.parseInt(this.L.substring(this.L.indexOf("/") + 1));
-        this.Tempo = this.Tempo/4*(denom/num); 
         this.voicecounter = voicecounter; 
     }
 
