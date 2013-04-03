@@ -25,6 +25,7 @@ public class ASTtoPlayer {
         SequencePlayer sp;
         try {
             sp = new SequencePlayer(beatsPerMinute,ticksPerBeat);
+            System.out.println(ticksPerBeat);
             for (int voice=0; voice<SequenceofVoiceForest.size(); voice++){
                 traverse(SequenceofVoiceForest.get(voice),sp);
             }

@@ -30,6 +30,12 @@ public class MainTest {
         Main.play("sample_abc/paddy.abc"); 
     } 
     
+    //start with repeat
+    @Test
+    public void lilly(){ 
+        Main.play("our_test/lilli.abc"); 
+    } 
+    
     //easypiece1, without repeat, chord, or rest, with no voice input
     @Test
     public void piece1(){ 
@@ -59,6 +65,28 @@ public class MainTest {
     public void les_3_marins_de_groix(){ 
         Main.play("our_test/les_3_marins_de_groix.abc"); 
     }
+
+    //random piece test
+    @Test
+    public void stranger_in_cork(){ 
+        Main.play("our_test/stranger_in_cork.abc"); 
+    }
     
-   
+    //random piece test, voice message cluster
+    @Test
+    public void how_great_thou_art(){ 
+        Main.play("our_test/how_great_thou_art.abc"); 
+    }
+    
+    //random piece test, voice message cluster
+    @Test
+    public void amazing_grace(){ 
+        Main.play("our_test/amazing_grace.abc"); 
+    }
+    
+    //random piece test, voice message cluster
+    @Test
+    public void duke_of_york_new_march(){ 
+        Main.play("our_test/duke_of_york's_new_march.abc"); 
+    }
 }
