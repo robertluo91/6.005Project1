@@ -29,15 +29,14 @@ public class MainTest {
     public void paddy(){ 
         Main.play("sample_abc/paddy.abc"); 
     } 
-    */
-
+    
     
     //start with repeat
     @Test
     public void lilly(){ 
         Main.play("our_test/lilli.abc"); 
     } 
-    
+    /**
     //easypiece1, without repeat, chord, or rest, with no voice input
     @Test
     public void piece1(){ 
@@ -49,7 +48,7 @@ public class MainTest {
     public void piece2(){ 
         Main.play("sample_abc/piece2.abc"); 
     }     
-    /**
+    
     //more than two voices
     @Test
     public void prelude(){ 
@@ -67,8 +66,6 @@ public class MainTest {
     public void les_3_marins_de_groix(){ 
         Main.play("our_test/les_3_marins_de_groix.abc"); 
     }
-   
-   */
 
     //random piece test
     @Test
@@ -81,10 +78,11 @@ public class MainTest {
     public void how_great_thou_art(){ 
         Main.play("our_test/how_great_thou_art.abc"); 
     }
-    
+
     //random piece test, voice message cluster
     @Test
     public void amazing_grace(){ 
         Main.play("our_test/amazing_grace.abc"); 
     }
+     */
 }
