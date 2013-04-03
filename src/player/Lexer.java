@@ -48,13 +48,11 @@ public class Lexer {
         put('D',3); put('E',4); put('F',5);
         put('G',6); put('Z',7);
     }};
-
     
     /**
      * Read the abc file, count the total line number, and catch checked errors
      *  
      * @param filename the name of the abc file to be analyzed in the lexer
-     * @throws IOException???
      */
     public Lexer(String filename) {
          this.filename = filename;
@@ -125,9 +123,10 @@ public class Lexer {
             }
             else if (str.startsWith("V:")){
             	for (int i =0; i<headerinfo.size(); i++){
-            		if (headerinfo.get(i).string.equals(str)) throw new IOException("repeated Vi types");
+            		if (headerinfo.get(i).string.equals(str.trim())) throw new IOException("repeated Vi types");
             	}
-            	headerinfo.add(new Token(Type.V, str, 0, 0, 0, 0,0,0,0)); 
+            	headerinfo.add(new Token(Type.V, str.trim(), 0, 0, 0, 0,0,0,0)); 
+            	System.out.println(str + " voice in the header");
             	headernum++;
             	str = br.readLine();
             	checkerline -=1;
@@ -178,7 +177,7 @@ public class Lexer {
      * @throws RuntimeException if there is empty lines in music body, or if voice in the music body but didn't appear in the header,
      * 		   or if string fail to match any token types.
      */
-    public void BodyTokenize(ArrayList<String> bodystring){
+    public void BodyTokenize(ArrayList<String> bodystring) throws RuntimeException{
         ArrayList<Token> output = new ArrayList<Token>();
         
         for (int a=0; a<bodystring.size(); a++){
@@ -206,15 +205,21 @@ public class Lexer {
                                 Token T = new Token(t, currentString, 0, 0, 0, 0, 0,0,0);
                                 output.add(T);
                                 if (t==Type.V){
+                                	System.out.println("currentString is "+ currentString);
                                     boolean c = false;
                                                               
                                     for (int b =0; b<MusicHeader.size(); b++){
-                                        if (MusicHeader.get(b).string.equals(currentString)){                                   
+                                    	System.out.println(MusicHeader.get(b).string + " is in the header");
+                                        if (MusicHeader.get(b).string.equals(currentString.trim())){  
+                                        	System.out.println(currentString +" can be in found in the header");
                                             c= true;
                                             break;
                                         }
                                     }
-                                    if (c==false) throw new RuntimeException("Voice didn't appear in the header");
+                                    if (c==false) {
+                                    	System.out.println(currentString+" didn't appear in the header");
+                                    	throw new RuntimeException("Voice didn't appear in the header");
+                                    }
                                 }
                             }
                         }
@@ -233,7 +238,7 @@ public class Lexer {
      *         or if there are token types other than pitch or rest within chord
      */
     //chord parameter of the 1st pitch/rest after chordsbegin    
-    public void Chordcheck(ArrayList<Token> output) {
+    public void Chordcheck(ArrayList<Token> output) throws RuntimeException{
         int diff = 0; 
         for (int i = 0; i < output.size(); i++) {
             if (output.get(i).type == Type.ChordsBegin) diff++;
@@ -280,25 +285,25 @@ public class Lexer {
             else if (str.startsWith("K:")) {
                 str = str.substring(2);
                 if (str.startsWith(" ")) str = str.substring(1);                
-                this.Key = str;
+                this.Key = str.trim();
             }
             else if (str.startsWith("Q:")) {
                 Tempochecker = 1;            
                 str = str.substring(2);
                 if (str.startsWith(" ")) str = str.substring(1);
-                this.Tempo = Integer.parseInt(str);
+                this.Tempo = Integer.parseInt(str.trim());
             }
             else if (str.startsWith("L:")) {
                 nolenchecker = 1;
                 str = str.substring(2);
                 if (str.startsWith(" ")) str = str.substring(1);
-                this.L = str;
+                this.L = str.trim();
             }
             else if (str.startsWith("M:")) {
                 meterchecker = 1;
                 str = str.substring(2);
                 if (str.startsWith(" ")) str = str.substring(1);
-                this.M = str;
+                this.M = str.trim();
             }
         }
             if (Tempochecker == 0) {
@@ -317,9 +322,7 @@ public class Lexer {
         
         int num = Integer.parseInt(this.L.substring(0, this.L.indexOf("/")));
         int denom = Integer.parseInt(this.L.substring(this.L.indexOf("/") + 1));
-        System.out.println("num "+num + " denom "+ denom);
         this.Tempo = this.Tempo/4*(denom/num); 
-        System.out.println(this.Tempo);
         this.voicecounter = voicecounter; 
     }
 
@@ -329,7 +332,7 @@ public class Lexer {
      * @throws RuntimeException when the numerator or the denominator of the note-length is 0, or when the note-length
      *         for a pitch or a rest is noted as 0.  examples: "C0/4", "D2/0", "e0"
      */
-    public void NoteLength(ArrayList<Token> output) {
+    public void NoteLength(ArrayList<Token> output) throws RuntimeException{
         for (int i = 0; i < output.size(); i++) {
         	Token T = output.get(i);
             String str = T.string;
@@ -462,7 +465,7 @@ public class Lexer {
      * @param output: ArrayList of tokens for the music body
      * @throws RuntimeException when there are other elements other than pitch, rest, or chords in tuplets
      */
-    public void Tupnotelen(ArrayList<Token> output) {
+    public void Tupnotelen(ArrayList<Token> output)throws RuntimeException {
         for (int i = 0; i < output.size(); i++) {
             if (output.get(i).type == Type.Tuplets) {
                 int tup = Integer.parseInt(output.get(i).string.substring(1));
@@ -547,7 +550,7 @@ public class Lexer {
      * @param voicecounter: ArrayList of tokens of different voice type.
      * @throws RuntimeException when the ending of any voice isn't marked with |, |], :|, or || 
      */
-    public void MusicBody(ArrayList<Token> output, ArrayList<Token> voicecounter) {
+    public void MusicBody(ArrayList<Token> output, ArrayList<Token> voicecounter) throws RuntimeException{
         ArrayList<ArrayList<Token>> Body = new ArrayList<ArrayList<Token>>();
         if (voicecounter.size() == 0) { // only has 1 voice
             ArrayList<Token> VoiceArray = new ArrayList<Token>();
