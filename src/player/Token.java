@@ -23,7 +23,7 @@ public class Token {
      * Accidental ::= "^" | "^^" | "_" | "__" | "="
      * Basenote ::= [A-Ga-g]
      * Pitch ::= Accidental? Basenote Octave? NoteLength?
-     * Rest ::= "z"note-length?
+     * Rest ::= "z" note-length?
      * Tuplets ::= "([234]"
      * Barline ::= "|" | "||" | "[|" | "|]"
      * Nrepeat ::= "["[12]

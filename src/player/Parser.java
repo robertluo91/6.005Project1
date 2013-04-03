@@ -82,7 +82,7 @@ public class Parser {
                             }
                             else a.get(k).accid = 0;                                                                 
                         }
-                        //Rep invariant of token
+                        //Rep invariant of a token
                         if (a.get(k).accid>2||a.get(k).accid<-2){
                             throw new RuntimeException("invalid use of accid");
                         }
