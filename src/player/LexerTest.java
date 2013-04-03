@@ -211,6 +211,62 @@ public class LexerTest {
     public void Wrongheader1(){        
         new Lexer("our_test/wrongheader1.abc");   
     }
+    @Test(expected = RuntimeException.class)
+    //the 1st field of header isn't X
+    public void Wrongheader2(){        
+        new Lexer("our_test/wrongheader2.abc");   
+    }
+    @Test(expected = RuntimeException.class)
+    //K is not that last field of the header
+    public void Wrongheader3(){        
+        new Lexer("our_test/wrongheader3.abc");   
+    }
+    @Test(expected = RuntimeException.class)
+    //"headerinfo appeared in the body"
+    public void Wrongheader4(){        
+        new Lexer("our_test/wrongheader4.abc");   
+    }
+    @Test(expected = RuntimeException.class)
+    //repeated header info
+    public void Wrongheader5(){        
+        new Lexer("our_test/wrongheader5.abc");   
+    }
+    @Test(expected = RuntimeException.class)
+    //"Emptyline in music body"
+    public void Wrongbody1(){        
+        new Lexer("our_test/wrongbody1.abc");   
+    }
+    @Test(expected = RuntimeException.class)
+    //"Voice in the music body didn't appear in the header"
+    public void Wrongbody2(){        
+        new Lexer("our_test/wrongbody2.abc");   
+    }
+    @Test(expected = RuntimeException.class)
+    //"2 or more consecutive chordbegin"
+    public void Wrongbody3(){        
+        new Lexer("our_test/wrongbody3.abc");   
+    }
+    @Test(expected = RuntimeException.class)
+    //"invalid input pattern: should have equal number of chordbegin and chordend"
+    public void Wrongbody4(){        
+        new Lexer("our_test/wrongbody4.abc");   
+    }
+    @Test(expected = RuntimeException.class)
+    //"there are types other than pitch and rest in chord"
+    public void Wrongbody5(){        
+        new Lexer("our_test/wrongbody5.abc");   
+    }
+    @Test(expected = RuntimeException.class)
+    //"other types other than Pitch, Rest, or 'chord' in tuplets"
+    public void Wrongbody6(){        
+        new Lexer("our_test/wrongtuplet.abc");   
+    }
+    @Test(expected = RuntimeException.class)
+    //string can't match any tokens (wrong notes)
+    public void Wrongbody7(){        
+        new Lexer("our_test/wrongnote.abc");   
+    }
+ 
     
     /**
     /*TODO TASK:1. right now it's only able to tell you if there is RuntimeException without showing
