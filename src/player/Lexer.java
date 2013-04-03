@@ -46,7 +46,7 @@ public class Lexer {
     private static final Map<Character,Integer> stringNumMap = new HashMap<Character,Integer>() {{
         put('A',0); put('B',1); put('C',2);
         put('D',3); put('E',4); put('F',5);
-        put('G',6); put('Z',7);
+        put('G',6); put('z',7);
     }};
     
     /**
