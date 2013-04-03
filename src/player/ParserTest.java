@@ -22,6 +22,7 @@ public class ParserTest {
         assertEquals(a.accid,b.accid);
         assertEquals(a.octave,b.octave);
         }
+    
     @Test
     // check single notes in 
     public void TokeninTreeTest1() {
@@ -40,6 +41,7 @@ public class ParserTest {
         assertTokenEquals(testtoken2, tokens.get(1));
         assertTokenEquals(testtoken3, tokens.get(6));
     }
+    
     @Test
     //check repetition with two endings
     //Since we add-on the repeated part and removed all the barline, we check if the repetition part is added at the right place.
@@ -92,10 +94,6 @@ public class ParserTest {
         assertTokenEquals(testtoken2, tokens.get(7));  
     }
     
-    public void assertEqualsTree(){
-        
-    }
-    
     @Test
     // check if a file without repetition can correctly build a AST without children
     public void TokeninTree5(){
@@ -119,20 +117,6 @@ public class ParserTest {
         assertEquals(Tree.leftChild,null);
         assertEquals(Tree.rightChild,null);
         }
-    
-    //@Test
-    // check if a file with a two-ending repetition can correctly build a AST with both left and right children
-    public void TokeninTree7(){
-        Lexer lexer = new Lexer("our_test/repeattest2.abc");
-        Parser parser = new Parser(lexer);
-        List<AST> Voice = parser.SequenceofVoiceForest.get(0);
-        AST Tree = (NodeTree) Voice.get(0);
-        assertEquals((Tree.leftChild == null),false);
-        assertEquals((Tree.rightChild == null),false);
-        }
-    
-   
-    
 }
 
 

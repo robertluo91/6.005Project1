@@ -128,13 +128,11 @@ public class Lexer {
             		if (headerinfo.get(i).string.equals(str.trim())) throw new IOException("repeated Vi types");
             	}
             	headerinfo.add(new Token(Type.V, str.trim(), 0, 0, 0, 0,0,0,0)); 
-            	System.out.println(str + " voice in the header");
             	headernum++;
             	str = br.readLine();
             	checkerline -=1;
             }
-            else if (str.startsWith("%")){
-            	
+            else if (str.startsWith("%")){            	
             	headerinfo.add(new Token(Type.Comment, str, 0, 0, 0, 0,0,0,0)); 
             	headernum++;
             	str = br.readLine();
@@ -207,20 +205,15 @@ public class Lexer {
                                 Token T = new Token(t, currentString, 0, 0, 0, 0, 0,0,0);
                                 output.add(T);
                                 if (t==Type.V){
-                                	System.out.println("currentString is "+ currentString);
                                     boolean c = false;
-                                                              
                                     for (int b =0; b<MusicHeader.size(); b++){
-                                    	System.out.println(MusicHeader.get(b).string + " is in the header");
-                                        if (MusicHeader.get(b).string.equals(currentString.trim())){  
-                                        	System.out.println(currentString +" can be in found in the header");
+                                        if (MusicHeader.get(b).string.equals(currentString.trim())){
                                             c= true;
                                             break;
                                         }
                                     }
                                     if (c==false) {
-                                    	System.out.println(currentString+" didn't appear in the header");
-                                    	throw new RuntimeException("Voice didn't appear in the header");
+                                        throw new RuntimeException("Voice didn't appear in the header");
                                     }
                                 }
                             }
