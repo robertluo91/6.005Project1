@@ -43,11 +43,13 @@ public class Lexer {
     BufferedReader cr;
     
     @SuppressWarnings("serial")
-    private static final Map<Character,Integer> stringNumMap = new HashMap<Character,Integer>() {{
+    private static final Map<Character,Integer> stringNumMap = new HashMap<Character,Integer>() {
+        {
         put('A',0); put('B',1); put('C',2);
         put('D',3); put('E',4); put('F',5);
         put('G',6); put('z',7);
-    }};
+        }
+    };
     
     /**
      * Read the abc file, count the total line number, and catch checked errors
