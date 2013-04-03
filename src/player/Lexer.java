@@ -51,7 +51,7 @@ public class Lexer {
 
     
     /**
-     * Read the abc file, count the total line number, and catches checked errors
+     * Read the abc file, count the total line number, and catch checked errors
      *  
      * @param filename the name of the abc file to be analyzed in the lexer
      * @throws IOException???
@@ -91,8 +91,7 @@ public class Lexer {
         if (str.startsWith("X:")){
             headerinfo.add(new Token(Type.X, str, 0, 0, 0, 0,0,0,0));
             headernum++;
-            str = br.readLine();
-          
+            str = br.readLine();          
             checkerline -=1;
         }
         else throw new IOException("the 1st field of header isn't X");
@@ -100,15 +99,14 @@ public class Lexer {
         if (str.startsWith("T:")){
             headerinfo.add(new Token(Type.T, str, 0, 0, 0, 0,0,0,0));
             headernum++;
-            str = br.readLine();
-          
+            str = br.readLine();          
             checkerline -=1;
         }
         else throw new IOException("the 2nd field of header isn't T");
         
         boolean headercheck = true;
         while (headercheck==true){
-            if (str.startsWith("X:")||str.startsWith("T:")) {throw new IOException("repeated X or T type");         }   
+            if (str.startsWith("X:")||str.startsWith("T:")) throw new IOException("repeated X or T type"); 
             else if (str.startsWith("C:")||str.startsWith("L:")||str.startsWith("Q:")||
                     str.startsWith("M:")){
                 for (int i =0; i<headerinfo.size(); i++){                	
@@ -130,6 +128,13 @@ public class Lexer {
             		if (headerinfo.get(i).string.equals(str)) throw new IOException("repeated Vi types");
             	}
             	headerinfo.add(new Token(Type.V, str, 0, 0, 0, 0,0,0,0)); 
+            	headernum++;
+            	str = br.readLine();
+            	checkerline -=1;
+            }
+            else if (str.startsWith("%")){
+            	
+            	headerinfo.add(new Token(Type.Comment, str, 0, 0, 0, 0,0,0,0)); 
             	headernum++;
             	str = br.readLine();
             	checkerline -=1;
@@ -184,13 +189,12 @@ public class Lexer {
             current = 0;
             while (current <length) {
                 boolean anyMatchSoFar = false;            
-                for (int i = length; i >current; i--) {
-                   
+                for (int i = length; i >current; i--) {                   
                     String currentString = string.substring(current, i);                
                     for (Type t : Type.values()) {
                         Token testToken = new Token(t, "", 0, 0, 0, 0, 0,0,0);                    
                         if (testToken.pattern.matcher(currentString).matches()) {
-                            if (currentString.equals("||") && string.substring(i,i+1).equals(":")){
+                            if (i< length-2&& currentString.equals("||") && string.substring(i+1,i+2).equals(":")){
                                 output.add(new Token(Type.Barline, "|", 0,0,0,0,0,0,0));
                                 output.add(new Token(Type.RepeatBegin, "|:", 0,0,0,0,0,0,0));
                                 anyMatchSoFar = true;
@@ -221,14 +225,14 @@ public class Lexer {
         }
         Chordcheck(output);
     }
-   /**
-    //chord parameter of the 1st pitch/rest after chordsbegin
+    
+    /**    
      * check if the chords are valid. 
      * @param output: the stream of tokens of music body
      * @throws RuntimeException if there are 2 or more consecutive "[", or if number of "[" not equal to the number of "]",
      *         or if there are token types other than pitch or rest within chord
      */
-    
+    //chord parameter of the 1st pitch/rest after chordsbegin    
     public void Chordcheck(ArrayList<Token> output) {
         int diff = 0; 
         for (int i = 0; i < output.size(); i++) {
@@ -239,8 +243,8 @@ public class Lexer {
             else if (diff < 0) throw new RuntimeException("chordend more than chordbegin");
         }
         if (diff != 0) throw new RuntimeException("invalid input pattern: should have equal number of chordbegin and chordend");
-        for (int i = 0; i < output.size(); i++) { // checks if output tokens have types other than          
-                                                    // pitch and rest within chords
+        for (int i = 0; i < output.size(); i++) {
+            // checks if output tokens have types other than pitch and rest within chords
             if (output.get(i).type == Type.ChordsBegin) {
                 int k = 0;
                 for (int a =i+1; a< output.size(); a++){
@@ -260,6 +264,7 @@ public class Lexer {
         }
         NoteLength(output);
     }
+    
     /**
      * stores Tempo, NoteLength, Keymeasure, meter information 
      * @param Headers: arraylist of tokens for the music header 
@@ -297,7 +302,6 @@ public class Lexer {
             }
         }
             if (Tempochecker == 0) {
-            	System.out.println("tempochecker=0");
                 this.Tempo = 100; // default Tempo
                 Tempochecker = 1;
             }
@@ -495,7 +499,7 @@ public class Lexer {
     }
 
     /**
-     * Stores all the denominator of the notelengths for pitches and rests into a list
+     * Store all the denominator of the notelengths for pitches and rests into a list
      * @param output: ArrayList of tokens for the music body
      */
     public void LCM(ArrayList<Token> output) {
@@ -583,13 +587,42 @@ public class Lexer {
     }
 
     /**
-     * Converts a letter to an integer.
+     * Convert a letter to an integer.
      * @param str: a letter within the range of A-G or Z in string format
      */
     public int stringToNumber(String str) {
         return stringNumMap.get(str.charAt(0));
     }
 
+    /**
+     * peek at the first token in the token list
+     * @return the current first token in the token list
+     */
+    public Token peek() {
+        if (parserPeekIndex >= token.size()) return null;
+        return token.get(parserPeekIndex);
+    }
+
+    /**
+     * get the token next to the current index
+     * @return the next token to the current index
+     * @throws Exception
+     */
+    public Token next() throws Exception {
+        if (parserPeekIndex >= token.size()) throw new Exception("Internal parser error");
+        return token.get(parserPeekIndex++);
+    }
+    
+    /**
+     * get the correct factor for the numerator of notes in tuplets 
+     * @param tup
+     * @return
+     */
+    private static int Numfactor(int tup){
+        if (tup==2) return 3;
+        if (tup==3||tup==4) return tup-1;
+        else return 0;
+    }
     /**
      * Calculate the least common multiple of 2 integers
      * @param a: an integer
@@ -614,7 +647,6 @@ public class Lexer {
         return (int) current;
     }
 
-
     /**
      * Calculate the greatest common divisor of 2 longs
      * @param a: a number in long format
@@ -628,34 +660,5 @@ public class Lexer {
             a = exchange;
         }
         return a;
-    }
-
-    /**
-     * peek at the first token in the token list
-     * @return the current first token in the token list
-     */
-    public Token peek() {
-        if (parserPeekIndex >= token.size()) return null;
-        return token.get(parserPeekIndex);
-    }
-
-    /**
-     * get the token next to the current index
-     * @return the next token to the current index
-     * @throws Exception
-     */
-    public Token next() throws Exception {
-        if (parserPeekIndex >= token.size()) throw new Exception("Internal parser error");
-        return token.get(parserPeekIndex++);
-    }
-    /**
-     * get the correct factor for the numerator of notes in tuplets 
-     * @param tup
-     * @return
-     */
-    private static int Numfactor(int tup){
-        if (tup==2) return 3;
-        if (tup==3||tup==4) return tup-1;
-        else return 0;
     }
 }

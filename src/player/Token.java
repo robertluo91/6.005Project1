@@ -23,7 +23,7 @@ public class Token {
      * Accidental ::= "^" | "^^" | "_" | "__" | "="
      * Basenote ::= [A-Ga-g]
      * Pitch ::= Accidental? Basenote Octave? NoteLength?
-     * Rest ::= "z"note-length?
+     * Rest ::= "z" note-length?
      * Tuplets ::= "([234]"
      * Barline ::= "|" | "||" | "[|" | "|]"
      * Nrepeat ::= "["[12]
@@ -131,15 +131,13 @@ public class Token {
         }
         this.string = string;
     }
-    
-    
+        
     public String toString(){
         return type.toString() + " " + basenote + " " + noteLength + " " + octave + " " +
          accid + " " + chord + " " + num + " " + den;
     }
     
     public boolean equals(Object o){
-
         Token t = (Token)o;
         return (type == t.type)&&(pattern.equals(t.pattern))&&
                 (string.equals(t.string))&&(basenote == t.basenote)&&

@@ -11,11 +11,9 @@ import player.Token.Type;
  * Test some complicated stuff
  * @category no_didit
  */
-public class LexerTest {
-    
+public class LexerTest {    
 	// step0: define token equality: both type and string must match
-    public static void assertTokenEquals(Token x, Token y) {
-    	
+    public static void assertTokenEquals(Token x, Token y) {    	
         assertEquals(x.type, y.type);
         assertEquals(x.string, y.string);
         assertEquals(x.basenote, y.basenote);
@@ -24,48 +22,39 @@ public class LexerTest {
         assertEquals(x.accid, y.accid);
         assertEquals(x.chord, y.chord);
         assertEquals(x.num, y.num);
-        assertEquals(x.den, y.den);
-        
-
-    }
-    
-    @Test
-  //Test number of lines for header, body, and total
-    public void ReaderTest1() {
-        
-        Lexer lexer = new Lexer("sample_abc/piece1.abc");
-        assertEquals(lexer.totalnum, 7);
-        assertEquals(lexer.headernum, 6);
-        assertEquals(lexer.bodyline, 1);
-       
-    }
-
-   
-    @Test
-  //Test number of lines for header, body, and total
-    public void ReaderTest2() {
-        
-        Lexer lexer = new Lexer("sample_abc/invention.abc");
-        assertEquals(lexer.totalnum, 63);
-        assertEquals(lexer.headernum, 9);
-        assertEquals(lexer.bodyline, 54);
-
-    }
-   
-    @Test
-  //Test number of lines for header, body, and total
-    public void ReaderTest3() {
-        
-        Lexer lexer = new Lexer("sample_abc/fur_elise.abc");
-        assertEquals(lexer.totalnum, 118);
-        assertEquals(lexer.headernum, 9);
-        assertEquals(lexer.bodyline, 109);
+        assertEquals(x.den, y.den);        
     }
     
     @Test
     //Test number of lines for header, body, and total
-    public void ReaderTest4() {
-        
+    public void ReaderTest1() {        
+        Lexer lexer = new Lexer("sample_abc/piece1.abc");
+        assertEquals(lexer.totalnum, 7);
+        assertEquals(lexer.headernum, 6);
+        assertEquals(lexer.bodyline, 1);       
+    }
+   
+    @Test
+    //Test number of lines for header, body, and total, case for more than two voices and comments
+    public void ReaderTest2() {        
+        Lexer lexer = new Lexer("sample_abc/invention.abc");
+        assertEquals(lexer.totalnum, 63);
+        assertEquals(lexer.headernum, 9);
+        assertEquals(lexer.bodyline, 54);
+    }
+   
+    @Test
+    //Test number of lines for header, body, and total, case for one default voice with no L input
+    public void ReaderTest3() {        
+        Lexer lexer = new Lexer("sample_abc/paddy.abc");
+        assertEquals(lexer.totalnum, 12);
+        assertEquals(lexer.headernum, 6);
+        assertEquals(lexer.bodyline, 6);
+    }
+    
+    @Test
+    //Test number of lines for header, body, and total, case for one default voice with L input
+    public void ReaderTest4() {        
         Lexer lexer = new Lexer("sample_abc/little_night_music.abc");
         assertEquals(lexer.totalnum, 24);
         assertEquals(lexer.headernum, 7);
@@ -74,8 +63,7 @@ public class LexerTest {
     
     @Test
     //Test info in the header with voices
-    public void HeaderTest1() {
-        
+    public void HeaderTest1() {        
         Lexer lexer = new Lexer("sample_abc/fur_elise.abc");
         assertEquals(lexer.MusicBody.size(),2);
         ArrayList<Token> resultTokens = lexer.MusicHeader; 
@@ -91,14 +79,11 @@ public class LexerTest {
         for (int i=0;i<resultTokens.size();i++){
         	assertTokenEquals(resultTokens.get(i), expected[i]);
         }
-
     }
-
        
     @Test
     //Test the final token ArrayList before dividing into voices in MusicBody 
-    public void TokenTest1() {
-        
+    public void TokenTest1() {        
         Lexer lexer = new Lexer("sample_abc/piece2.abc");
         ArrayList<Token> resultTokens = lexer.token; 
 
@@ -111,11 +96,9 @@ public class LexerTest {
         }
     }
     
-
     @Test
-  //Test the token ArrayList backwards for music have more than 1 voice
-    public void TokenTest2() {
-        
+    //Test the token ArrayList backwards for music have more than 1 voice
+    public void TokenTest2() {        
         Lexer lexer = new Lexer("sample_abc/prelude.abc");
         ArrayList<Token> resultTokens = lexer.token; 
         Token[] expected = { new Token(Type.Barline, "|]", 0,0,0, 0,0,0,0),   
@@ -128,6 +111,7 @@ public class LexerTest {
         	assertTokenEquals(resultTokens.get(resultTokens.size()-1-i), expected[i]);
         }
     }
+    
     @Test
     //Test the token ArrayList forward for music have more than 1 voice
       public void TokenTest3() {
@@ -142,40 +126,45 @@ public class LexerTest {
           	assertTokenEquals(resultTokens.get(i), expected[i]);
           }
       }
+    
     @Test
     //Test the voicecounter for music more than 1 voice
       public void voicecounter1() {          
           Lexer lexer = new Lexer("sample_abc/prelude.abc");
           assertEquals(lexer.voicecounter.size(), 3);         
       }
+   
     @Test
     //Test the voicecounter for music with more than 1 voice
       public void voicecounter2() {          
           Lexer lexer = new Lexer("sample_abc/invention.abc");
           assertEquals(lexer.voicecounter.size(), 2);         
       }
+    
     @Test
     //Test the voicecounter for music with 1 voice
       public void voicecounter3() {          
           Lexer lexer = new Lexer("sample_abc/little_night_music.abc");
           assertEquals(lexer.voicecounter.size(), 0);         
       }
+    
     @Test
     //Test the size of MusicBody ArrayList for music with 1 voice
       public void Musicbody1() {          
           Lexer lexer = new Lexer("sample_abc/little_night_music.abc");
           assertEquals(lexer.size, 1);         
       }
+    
     @Test
     //Test the size of MusicBody ArrayList for music with more than 1 voice
       public void Musicbody2() {          
           Lexer lexer = new Lexer("sample_abc/invention.abc");
           assertEquals(lexer.size, 2);         
       }
+    
     @Test
     //Test the token voice arraylists in musicbody forward for music with more than 1 voices
-      public void MusicBody3() {
-          
+      public void MusicBody3() {          
           Lexer lexer = new Lexer("sample_abc/prelude.abc");
           ArrayList<ArrayList<Token>> result = lexer.MusicBody; 
           Token[] expected1 = {   
@@ -196,10 +185,10 @@ public class LexerTest {
         		  assertTokenEquals(result.get(i).get(a), expected[i][a]);}
           	}
       }
+    
     @Test
     //Test the token voice arraylists in musicbody backwards for music with more than 1 voices
-      public void MusicBody4() {
-          
+      public void MusicBody4() {          
           Lexer lexer = new Lexer("sample_abc/fur_elise.abc");
           ArrayList<ArrayList<Token>> result = lexer.MusicBody; 
           Token[] expected1 = {  
@@ -220,8 +209,7 @@ public class LexerTest {
     @Test(expected = RuntimeException.class)
     //the 2nd field of header isn't T
     public void Wrongheader1(){        
-        new Lexer("our_test/wrongheader1.abc");
-   
+        new Lexer("our_test/wrongheader1.abc");   
     }
     
     /**
