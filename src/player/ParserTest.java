@@ -22,6 +22,7 @@ public class ParserTest {
         assertEquals(a.accid,b.accid);
         assertEquals(a.octave,b.octave);
         }
+    
     @Test
     // check single notes in 
     public void TokeninTreeTest1() {
@@ -40,6 +41,7 @@ public class ParserTest {
         assertTokenEquals(testtoken2, tokens.get(1));
         assertTokenEquals(testtoken3, tokens.get(6));
     }
+    
     @Test
     //check repetition with two endings
     //Since we add-on the repeated part and removed all the barline, we check if the repetition part is added at the right place.
@@ -88,12 +90,33 @@ public class ParserTest {
         //hence multiplying with tpb, it is tick = tpb 
         Token testtoken1 = new Token (Type.Rest, "z",7,0,0,tick/2,0,0,0);
         Token testtoken2 = new Token (Type.Rest, "z",7,0,0,tick/2,0,0,0);
-        System.out.println(tokens.get(4).basenote);
         assertTokenEquals(testtoken1, tokens.get(4));
         assertTokenEquals(testtoken2, tokens.get(7));  
     }
     
+    @Test
+    // check if a file without repetition can correctly build a AST without children
+    public void TokeninTree5(){
+        Lexer lexer = new Lexer("sample_abc/piece1.abc");
+        Parser parser = new Parser(lexer);
+        List<AST> Voice = parser.SequenceofVoiceForest.get(0);
+        AST Tree = (NodeTree) Voice.get(0);
+        //ArrayList<Token> t = Tree.root;
+        assertEquals(Tree.leftChild,null);
+        assertEquals(Tree.rightChild,null);
+        }
     
+    @Test
+    // check if a file with a regular (single-ending) repetition can correctly build a AST without children
+    // since the repeated part should be add-on to the root of AST.
+    public void TokeninTree6(){
+        Lexer lexer = new Lexer("our_test/repeattest.abc");
+        Parser parser = new Parser(lexer);
+        List<AST> Voice = parser.SequenceofVoiceForest.get(0);
+        AST Tree = (NodeTree) Voice.get(0);
+        assertEquals(Tree.leftChild,null);
+        assertEquals(Tree.rightChild,null);
+        }
 }
 
 
