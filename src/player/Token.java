@@ -19,18 +19,21 @@ public class Token {
      * X ::= .*
      * V ::= .*
      * Octave ::= ("'"+) | (","+)
-     * NoteLength ::= [d* /? d*] 
+     * NoteLength ::= [0-9]*"/"?[0-9]*
      * Accidental ::= "^" | "^^" | "_" | "__" | "="
      * Basenote ::= [A-Ga-g]
      * Pitch ::= Accidental? Basenote Octave? NoteLength?
      * Rest ::= "z" note-length?
      * Tuplets ::= "([234]"
      * Barline ::= "|" | "||" | "[|" | "|]"
-     * Nrepeat ::= "["[12]
+     * Repeat_First ::= [1
+     * Repeat_Second ::= [2
      * ChordsBegin::= "["
      * ChordsEnd::= "]"
      * RepeatBegin ::="|:"
      * RepeatEnd ::=":|"
+     * Comment ::= %.* 
+     * Whitespace ::= " "
      */
 
     public static enum Type {
@@ -51,11 +54,17 @@ public class Token {
     public boolean isNatural = false;
     
     /**
-     * Method Token converts regular expressions which are used as grammars to strings
+     * Converts regular expressions to strings as specified by the grammar
      * @param type: a regex which belongs to the types of regex defined in enum.
-     * string: the string expression of the regex
+     * @param string: the string expression of the regex
+     * @param basenote: an integer representation of the basenote  example: A is represented by 0
+     * @param num: the numerator of the notelength of the pitch and rest in integer form
+     * @param den: the denominator of the notelength of the pitch and rest in integer form
+     * @param noteLength: an integer representation of the updated notelength of pitch and rest
+     * @param accid: an integer representation of accidental 
+     * @param octave: an integer representation of octave 
+     * @param chord: an integer representation of the number of pitch/rest in a chord
      */
-    
     public Token(Type type, String string, int basenote,int num, int den, int noteLength, int accid, int octave,int chord) {
         this.type = type;
         this.basenote = basenote;
@@ -131,12 +140,10 @@ public class Token {
         }
         this.string = string;
     }
-        
-    public String toString(){
-        return type.toString() + " " + basenote + " " + noteLength + " " + octave + " " +
-         accid + " " + chord + " " + num + " " + den;
-    }
-    
+    /**
+     * test if 2 tokens are equal
+     * @param o: an Object
+     */
     public boolean equals(Object o){
         Token t = (Token)o;
         return (type == t.type)&&(pattern.equals(t.pattern))&&

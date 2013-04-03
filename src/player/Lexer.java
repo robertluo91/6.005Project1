@@ -27,8 +27,6 @@ public class Lexer {
     int size;
     int Tempo;
     ArrayList<Token> token;
-
-    int parserPeekIndex;
     int current;
     int Tick;
     int headernum;
@@ -595,24 +593,6 @@ public class Lexer {
         return stringNumMap.get(str.charAt(0));
     }
 
-    /**
-     * peek at the first token in the token list
-     * @return the current first token in the token list
-     */
-    public Token peek() {
-        if (parserPeekIndex >= token.size()) return null;
-        return token.get(parserPeekIndex);
-    }
-
-    /**
-     * get the token next to the current index
-     * @return the next token to the current index
-     * @throws Exception
-     */
-    public Token next() throws Exception {
-        if (parserPeekIndex >= token.size()) throw new Exception("Internal parser error");
-        return token.get(parserPeekIndex++);
-    }
     
     /**
      * get the correct factor for the numerator of notes in tuplets 
