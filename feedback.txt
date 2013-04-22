@@ -1,0 +1,54 @@
+Project 1: abc Music Player		weixinc, yluo15, ytong
+===========================		(grader: Vlad)
+
+Team contract: 5 / 5
+
+Design: 21 / 25
+  Milestone design: 13 / 15
+  Revised design: 8 / 10
+
+Implementation: 39 / 50
+  Warmup: 5 / 5
+  Code readability: 7 / 8
+  Specifications: 7 / 7
+  Functionality: 11 / 15
+  Our tests: 9 / 15
+    Tuplets: 1 / 2
+    Chords: 1 / 2
+    Repeats: 1 / 2
+    Voices: 1 / 2
+    Key signature: 1 / 2
+    Accidentals: 2 / 2
+    Rhythm: 2 / 3
+
+Testing: 14 / 15
+  Unit tests: 6 / 6
+  Integration tests: 5 / 6
+  Custom abc files: 3 / 3
+
+TOTAL TEAM SCORE: 79 / 95
+
+(Individual scores will include 5 points for the reflection assignment,
+ and will be posted on Stellar.)
+
+Feedback
+--------
+DESIGN:
+Your initial design was vague in regards to accidentals. Everything else was good, however, and you addressed this shortcoming in your final design.
+
+CODE READABILITY:
+Your package hierarchy is fine. Your code is readable, but comments are lacking in some places: notably, Lexer.java. While commenting code can be time-consuming and difficult, especially under pressure, doing so is an excellent habit to form: a habit that will greatly increase your overall productivity. It is excellent that you added comments to your test files, however.
+
+SPECS:
+Your specs were always present, albeit brief at times. Good job!
+
+FUNCTIONALITY:
+You were able to play scale.abc with no problems. You played little_night_music.abc with problems, but the tune was unmistakable. You played paddy.abc with few, if any, problems. Your playback of invention.abc had readily apparent problems: sections of the song were playing out of order. prelude.abc had the same problem, as did fur_elise.abc.
+
+Due to these problems, many of the staff unit tests had problems in playback.
+
+TESTING:
+Excellent testing strategy. I would have liked to see more automated end-to-end tests, however.
+
+OVERALL:
+Congratulations on completing a difficult project! Hopefully, this was an excellent learning experience -- working with groups on an open-ended programming task can be daunting for anyone. Have some lunch or dessert (e.g. fro-yo) as a team to celebrate a project complete!
